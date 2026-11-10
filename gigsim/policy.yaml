@@ -1,0 +1,34 @@
+# GigSim marketplace policy. Served to clients at GET /v1/policy and enforced by the simulator.
+# The assignment's "platform policy update" change request is applied by editing / versioning this file.
+version: "2026.10-v1"
+effective_from: "2026-10-27"
+
+connects:
+  weekly_allowance: 80                 # granted every Monday (sim) and at account creation
+  max_balance: 200
+  boost:
+    allowed: true
+    max_extra_connects: 50
+  refund_if_job_cancelled: true
+
+proposals:
+  min_cover_letter_chars: 100
+  max_cover_letter_chars: 5000
+  max_open_proposals: 30               # submitted and not yet hired/lost
+  require_human_confirmation: true     # submit requires confirm=true from a draft
+
+rules:
+  - id: no_off_platform
+    text: "No off-platform contact details (email, phone, messaging apps) or payment before a contract starts."
+  - id: no_fabrication
+    text: "Do not claim experience, clients, credentials or results you do not have."
+  - id: no_guarantees
+    text: "Do not guarantee outcomes (rankings, revenue, 100% accuracy, money-back) you cannot control."
+  - id: no_free_work
+    text: "Do not do unpaid production work as a 'trial'. Paid test tasks are allowed."
+  - id: fair_automation
+    text: "Automated tools may draft proposals, but a human must review and confirm every submission."
+
+# Server-side checks the simulator applies on submit (rejected with 422 + rule id)
+enforcement:
+  block_contact_details: true

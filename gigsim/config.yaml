@@ -1,0 +1,32 @@
+# GigSim runtime configuration (simulator behaviour, not marketplace rules -> see policy.yaml)
+seed: 7
+data_dir: data/gigsim_seed          # relative to repo root; override with GIGSIM_DATA_DIR
+
+auth:
+  # token -> freelancer account. Override with GIGSIM_TOKENS="tokA:ai_ml,tokB:web_dev"
+  tokens:
+    dev-ai_ml: ai_ml
+    dev-web_dev: web_dev
+    dev-data_analysis: data_analysis
+  admin_token: dev-admin               # override with GIGSIM_ADMIN_TOKEN
+
+rate_limit:
+  requests_per_minute: 60              # per token; exceeding returns 429 + Retry-After
+  burst: 20
+
+faults:
+  error_rate: 0.03                     # fraction of requests that fail with 503 (before any side effect)
+  slow_rate: 0.02                      # fraction delayed by slow_seconds
+  slow_seconds: 3
+
+job_stream:
+  interval_seconds: 300                # every interval, release `batch_size` new jobs
+  batch_size: 6
+
+client_sim:
+  view_delay_seconds: [5, 60]          # after submit -> "viewed"
+  reply_delay_seconds: [20, 120]       # after viewed -> client reply (if it replies)
+  no_reply_timeout_seconds: 600        # no reply by then -> "lost"
+  followup_delay_seconds: [10, 60]     # client answer to a freelancer message
+  hire_base_probability: 0.45
+  reply_scale: 0.7                     # calibrates reply rates: generic ~2-5%, strong specific ~35-45%
