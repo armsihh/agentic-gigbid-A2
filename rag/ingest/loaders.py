@@ -71,6 +71,12 @@ def load_persona(folder: str | Path) -> list[Chunk]:
         kw["content_hash"] = _hash(kw["text"])
         chunks.append(Chunk(**kw))
 
+    # project titles from case studies, so CV lines can be linked to the project they describe
+    title_to_project: dict[str, str] = {}
+    for f in (folder / "case_studies").glob("*.md"):
+        fm, body = _front_matter(f.read_text(encoding="utf-8"))
+        title_to_project[body.strip().splitlines()[0].lstrip("# ").strip().lower()] = fm.get("project")
+
     # CV: one chunk per bullet (short, project-level lines) + header block
     cv = folder / "cv.md"
     if cv.exists():
@@ -79,8 +85,9 @@ def load_persona(folder: str | Path) -> list[Chunk]:
         add(chunk_id=f"{persona}-cv-header", item_id=f"{persona}-cv", type="cv", title="CV", text=header,
             source=str(cv))
         for i, line in enumerate(x for x in lines if x.startswith("- ")):
+            proj = next((p for t, p in title_to_project.items() if t in line.lower()), None)
             add(chunk_id=f"{persona}-cv-{i:02d}", item_id=f"{persona}-cv", type="cv", title="CV entry",
-                text=line[2:], source=str(cv), date=line[2:6] if line[2:6].isdigit() else None)
+                text=line[2:], source=str(cv), date=line[2:6] if line[2:6].isdigit() else None, project=proj)
 
     # Case studies: one chunk per section, each prefixed with the title so it stands alone
     for f in sorted((folder / "case_studies").glob("*.md")):

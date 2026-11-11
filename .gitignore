@@ -10,8 +10,6 @@ node_modules/
 dist/
 build/
 data/processed/
-evals/results/*
-!evals/results/.gitkeep
 
 # raw downloaded datasets (too large; regenerate with scripts)
 data/raw/
@@ -20,3 +18,9 @@ data/raw/
 data/audit/
 data/workspace_state/
 data/token_store/
+
+# local runtime databases
+data/*.db
+data/*.db-*
+apps/web/test-results/
+apps/web/playwright-report/
