@@ -146,7 +146,7 @@ def build_server(store: WorkspaceStore | None = None, token_spec: str | None = N
     store = store or WorkspaceStore()
     token_spec = token_spec if token_spec is not None else os.environ.get("WORKSPACE_MCP_TOKENS")
     auth_kwargs = {}
-    if token_spec:
+    if token_spec or os.environ.get("MCP_SIGNING_KEY"):
         auth_kwargs = {"token_verifier": StaticTokenVerifier(token_spec),
                            "auth": AuthSettings(issuer_url=http_url, resource_server_url=http_url,
                                              required_scopes=["workspace:read"], validate_token_resource=False)}

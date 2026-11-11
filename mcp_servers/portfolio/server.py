@@ -41,7 +41,7 @@ def build_server(store: PortfolioStore | None = None, token_spec: str | None = N
     store = store or PortfolioStore()
     token_spec = token_spec if token_spec is not None else os.environ.get("PORTFOLIO_MCP_TOKENS")
     auth_kwargs = {}
-    if token_spec:
+    if token_spec or os.environ.get("MCP_SIGNING_KEY"):
         auth_kwargs = {"token_verifier": StaticTokenVerifier(token_spec),
                            "auth": AuthSettings(issuer_url=http_url, resource_server_url=http_url,
                                              required_scopes=["portfolio:read"], validate_token_resource=False)}
@@ -56,6 +56,8 @@ def build_server(store: PortfolioStore | None = None, token_spec: str | None = N
         user, _ = current_user("PORTFOLIO_USER")
         if user in user_personas:
             return user_personas[user]
+        if "@" in user:  # API-minted identity "<user_id>@<persona>"
+            return user.rsplit("@", 1)[1]
         return os.environ.get("PORTFOLIO_PERSONA") or None
 
     def logged(tool: str, args: dict, ctx: Context | None, fn):

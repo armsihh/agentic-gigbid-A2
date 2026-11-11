@@ -35,15 +35,50 @@ class StaticTokenVerifier(TokenVerifier):
             self.tokens[token] = AccessToken(token=token, client_id=user, scopes=scopes.split("+") if scopes else [])
 
     async def verify_token(self, token: str) -> AccessToken | None:
-        return self.tokens.get(token)
+        if token in self.tokens:
+            return self.tokens[token]
+        return verify_signed_token(token)
+
+
+def sign_token(user_id: str, scopes: list[str], key: str | None = None) -> str:
+    """Per-user, per-agent MCP token minted by the API: "<user>.<scope+scope>.<hmac>"."""
+    import hashlib
+    import hmac
+    key = key or os.environ.get("MCP_SIGNING_KEY", "")
+    body = f"{user_id}.{'+'.join(scopes)}"
+    return body + "." + hmac.new(key.encode(), body.encode(), hashlib.sha256).hexdigest()[:32]
+
+
+def verify_signed_token(token: str) -> AccessToken | None:
+    import hashlib
+    import hmac
+    key = os.environ.get("MCP_SIGNING_KEY", "")
+    if not key or token.count(".") < 2:
+        return None
+    body, sig = token.rsplit(".", 1)
+    good = hmac.new(key.encode(), body.encode(), hashlib.sha256).hexdigest()[:32]
+    if not hmac.compare_digest(sig, good):
+        return None
+    user, scopes = body.rsplit(".", 1)
+    return AccessToken(token=token, client_id=user, scopes=scopes.split("+") if scopes else [])
+
+
+import contextvars
+
+# identity for in-process calls (the API's inproc toolbox); follows each asyncio task, so concurrent runs
+# for different users never see each other's identity
+local_identity: contextvars.ContextVar[str | None] = contextvars.ContextVar("mcp_local_identity", default=None)
 
 
 def current_user(default_env: str) -> tuple[str, list[str]]:
-    """User + scopes of the caller. HTTP: from the verified bearer token. stdio/in-memory: from env
-    (a local process is trusted with full scopes)."""
+    """User + scopes of the caller. HTTP: from the verified bearer token. In-process: from `local_identity`.
+    stdio: from env (a local process is trusted with full scopes)."""
     tok = get_access_token()
     if tok is not None:
         return tok.client_id, tok.scopes
+    ident = local_identity.get()
+    if ident:
+        return ident, ["*"]
     return os.environ.get(default_env, "local"), ["*"]
 
 

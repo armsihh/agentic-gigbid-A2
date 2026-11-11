@@ -97,7 +97,7 @@ def build_server(adapter_factory: Callable[[str], MarketplacePort] | None = None
     """`adapter_factory(user_id) -> MarketplacePort`. Default: config/env adapter per user."""
     token_spec = token_spec if token_spec is not None else os.environ.get("MARKETPLACE_MCP_TOKENS")
     auth_kwargs: dict[str, Any] = {}
-    if token_spec:
+    if token_spec or os.environ.get("MCP_SIGNING_KEY"):
         auth_kwargs = {"token_verifier": StaticTokenVerifier(token_spec),
                            "auth": AuthSettings(issuer_url=http_url, resource_server_url=http_url,
                                              required_scopes=["marketplace:read"], validate_token_resource=False)}
@@ -285,7 +285,12 @@ def _credentials_for(user: str) -> dict[str, Any]:
     ("user:gigsim_token,..."), else GIGSIM_API_TOKEN. Live Upwork: the API passes the decrypted OAuth
     token via the encrypted token store (apps/api/auth); never logged."""
     mapping = dict(p.split(":", 1) for p in filter(None, os.environ.get("MARKETPLACE_USER_TOKENS", "").split(",")))
-    return {"token": mapping[user]} if user in mapping else {}
+    if user in mapping:
+        return {"token": mapping[user]}
+    if "@" in user:  # API-minted identity "<user_id>@<persona>": one GigSim account per persona
+        persona = user.rsplit("@", 1)[1]
+        return {"token": os.environ.get(f"GIGSIM_TOKEN_{persona.upper()}", f"dev-{persona}")}
+    return {}
 
 
 def main() -> None:

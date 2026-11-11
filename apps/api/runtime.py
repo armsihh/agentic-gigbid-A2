@@ -1,0 +1,161 @@
+"""Process-wide runtime: MCP toolbox per user, graphs, checkpointer (durable), memory store.
+
+Toolbox modes
+  http    MARKETPLACE_MCP_URL / PORTFOLIO_MCP_URL / WORKSPACE_MCP_URL set (docker compose, deployment):
+          real MCP over Streamable HTTP with a per-user signed bearer token (user@persona, scoped).
+  inproc  no URLs (local dev, tests): the same MCP server objects called in-process (same schemas, validation,
+          audit), so the app runs without extra processes. Agents still only see MCP tools.
+Persistence: Postgres checkpointer + store when CHECKPOINT_URL/DATABASE_URL is postgres; SQLite files otherwise.
+Both survive an API restart, which is what makes approvals durable (C6).
+"""
+from __future__ import annotations
+
+import os
+from contextlib import AsyncExitStack
+from pathlib import Path
+from typing import Any
+
+from agent.graphs.bid_graph import build_bid_graph
+from agent.graphs.conversation_graph import build_conversation_graph
+from agent.mcp_client import Toolbox, build_connections, load_config
+from agent.memory.store import MemoryManager
+from agent.nodes.common import Deps
+from apps.api.settings import ROOT, get_settings
+from mcp_servers.common import sign_token
+from rag.ingest.loaders import load_profile
+
+SCOPES = {"marketplace": ["marketplace:read", "marketplace:write"], "portfolio": ["portfolio:read"],
+          "workspace": ["workspace:read", "workspace:write"]}
+
+
+def persona_profile(persona: str, overrides: dict | None = None) -> dict:
+    prof = load_profile(ROOT / "data" / "personas" / persona)
+    o = overrides or {}
+    for k in ("hourly_rate", "min_fixed_budget"):
+        if o.get(k):
+            prof[k] = float(o[k])
+    return prof
+
+
+class Runtime:
+    def __init__(self) -> None:
+        self.cfg = load_config()
+        self.stack = AsyncExitStack()
+        self.checkpointer = None
+        self.store = None
+        self.memory: MemoryManager | None = None
+        self._toolboxes: dict[str, Any] = {}
+        self._graphs: dict[tuple[str, str], Any] = {}
+        self.mode = "http" if os.environ.get("MARKETPLACE_MCP_URL") else "inproc"
+        self._inproc_servers: dict[str, Any] | None = None
+        self._verifier = None
+
+    async def start(self) -> None:
+        s = get_settings()
+        url = s.checkpoint_url or (s.database_url if s.is_postgres else None)
+        if url and url.startswith("postgres"):
+            from langgraph.checkpoint.postgres.aio import AsyncPostgresSaver
+            from langgraph.store.postgres.aio import AsyncPostgresStore
+            url = url.replace("postgresql+psycopg://", "postgresql://")
+            self.checkpointer = await self.stack.enter_async_context(AsyncPostgresSaver.from_conn_string(url))
+            await self.checkpointer.setup()
+            self.store = await self.stack.enter_async_context(AsyncPostgresStore.from_conn_string(url))
+            await self.store.setup()
+        else:
+            from langgraph.checkpoint.sqlite.aio import AsyncSqliteSaver
+            data = Path(os.environ.get("APP_DATA_DIR", ROOT / "data"))
+            data.mkdir(parents=True, exist_ok=True)
+            self.checkpointer = await self.stack.enter_async_context(
+                AsyncSqliteSaver.from_conn_string(str(data / "checkpoints.db")))
+            self.store = self.stack.enter_context(_sqlite_store(data))
+        self.memory = MemoryManager(self.store)
+
+    async def stop(self) -> None:
+        await self.stack.aclose()
+
+    # ------------------------------------------------------------ tools
+    def _inproc(self) -> dict[str, Any]:
+        if self._inproc_servers is None:
+            from mcp_servers.marketplace.server import build_server as bm
+            from mcp_servers.portfolio.server import build_server as bp
+            from mcp_servers.workspace.server import build_server as bw
+            self._inproc_servers = {"marketplace": bm(token_spec=""), "portfolio": bp(token_spec=""),
+                                    "workspace": bw(token_spec="")}
+        return self._inproc_servers
+
+    def toolbox(self, user_id: str, persona: str):
+        key = f"{user_id}@{persona}"
+        if key not in self._toolboxes:
+            if self.mode == "http":
+                env = {f"{n.upper()}_MCP_TOKEN": sign_token(key, sc) for n, sc in SCOPES.items()}
+                self._toolboxes[key] = Toolbox.from_config(self.cfg, build_connections(self.cfg, env=env))
+            else:
+                self._toolboxes[key] = _ScopedLocalToolbox(self._inproc(), key)
+        return self._toolboxes[key]
+
+    def verifier(self):
+        if self._verifier is None:
+            from rag.index.dense import Reranker
+            from rag.verify import ClaimVerifier
+            skills = set()
+            for p in (ROOT / "data" / "personas").iterdir():
+                skills |= {s.lower() for s in load_profile(p).get("skills", [])}
+            self._verifier = ClaimVerifier(Reranker(self.cfg["models"]["reranker"]),
+                                           known_terms=skills | {"kubernetes", "celery", "pinecone", "dbt", "spark"})
+        return self._verifier
+
+    def deps(self, user) -> Deps:
+        return Deps(toolbox=self.toolbox(user.id, user.persona), memory=self.memory, verifier=self.verifier(),
+                    profile=persona_profile(user.persona, user.settings))
+
+    def graph(self, user, kind: str):
+        key = (user.id, kind)
+        if key not in self._graphs:
+            build = build_bid_graph if kind == "bid" else build_conversation_graph
+            self._graphs[key] = build(self.deps(user), checkpointer=self.checkpointer, store=self.store)
+        return self._graphs[key]
+
+    def invalidate(self, user_id: str) -> None:
+        self._graphs = {k: v for k, v in self._graphs.items() if k[0] != user_id}
+        self._toolboxes = {k: v for k, v in self._toolboxes.items() if not k.startswith(user_id + "@")}
+
+
+def _sqlite_store(data: Path):
+    """SqliteStore with a thread-safe connection (the API serves requests from a thread pool too)."""
+    import sqlite3
+
+    from langgraph.store.sqlite import SqliteStore
+    conn = sqlite3.connect(str(data / "memory.db"), check_same_thread=False, isolation_level=None)
+    st = SqliteStore(conn)
+    st.setup()
+    return _Closing(st, conn)
+
+
+class _Closing:
+    def __init__(self, store, conn):
+        self.store, self.conn = store, conn
+
+    def __enter__(self):
+        return self.store
+
+    def __exit__(self, *a):
+        self.conn.close()
+
+
+class _ScopedLocalToolbox:
+    """In-process toolbox acting as `user@persona` (same identity the HTTP mode would carry)."""
+    def __init__(self, servers, identity: str):
+        from agent.testing import LocalToolbox
+        self.inner = LocalToolbox(servers)
+        self.identity = identity
+
+    async def call(self, agent: str, tool: str, args: dict):
+        from mcp_servers.common import local_identity
+        tok = local_identity.set(self.identity)
+        try:
+            return await self.inner.call(agent, tool, args)
+        finally:
+            local_identity.reset(tok)
+
+
+runtime = Runtime()
