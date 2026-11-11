@@ -37,7 +37,8 @@ tool_allowlists:
   writer:         {portfolio: [search_evidence, get_case_study]}
   critic:         {portfolio: [search_evidence, get_case_study]}
   compliance:     {}
-  client_liaison: {marketplace: [list_messages, list_proposals, list_events], workspace: [get_free_slots]}
+  client_liaison: {marketplace: [list_messages, list_proposals, list_events], workspace: [get_free_slots],
+                   portfolio: [search_evidence]}
   executor:       {marketplace: [create_proposal_draft, submit_proposal, send_message],
                    workspace: [create_interview_hold, create_email_draft]}
   ingestion:      {github: [get_file_contents, search_repositories, list_commits]}
@@ -63,27 +64,126 @@ upwork:
     send_message: [send_message, post_message]
 
 rag:
-  variant: bm25                # replaced by the variant the Part B evaluation selects (R6)
+  variant: v5_multivector      # chosen by evals/results/rag_retrieval_dev.json: best Recall@5 + nDCG@10 (R6)
 
+# OpenAI-compatible endpoints. Keys only from env.
+providers:
+  groq:       {base_url: "https://api.groq.com/openai/v1", api_key_env: GROQ_API_KEY}
+  openrouter: {base_url: "https://openrouter.ai/api/v1", api_key_env: OPENROUTER_API_KEY}
+  ollama:     {base_url: "http://localhost:11434/v1", base_url_env: OLLAMA_BASE_URL}
+  anthropic:  {base_url: "https://api.anthropic.com/v1/", api_key_env: ANTHROPIC_API_KEY}
+
+# Every node's model is set here, never in code (agent/llm.py). VERIFY model ids with GET {base_url}/models
+# and prices on the provider's pricing page before reporting costs.
 models:
-  profile: open
-  nodes:
-    scout: qwen3-4b
-    analyst: qwen3-4b
-    risk_assessor: qwen3-4b
-    fit_matcher: qwen3-4b
-    pricing: qwen3-4b
-    writer: configure-your-model
-    critic: configure-your-model
-    client_liaison: configure-your-model
-  embeddings: nomic-embed-text
-  reranker: bge-reranker-v2-m3
+  profile: open                     # env MODEL_PROFILE overrides
+  profiles:
+    open:                           # required: open-weight models only
+      tiers:
+        small:  {provider: groq, model: "openai/gpt-oss-20b", temperature: 0.0, max_tokens: 900, fallback: small_fb}
+        small_fb: {provider: groq, model: "qwen/qwen3.8-27b", temperature: 0.0, max_tokens: 900}
+        strong: {provider: groq, model: "openai/gpt-oss-120b", temperature: 0.4, max_tokens: 1400, fallback: strong_fb}
+        strong_fb: {provider: groq, model: "qwen/qwen3.8-27b", temperature: 0.4, max_tokens: 1400}
+        local_small: {provider: ollama, model: "qwen3:4b", temperature: 0.0, max_tokens: 900}
+      nodes:
+        default: small
+        analyst: small
+        risk_assessor: small
+        intent: small
+        compliance: small
+        pricing: small
+        fit_matcher: small
+        writer: strong
+        critic: strong
+        client_liaison: strong
+        judge: strong
+    paid:                           # optional: only where it beats `open` enough to justify its cost
+      tiers:
+        small:  {provider: groq, model: "openai/gpt-oss-20b", temperature: 0.0, max_tokens: 900}
+        strong: {provider: anthropic, model: "claude-sonnet-5-5", temperature: 0.4, max_tokens: 1400, fallback: open_strong}
+        open_strong: {provider: groq, model: "openai/gpt-oss-120b", temperature: 0.4, max_tokens: 1400}
+      nodes:
+        default: small
+        writer: strong
+        critic: strong
+        client_liaison: strong
+        judge: strong
+  embeddings: "BAAI/bge-small-en-v1.5"        # CPU (fastembed / ONNX); compared against nomic-embed-text-v1.5
+  reranker: "Xenova/ms-marco-MiniLM-L-6-v2"   # CPU cross-encoder; compared against bge-reranker-v2-m3-int8
+
+# USD per million tokens (list prices; free tiers still report list price for comparability). VERIFY.
+pricing_usd_per_mtok:
+  "openai/gpt-oss-20b":  {in: 0.10, out: 0.50}
+  "openai/gpt-oss-120b": {in: 0.15, out: 0.75}
+  "qwen/qwen3.8-27b":      {in: 0.29, out: 0.59}
+  "claude-sonnet-5-5":   {in: 3.00, out: 15.00}
 
 budgets:
   max_graph_steps: 30
-  max_revisions: 2
-  max_tokens_per_job: 12000
+  max_revisions: 2                  # Critic can send a draft back at most twice
+  max_tokens_per_job: 12000         # exceeding steps or tokens -> thread "needs_attention"
+  declared:                         # R8: declared budgets, measured in evals/results
+    p95_latency_s_per_job_analysed: 20
+    p95_latency_s_per_proposal: 60
+    usd_per_job_analysed: 0.002
+    usd_per_proposal: 0.01
 
-thresholds:
-  minimum_fit_score: 0.60
-  maximum_risk_score: 0.70
+# ---------------------------------------------------------------- business rules (change request lives here)
+decision:
+  skip_if_risk_at_least: 0.70       # RiskReport.score
+  skip_if_injection: true           # posts with instructions aimed at AI tools are not bid on
+  skip_if_duplicate: true
+  skip_if_fit_below: 0.40           # FitReport.score
+  watch_if_fit_below: 0.55          # between skip and watch thresholds -> "watch"
+  hourly_min_ratio_of_rate: 0.60    # skip hourly jobs paying < 60% of the freelancer's rate
+  use_profile_min_fixed_budget: true
+  autonomy:
+    allow_auto_skip: true           # per-user setting may auto-skip low-fit jobs; NEVER auto-send
+
+risk:
+  weights:                          # score = 1 - prod(1 - w) over fired signals
+    free_work: 0.85
+    off_platform: 0.80
+    upfront_payment: 0.85
+    pii_request: 0.85
+    account_sharing: 0.90
+    crypto_payment: 0.60
+    prompt_injection: 0.60
+    payment_unverified: 0.15
+    no_history: 0.10
+    budget_unrealistic: 0.35
+  patterns:
+    # patterns need INTENT, not product names: "build a Telegram bot" is a job, "add me on Telegram" is a scam signal
+    free_work: ["(build|complete|do|deliver|make)\\b[^.]{0,50}\\bfor free\\b", "\\bunpaid (trial|test|work|task)",
+                "free (trial|test) task", "trial task[^.]{0,60}\\bfree\\b", "complete our trial task"]
+    off_platform: ["(add|contact|message|text|reach|find) me (on|via|at) (telegram|whats ?app|skype|signal|wechat)",
+                   "(on|via) (telegram|whats ?app|skype) (and|so) we (will )?(discuss|continue|talk)",
+                   "(discuss|continue|talk) (there|on telegram|on whats ?app|outside)",
+                   "(pay|payment)[^.]{0,30}outside (of )?(upwork|the platform)", "outside (of )?(upwork|the platform)",
+                   "direct bank transfer", "send (me )?your (whats ?app|telegram|phone|personal email)",
+                   "contact (me )?(on|via) an external"]
+    upfront_payment: ["buy the (software|license)", "(registration|onboarding|license) fee", "pay .{0,20}before (we|you) start"]
+    pii_request: ["national id", "id card", "passport", "bank account details", "photo of your id", "social security"]
+    account_sharing: ["(on|use) our (upwork )?account", "split the payment", "top[- ]rated .{0,20}account"]
+    crypto_payment: ["usdt", "crypto", "bitcoin", "wallet address"]
+  budget_unrealistic_usd_per_hour: 300   # e.g. "$900 for 2 hours"
+
+pricing:
+  usd_per_connect: 0.15
+  min_expected_value_usd: 5.0       # skip-worthy if P(win) x price - connects cost is below this
+  p_win:
+    base: 0.06
+    per_fit_point: 0.20             # + 0.20 x fit score
+    competition_penalty:            # by applicant bucket
+      "Less than 5": 0.0
+      "5 to 10": 0.01
+      "10 to 15": 0.02
+      "15 to 20": 0.03
+      "20 to 50": 0.04
+      "50+": 0.05
+
+compliance:
+  block_rules: [no_off_platform, no_free_work]        # violations of these block the draft (shown in the UI)
+  redact_rules: [contact_details, guarantees]         # these are removed automatically, then re-checked
+  guarantee_patterns: ["guarantee", "100% (satisfaction|accuracy|success)", "money[- ]back", "risk[- ]free",
+                       "first page of google", "will definitely"]
