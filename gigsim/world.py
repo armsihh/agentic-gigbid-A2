@@ -320,7 +320,11 @@ class World:
     def _schedule_client(self, acc: Account, prop: dict, j: dict) -> None:
         cs = self.cfg["client_sim"]
         hidden = self.hidden.get(j["client_id"], {})
-        rng = self._prng(prop["proposal_id"], prop["cover_letter"][:200])
+        # Seed from CONTENT (job, bid, text), never from random ids: the same proposal to the same job
+        # always gets the same outcome, so reply-rate evaluations are reproducible.
+        text = prop["cover_letter"] + "\n".join(prop.get("screening_answers") or [])
+        prop["_seed"] = f"{j['job_id']}|{prop['bid_amount']}|{hashlib.sha256(text.encode()).hexdigest()[:16]}"
+        rng = self._prng(prop["_seed"])
         score = client_sim.score_proposal(prop, j, hidden, cs.get("reply_scale", 0.7))
         prop["_score"] = score  # internal, stripped from API output
         now = time.time()
@@ -353,7 +357,7 @@ class World:
         th["messages"].append(msg)
         self._event(acc, "message.sent", thread_id=tid, message_id=msg["message_id"])
         cs = self.cfg["client_sim"]
-        rng = self._prng(tid, msg["message_id"])
+        rng = self._prng(acc.proposals[th["proposal_id"]]["_seed"], "msg", str(len(th["messages"])), text)
         self.scheduled.append({"due": time.time() + rng.uniform(*cs["followup_delay_seconds"]),
                                "kind": "followup", "fid": fid, "tid": tid, "text": text})
         return msg
@@ -372,7 +376,7 @@ class World:
                 self._event(acc, "proposal.lost", proposal_id=prop["proposal_id"], reason="no_reply")
             elif e["kind"] == "reply":
                 hidden = self.hidden.get(j["client_id"], {})
-                rng = self._prng(prop["proposal_id"], "reply")
+                rng = self._prng(prop["_seed"], "reply")
                 rep = client_sim.first_reply(rng, prop, j, hidden, prop["_score"])
                 tid = "th-" + uuid.uuid4().hex[:10]
                 acc.threads[tid] = {"thread_id": tid, "proposal_id": prop["proposal_id"], "job_id": j["job_id"],
@@ -389,7 +393,7 @@ class World:
             prop = acc.proposals[th["proposal_id"]]
             if prop["status"] in ("hired", "lost"):
                 return
-            rng = self._prng(th["thread_id"], "decision")
+            rng = self._prng(prop["_seed"], "decision")
             p = self.cfg["client_sim"]["hire_base_probability"] * (0.6 + prop["_score"]["p_reply"])
             hired = rng.random() < p
             prop["status"] = "hired" if hired else "lost"
@@ -408,7 +412,7 @@ class World:
         if prop["status"] in ("hired", "lost"):
             return
         cs = self.cfg["client_sim"]
-        rng = self._prng(th["thread_id"], str(len(th["messages"])))
+        rng = self._prng(prop["_seed"], "followup", str(len(th["messages"])), e["text"])
         if th["intent"] == "scam":
             self._client_msg(acc, th, rng.choice(client_sim.SCAM_REPLIES).format(n=rng.randint(100, 999)))
             return

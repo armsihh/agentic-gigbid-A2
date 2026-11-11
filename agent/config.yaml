@@ -1,6 +1,69 @@
 marketplace:
-  mode: gigsim
-  max_requests_per_minute: 20
+  mode: gigsim                  # gigsim | upwork   (env MARKETPLACE_MODE overrides)
+  max_requests_per_minute: 20   # our per-user limiter; GigSim allows 60, so we stay well under
+
+# MCP servers the agents connect to (langchain-mcp-adapters MultiServerMCPClient).
+# stdio for local dev; the deployment uses streamable_http URLs + per-agent bearer tokens.
+mcp_servers:
+  marketplace:
+    transport: stdio
+    command: python
+    args: ["-m", "mcp_servers.marketplace.server"]
+    url_env: MARKETPLACE_MCP_URL      # if set, use streamable_http at this URL instead
+  portfolio:
+    transport: stdio
+    command: python
+    args: ["-m", "mcp_servers.portfolio.server"]
+    url_env: PORTFOLIO_MCP_URL
+  workspace:
+    transport: stdio
+    command: python
+    args: ["-m", "mcp_servers.workspace.server"]
+    url_env: WORKSPACE_MCP_URL
+  github:                             # third-party (A5): official GitHub MCP server, read-only repo ingestion
+    transport: streamable_http
+    url: https://api.githubcopilot.com/mcp/
+    token_env: GITHUB_TOKEN
+    optional: true
+
+# A6: each agent gets only the tools it needs, filtered by name. No LLM agent holds a write tool:
+# approved writes are executed by the deterministic `executor` node after interrupt() approval.
+tool_allowlists:
+  scout:          {marketplace: [search_jobs, get_job, get_policy]}
+  analyst:        {}
+  risk_assessor:  {marketplace: [get_client_history]}
+  fit_matcher:    {portfolio: [search_evidence, get_case_study, list_skills]}
+  pricing:        {marketplace: [get_market_stats, get_connects_balance, get_policy]}
+  writer:         {portfolio: [search_evidence, get_case_study]}
+  critic:         {portfolio: [search_evidence, get_case_study]}
+  compliance:     {}
+  client_liaison: {marketplace: [list_messages, list_proposals, list_events], workspace: [get_free_slots]}
+  executor:       {marketplace: [create_proposal_draft, submit_proposal, send_message],
+                   workspace: [create_interview_hold, create_email_draft]}
+  ingestion:      {github: [get_file_contents, search_repositories, list_commits]}
+
+mcp_client:
+  timeout_s: 20                # per tool call
+  max_attempts: 3              # bounded retries for retryable errors ([... retryable] tags)
+  backoff_base_s: 0.5
+
+# Live Upwork: candidate tool names per port method, resolved against list_tools() after OAuth.
+upwork:
+  min_search_interval_s: 900   # never search the live marketplace more often than every 15 min per user
+  tool_map:
+    search_jobs: [search_jobs, jobs_search, find_jobs, search_marketplace_jobs]
+    get_job: [get_job, get_job_details, job_details]
+    get_client_history: [get_client, get_client_details, client_details]
+    get_connects_balance: [get_connects, get_connects_balance, freelancer_dashboard]
+    list_proposals: [list_proposals, get_proposals, my_proposals]
+    get_proposal: [get_proposal, proposal_details]
+    list_threads: [list_rooms, list_threads, get_rooms, list_conversations]
+    get_thread: [get_room_messages, get_messages, list_messages]
+    create_proposal_draft: [create_proposal_draft, draft_proposal, create_proposal]
+    send_message: [send_message, post_message]
+
+rag:
+  variant: bm25                # replaced by the variant the Part B evaluation selects (R6)
 
 models:
   profile: open

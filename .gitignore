@@ -15,3 +15,8 @@ evals/results/*
 
 # raw downloaded datasets (too large; regenerate with scripts)
 data/raw/
+
+# runtime state (audit logs, mock workspace, encrypted OAuth tokens)
+data/audit/
+data/workspace_state/
+data/token_store/

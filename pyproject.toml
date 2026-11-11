@@ -17,6 +17,9 @@ dependencies = [
   "langchain>=0.3",
   "langchain-mcp-adapters>=0.1",
   "mcp>=1.12",
+  "rank-bm25>=0.2.2",
+  "tzdata>=2026.6",
+  "cryptography>=50.0.2",
 ]
 
 [dependency-groups]
@@ -27,7 +30,10 @@ package = false
 
 [tool.ruff]
 line-length = 100
+# data/ holds the generated portfolio corpus: its "unused" imports ARE the evidence (implied skills)
+extend-exclude = ["data"]
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 testpaths = ["tests", "mcp_servers", "gigsim"]
+asyncio_default_fixture_loop_scope = "function"

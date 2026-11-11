@@ -120,19 +120,34 @@ def test_client_eventually_replies_or_loses_and_events_flow():
     assert types[:2] == ["proposal.drafted", "proposal.submitted"]
 
 
-def test_interview_flow_when_freelancer_proposes_slot():
-    # submit to several jobs so at least one client replies
-    jobs = c.get("/v1/jobs", params={"category": "ai_ml", "limit": 30}, headers=H).json()["items"]
-    for i, j in enumerate(jobs[:15]):
+def _submit_many(n: int) -> None:
+    world.account("ai_ml").connects = 10_000  # enough Connects for many proposals
+    world.policy["proposals"]["max_open_proposals"] = 1000
+    jobs = c.get("/v1/jobs", params={"category": "ai_ml", "limit": n}, headers=H).json()["items"]
+    for i, j in enumerate(jobs):
         p = _draft(j, key=f"d{i}")
         if "proposal_id" in p:
             c.post(f"/v1/proposals/{p['proposal_id']}/submit", json={"confirm": True},
                    headers=H | {"Idempotency-Key": f"s{i}"})
     c.post("/admin/fast-forward", headers=ADMIN)
     c.post("/admin/fast-forward", headers=ADMIN)
+
+
+def test_outcomes_are_deterministic_per_proposal_content():
+    _submit_many(25)
+    first = sorted((p["job_id"], p["status"]) for p in c.get("/v1/proposals", headers=H).json()["items"])
+    world.reset()
+    _buckets.clear()
+    _submit_many(25)
+    second = sorted((p["job_id"], p["status"]) for p in c.get("/v1/proposals", headers=H).json()["items"])
+    assert first == second
+
+
+def test_interview_flow_when_freelancer_proposes_slot():
+    _submit_many(40)
     threads = c.get("/v1/threads", headers=H).json()["items"]
     real = [t for t in threads if t["intent"] != "scam"]
-    assert real, "expected at least one client reply across 15 proposals"
+    assert real, "expected at least one client reply across 40 proposals"
     t = real[0]
     c.post(f"/v1/threads/{t['thread_id']}/messages", json={"text": "Happy to talk. Tuesday 3pm or Wed 11am PKT?"},
            headers=H | {"Idempotency-Key": "m1"})
