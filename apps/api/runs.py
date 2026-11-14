@@ -18,6 +18,7 @@ from typing import Any
 from langgraph.types import Command
 
 from agent.mcp_client import current_trace_id
+from agent.state import halt_of
 from apps.api.db import JobRecord, Outcome, Rejection, RunRecord, User, now, session
 from apps.api.settings import get_settings
 
@@ -93,7 +94,7 @@ async def project(user: User, thread_id: str, values: dict, interrupted: bool) -
     if not job:
         return
     risk, fit, dec, price = (values.get(k) or {} for k in ("risk_report", "fit_report", "decision", "price"))
-    status = values.get("halt") or ("waiting_approval" if interrupted else values.get("status", "running"))
+    status = halt_of(values) or ("waiting_approval" if interrupted else values.get("status", "running"))
     with session() as s:
         rec = s.query(JobRecord).filter_by(user_id=user.id, thread_id=thread_id).first()
         if rec is None:
@@ -192,7 +193,7 @@ class RunManager:
             if kind == "bid":
                 await project(user, thread_id, values, interrupted)
             status = "waiting_approval" if interrupted else "done"
-            if values.get("halt"):
+            if halt_of(values):
                 status = "done"
         except Exception as e:  # noqa: BLE001 - recorded, shown in the run viewer, thread stays resumable
             status, err = "failed", f"{type(e).__name__}: {e}"

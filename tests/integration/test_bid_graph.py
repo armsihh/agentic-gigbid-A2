@@ -178,3 +178,16 @@ async def test_step_budget_moves_thread_to_needs_attention(world, monkeypatch):
     g = build_bid_graph(deps, InMemorySaver())
     out = await g.ainvoke(initial_state(await job(world, GOOD_JOB), "t-bud", "u", "ai_ml"), cfg("t-bud"))
     assert out["halt"] == "needs_attention"
+
+
+async def test_retry_after_dead_letter_on_same_thread(world):
+    """Found on the live site: failed threads must be re-runnable (halt is reset by a new run)."""
+    mem = MemoryManager(InMemoryStore())   # the writer reads style memory: must work inside the event loop
+    deps, _ = make(world, {"analyst": [SPEC], "writer": [RuntimeError("provider down"), RuntimeError("provider down"),
+                                                          WRITER], "critic": [APPROVE]}, memory=mem)
+    g = build_bid_graph(deps, InMemorySaver())
+    s0 = initial_state(await job(world, GOOD_JOB), "t-retry", "u", "ai_ml")
+    out = await g.ainvoke(s0, cfg("t-retry"))
+    assert out["halt"] == "dead_letter"
+    out = await g.ainvoke(initial_state(await job(world, GOOD_JOB), "t-retry", "u", "ai_ml"), cfg("t-retry"))
+    assert out.get("halt") is None and "__interrupt__" in out

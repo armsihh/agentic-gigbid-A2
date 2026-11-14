@@ -25,8 +25,17 @@ def keep_last(_old: Any, new: Any) -> Any:
 HALT_SEVERITY = {None: 0, "needs_attention": 1, "queued_marketplace_down": 2, "dead_letter": 3}
 
 
+def halt_of(state: dict) -> str | None:
+    """The thread's halt reason, if any. "clear" (sent by a new run to reset a previous failure) means none."""
+    h = state.get("halt") if state else None
+    return None if h in (None, "clear") else h
+
+
 def merge_halt(old: str | None, new: str | None) -> str | None:
-    """Parallel branches may fail in the same step: keep the most severe halt reason."""
+    """Parallel branches may fail in the same step: keep the most severe halt reason.
+    A new run on the same thread (retry after a failure) sends "clear" to reset it."""
+    if new == "clear":
+        return None
     return new if HALT_SEVERITY.get(new, 0) >= HALT_SEVERITY.get(old, 0) else old
 
 

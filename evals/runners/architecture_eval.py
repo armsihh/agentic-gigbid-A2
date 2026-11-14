@@ -24,6 +24,7 @@ from langchain_core.tools import StructuredTool
 from langgraph.checkpoint.memory import InMemorySaver
 from pydantic import BaseModel, Field
 
+from agent.state import halt_of
 from evals.harness import RESULTS, ROOT, deps, gigsim_world, load_jsonl, reset_gigsim
 
 SNAP = ROOT / "tests" / "contract" / "snapshots"
@@ -117,7 +118,7 @@ async def run_graph(d, job: dict) -> FinalAnswer:
     g = build_bid_graph(d, InMemorySaver())
     out = await g.ainvoke(initial_state(job, f"arch-{job['job_id']}", "eval", "x"), {"configurable": {"thread_id": f"arch-{job['job_id']}"}})
     dec = out.get("decision") or {}
-    return FinalAnswer(action=dec.get("action", "skip") if not out.get("halt") else "skip", reasons=dec.get("reasons", []),
+    return FinalAnswer(action=dec.get("action", "skip") if not halt_of(out) else "skip", reasons=dec.get("reasons", []),
                        cover_letter=(out.get("draft") or {}).get("cover_letter", ""),
                        bid_amount=(out.get("price") or {}).get("amount"))
 

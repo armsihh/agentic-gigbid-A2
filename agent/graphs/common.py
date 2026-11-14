@@ -8,12 +8,13 @@ from langgraph.errors import GraphBubbleUp
 
 from agent.mcp_client import ServiceDegraded
 from agent.nodes.common import over_budget, step
+from agent.state import halt_of
 
 TERMINAL = {"skipped", "watching", "blocked", "rejected", "submitted", "sent"}
 
 
 def halted(state: dict) -> bool:
-    return bool(state.get("halt")) or state.get("status") in TERMINAL
+    return bool(halt_of(state)) or state.get("status") in TERMINAL
 
 
 def guarded(name: str, fn: Callable[[dict], Awaitable[dict]], timeout_s: float = 120, attempts: int = 2):

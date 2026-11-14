@@ -4,6 +4,7 @@ from __future__ import annotations
 from fastapi import APIRouter, HTTPException, Query, Request
 
 from agent.nodes.common import tool_json
+from agent.state import halt_of
 from apps.api.auth.users import CurrentUser
 from apps.api.db import JobRecord, User, session
 from apps.api.runs import bid_thread
@@ -45,7 +46,7 @@ async def job_detail(job_id: str, user: User = CurrentUser):
     v = snap.values or {}
     if not v.get("job"):
         raise HTTPException(404, "job not analysed yet")
-    return JobDetail(job=v["job"], status=v.get("status"), halt=v.get("halt"), job_spec=v.get("job_spec"),
+    return JobDetail(job=v["job"], status=v.get("status"), halt=halt_of(v), job_spec=v.get("job_spec"),
                      risk_report=v.get("risk_report"), fit_report=v.get("fit_report"), decision=v.get("decision"),
                      price=v.get("price"), evidence=v.get("evidence") or [], trace=v.get("trace") or [],
                      errors=v.get("errors") or [], has_draft=bool(v.get("draft")),

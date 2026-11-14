@@ -127,7 +127,8 @@ def build_bid_graph(deps: Deps, checkpointer=None, store=None):
 
 def initial_state(job: dict, thread_id: str, user_id: str, persona: str, trace_id: str | None = None) -> dict:
     return {"job": job, "thread_id": thread_id, "user_id": user_id, "persona": persona,
-            "trace_id": trace_id or thread_id, "status": "running", "revisions": 0}
+            "trace_id": trace_id or thread_id, "status": "running", "revisions": 0,
+            "halt": "clear"}  # a re-run after a failure starts clean
 
 
 __all__ = ["approval_payload", "build_bid_graph", "config", "initial_state"]

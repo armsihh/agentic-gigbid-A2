@@ -1,4 +1,4 @@
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { api, must, type JobDetail } from "../../lib/api/client";
 import { useLoad } from "../../lib/hooks";
 import { ActionBadge, ErrorState, Fit, Loading, money, RiskBadge, StatusBadge } from "../../components/ui";
@@ -9,6 +9,7 @@ type Flag = { type: string; severity: string; evidence: string };
 /** JobSpec, risk report, requirement-to-evidence matrix, price rationale, bid/skip reasoning. */
 export default function JobPage() {
   const { id = "" } = useParams();
+  const nav = useNavigate();
   const d = useLoad<JobDetail>(() => must(api.GET("/api/jobs/{job_id}", { params: { path: { job_id: id } } })), [id], 6000);
   if (d.error) return <ErrorState error={d.error} retry={d.reload} />;
   if (!d.data) return <Loading lines={8} />;
@@ -28,7 +29,12 @@ export default function JobPage() {
             {" "}· {job.connects_cost} Connects · {job.category} · posted {job.posted_at?.slice(0, 10)}</p></div>
         <div className="row"><StatusBadge status={j.halt ?? j.status ?? "running"} />
           {j.pending_approval && <Link className="btn primary" to={`/studio/${id}`}>Review proposal</Link>}
-          {!j.pending_approval && j.has_draft && <Link className="btn" to={`/studio/${id}`}>Open proposal</Link>}</div>
+          {!j.pending_approval && j.has_draft && <Link className="btn" to={`/studio/${id}`}>Open proposal</Link>}
+          {["dead_letter", "needs_attention", "queued_marketplace_down"].includes(j.halt ?? "") && (
+            <button className="btn primary" onClick={async () => {
+              const r = await must(api.POST("/api/jobs/{job_id}/analyze", { params: { path: { job_id: id } } }));
+              nav(`/runs/${r.run_id}?job=${id}`);
+            }}>Retry analysis</button>)}</div>
       </div>
       {(j.errors ?? []).length > 0 && <div className="banner warn">{(j.errors ?? []).join(" · ")}</div>}
 

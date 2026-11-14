@@ -55,12 +55,15 @@ class Runtime:
         url = s.checkpoint_url or (s.database_url if s.is_postgres else None)
         if url and url.startswith("postgres"):
             from langgraph.checkpoint.postgres.aio import AsyncPostgresSaver
-            from langgraph.store.postgres.aio import AsyncPostgresStore
+            from langgraph.store.postgres import PostgresStore
             url = url.replace("postgresql+psycopg://", "postgresql://")
             self.checkpointer = await self.stack.enter_async_context(AsyncPostgresSaver.from_conn_string(url))
             await self.checkpointer.setup()
-            self.store = await self.stack.enter_async_context(AsyncPostgresStore.from_conn_string(url))
-            await self.store.setup()
+            # The memory store is the SYNC PostgresStore: MemoryManager calls it synchronously (small, fast queries),
+            # exactly like the SQLite store used locally. AsyncPostgresStore refuses sync calls inside the event loop,
+            # which dead-lettered every proposal in production (found on the live site).
+            self.store = self.stack.enter_context(PostgresStore.from_conn_string(url))
+            self.store.setup()
         else:
             from langgraph.checkpoint.sqlite.aio import AsyncSqliteSaver
             data = Path(os.environ.get("APP_DATA_DIR", ROOT / "data"))
@@ -115,7 +118,8 @@ class Runtime:
         key = (user.id, kind)
         if key not in self._graphs:
             build = build_bid_graph if kind == "bid" else build_conversation_graph
-            self._graphs[key] = build(self.deps(user), checkpointer=self.checkpointer, store=self.store)
+            # graph nodes use long-term memory through MemoryManager (deps.memory), not the graph-level store
+            self._graphs[key] = build(self.deps(user), checkpointer=self.checkpointer)
         return self._graphs[key]
 
     def invalidate(self, user_id: str) -> None:

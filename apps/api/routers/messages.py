@@ -4,6 +4,7 @@ from __future__ import annotations
 from fastapi import APIRouter, HTTPException, Request
 
 from agent.nodes.common import tool_json
+from agent.state import halt_of
 from apps.api.auth.users import CurrentUser
 from apps.api.db import User
 from apps.api.runs import conv_thread
@@ -38,7 +39,7 @@ async def thread(thread_id: str, user: User = CurrentUser):
         {"configurable": {"thread_id": conv_thread(user.id, thread_id)}})
     v = snap.values or {}
     return {"thread": ts[0], "reply_draft": v.get("reply_draft"), "intent": v.get("intent"), "slots": v.get("slots"),
-            "compliance": v.get("compliance"), "status": v.get("status"), "halt": v.get("halt"),
+            "compliance": v.get("compliance"), "status": v.get("status"), "halt": halt_of(v),
             "pending_approval": bool(snap.tasks and any(x.interrupts for x in snap.tasks)),
             "graph_thread_id": conv_thread(user.id, thread_id)}
 

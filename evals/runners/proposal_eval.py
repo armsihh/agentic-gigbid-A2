@@ -19,6 +19,7 @@ from langgraph.checkpoint.memory import InMemorySaver
 from langgraph.types import Command
 from pydantic import BaseModel, Field
 
+from agent.state import halt_of
 from evals.harness import RESULTS, ROOT, deps, gigsim_world, load_jsonl, reset_gigsim
 
 PERSONAS = ["ai_ml", "web_dev", "data_analysis"]
@@ -117,7 +118,7 @@ async def run_variant(variant: str, picks: list[tuple[str, str]]) -> tuple[dict,
             rows.append({"job_id": job_id, "persona": persona, "error": "; ".join((out or {}).get("errors", []))[:300]})
             continue
         latency = time.perf_counter() - t0
-        row = {"job_id": job_id, "persona": persona, "latency_s": round(latency, 1), "halt": out.get("halt"),
+        row = {"job_id": job_id, "persona": persona, "latency_s": round(latency, 1), "halt": halt_of(out),
                "status": out.get("status"), "action": (out.get("decision") or {}).get("action"),
                "tokens": d.meter.totals()["tokens_in"] + d.meter.totals()["tokens_out"],
                "cost_usd": round(d.meter.totals()["cost_usd"], 6), "errors": out.get("errors", [])}
