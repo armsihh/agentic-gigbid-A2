@@ -55,7 +55,14 @@ async def job_detail(job_id: str, user: User = CurrentUser):
 
 @router.post("/jobs/{job_id}/analyze", response_model=RunStarted)
 async def analyze(job_id: str, request: Request, user: User = CurrentUser):
-    job = tool_json(await runtime.toolbox(user.id, user.persona).call("scout", "get_job", {"job_id": job_id}))
+    try:
+        job = tool_json(await runtime.toolbox(user.id, user.persona).call("scout", "get_job", {"job_id": job_id}))
+    except Exception:  # noqa: BLE001 - e.g. marketplace restarted and the job is not re-released yet
+        job = None
+    if not isinstance(job, dict) or "job_id" not in job:
+        # retry of an analysed job: reuse the job stored in its thread
+        snap = await runtime.graph(user, "bid").aget_state({"configurable": {"thread_id": bid_thread(user.id, job_id)}})
+        job = (snap.values or {}).get("job")
     if not isinstance(job, dict) or "job_id" not in job:
         raise HTTPException(404, "job not found on the marketplace")
     run_id = await request.app.state.runs.start_bid(user, job)

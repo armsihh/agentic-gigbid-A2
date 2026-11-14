@@ -32,8 +32,10 @@ export default function JobPage() {
           {!j.pending_approval && j.has_draft && <Link className="btn" to={`/studio/${id}`}>Open proposal</Link>}
           {["dead_letter", "needs_attention", "queued_marketplace_down"].includes(j.halt ?? "") && (
             <button className="btn primary" onClick={async () => {
-              const r = await must(api.POST("/api/jobs/{job_id}/analyze", { params: { path: { job_id: id } } }));
-              nav(`/runs/${r.run_id}?job=${id}`);
+              try {
+                const r = await must(api.POST("/api/jobs/{job_id}/analyze", { params: { path: { job_id: id } } }));
+                nav(`/runs/${r.run_id}?job=${id}`);
+              } catch (e) { alert(`Retry failed: ${e instanceof Error ? e.message : String(e)}`); }
             }}>Retry analysis</button>)}</div>
       </div>
       {(j.errors ?? []).length > 0 && <div className="banner warn">{(j.errors ?? []).join(" · ")}</div>}
