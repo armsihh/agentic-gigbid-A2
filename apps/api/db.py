@@ -126,6 +126,8 @@ def engine():
         kw: dict[str, Any] = {"pool_pre_ping": True}
         if url.startswith("sqlite"):
             kw["connect_args"] = {"check_same_thread": False}
+            from pathlib import Path
+            Path(url.split("///", 1)[-1]).parent.mkdir(parents=True, exist_ok=True)
         _engine = create_engine(url, **kw)
         _Session = sessionmaker(_engine, expire_on_commit=False)
         Base.metadata.create_all(_engine)

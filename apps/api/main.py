@@ -27,9 +27,10 @@ from apps.api.settings import get_settings
 class PiiFilter(logging.Filter):
     """Mask emails / phones / payment details in every log line (E4)."""
     def filter(self, record: logging.LogRecord) -> bool:
-        record.msg = mask_text(str(record.msg))
-        if record.args:
-            record.args = tuple(mask_text(str(a)) for a in record.args) if isinstance(record.args, tuple) else record.args
+        try:
+            record.msg, record.args = mask_text(record.getMessage()), None   # format first, then mask
+        except (TypeError, ValueError):
+            pass
         return True
 
 

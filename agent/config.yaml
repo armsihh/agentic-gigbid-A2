@@ -121,7 +121,7 @@ pricing_usd_per_mtok:
 budgets:
   max_graph_steps: 30
   max_revisions: 2                  # Critic can send a draft back at most twice
-  max_tokens_per_job: 12000         # exceeding steps or tokens -> thread "needs_attention"
+  max_tokens_per_job: 30000         # measured: ~11k per job without revisions, ~25k with 2 critic loops (was 12000: halted 40%)
   declared:                         # R8: declared budgets, measured in evals/results
     p95_latency_s_per_job_analysed: 20
     p95_latency_s_per_proposal: 60

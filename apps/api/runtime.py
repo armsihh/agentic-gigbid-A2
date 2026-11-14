@@ -105,8 +105,11 @@ class Runtime:
         return self._verifier
 
     def deps(self, user) -> Deps:
-        return Deps(toolbox=self.toolbox(user.id, user.persona), memory=self.memory, verifier=self.verifier(),
-                    profile=persona_profile(user.persona, user.settings))
+        d = Deps(toolbox=self.toolbox(user.id, user.persona), memory=self.memory, verifier=self.verifier(),
+                 profile=persona_profile(user.persona, user.settings))
+        if os.environ.get("GIGBID_FAKE_LLM") == "1":  # UI tests / offline demos: scripted models, no API calls
+            d.model_factory = _fake_models()
+        return d
 
     def graph(self, user, kind: str):
         key = (user.id, kind)
@@ -118,6 +121,27 @@ class Runtime:
     def invalidate(self, user_id: str) -> None:
         self._graphs = {k: v for k, v in self._graphs.items() if k[0] != user_id}
         self._toolboxes = {k: v for k, v in self._toolboxes.items() if not k.startswith(user_id + "@")}
+
+
+def _fake_models():
+    """Deterministic model outputs for UI tests (GIGBID_FAKE_LLM=1). Never used in production."""
+    from agent.testing import FakeModels
+    letter = ("Hi - you need a reliable model added to your existing code. For a UK SaaS helpdesk company I fine-tuned "
+              "a classifier on 38k historical tickets that routed 81% of tickets automatically at 94% precision. I would "
+              "start by reviewing your current pipeline and data, agree the first feature with you, and ship it behind an "
+              "evaluation set so every change is measured before release. I document everything for handover and keep "
+              "you updated with short weekly notes. Could you share a sample of the data and the feature you want first?")
+    return FakeModels({
+        "analyst": [lambda m: {"job_id": "x", "title": "x", "summary": "Add features to an existing model",
+                               "requirements": [{"text": "machine learning model work", "skills": ["Machine Learning"]}]}],
+        "writer": [{"cover_letter": letter, "screening_answers": [],
+                    "claims": [{"text": "fine-tuned a classifier on 38k historical tickets",
+                                "evidence_ids": ["ai_ml-cs-ticket-triage#2"]}]}],
+        "critic": [{"approve": True, "grounding": 5, "personalisation": 4, "length_ok": True}],
+        "intent": [{"intent": "question", "reason": "asks about experience"}],
+        "client_liaison": [{"text": "Thanks for asking! I built a support ticket classifier for a UK SaaS company. "
+                                    "Happy to share more details here.", "proposed_slot_starts": []}],
+    })
 
 
 def _sqlite_store(data: Path):

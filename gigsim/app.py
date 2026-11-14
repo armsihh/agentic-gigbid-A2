@@ -217,6 +217,18 @@ def admin_fast_forward():
     return {"fired": world.fast_forward()}
 
 
+class FaultsIn(BaseModel):
+    error_rate: float = Field(ge=0, le=1)
+    slow_rate: float = Field(0, ge=0, le=1)
+
+
+@app.post("/admin/faults", dependencies=[Depends(admin)])
+def admin_faults(body: FaultsIn):
+    """Simulate an outage (error_rate=1) or flakiness for demos and UI tests."""
+    world.cfg["faults"].update(error_rate=body.error_rate, slow_rate=body.slow_rate)
+    return world.cfg["faults"]
+
+
 @app.post("/admin/reset", dependencies=[Depends(admin)])
 def admin_reset():
     world.reset()

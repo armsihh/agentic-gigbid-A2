@@ -1,3 +1,88 @@
-# TODO: Define web, API, worker, MCP servers, GigSim, Postgres, Redis,
-# vector store and local model service as appropriate.
-services: {}
+# Full GigBid stack:  docker compose -f infra/docker-compose.yml up --build      (UI: http://localhost:8080)
+# Secrets come from ../.env (GROQ_API_KEY, APP_SECRET_KEY, MCP_SIGNING_KEY, REVIEWER_PASSWORD); never committed.
+# Local Ollama for the fully-local open profile:  ... --profile local-llm up   (then MODEL_PROFILE=local in .env)
+
+x-python: &python
+  build: {context: .., dockerfile: infra/docker/python.Dockerfile}
+  image: gigbid-python:latest
+  env_file: ../.env
+  restart: unless-stopped
+
+x-mcp-env: &mcp-env
+  MCP_ALLOWED_HOSTS: mcp-marketplace:8101,mcp-portfolio:8102,mcp-workspace:8103,localhost:8101,localhost:8102,localhost:8103
+  AUDIT_LOG_DIR: /app/data/audit
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment: {POSTGRES_USER: gigbid, POSTGRES_PASSWORD: gigbid, POSTGRES_DB: gigbid}
+    volumes: [pgdata:/var/lib/postgresql/data]
+    healthcheck: {test: ["CMD-SHELL", "pg_isready -U gigbid"], interval: 5s, retries: 20}
+
+  redis:
+    image: redis:7-alpine
+    healthcheck: {test: ["CMD", "redis-cli", "ping"], interval: 5s, retries: 20}
+
+  gigsim:
+    <<: *python
+    command: uvicorn gigsim.app:app --host 0.0.0.0 --port 8081
+    ports: ["8081:8081"]
+    healthcheck: {test: ["CMD", "python", "-c", "import urllib.request;urllib.request.urlopen('http://localhost:8081/health')"], interval: 5s, retries: 30}
+
+  mcp-marketplace:
+    <<: *python
+    command: python -m mcp_servers.marketplace.server --http --host 0.0.0.0 --port 8101
+    environment: {<<: *mcp-env, GIGSIM_BASE_URL: "http://gigsim:8081"}
+    depends_on: {gigsim: {condition: service_healthy}}
+    volumes: [audit:/app/data/audit]
+
+  mcp-portfolio:
+    <<: *python
+    command: python -m mcp_servers.portfolio.server --http --host 0.0.0.0 --port 8102
+    environment: {<<: *mcp-env, RAG_VARIANT: v5_multivector}
+    volumes: [audit:/app/data/audit, portfolio:/app/data/personas]
+
+  mcp-workspace:
+    <<: *python
+    command: python -m mcp_servers.workspace.server --http --host 0.0.0.0 --port 8103
+    environment: {<<: *mcp-env, WORKSPACE_STATE_DIR: /app/data/runtime/workspace}
+    volumes: [audit:/app/data/audit]
+
+  api: &api
+    <<: *python
+    command: uvicorn apps.api.main:app --host 0.0.0.0 --port 8000
+    environment: &api-env
+      DATABASE_URL: postgresql+psycopg://gigbid:gigbid@postgres:5432/gigbid
+      REDIS_URL: redis://redis:6379/0
+      MARKETPLACE_MCP_URL: http://mcp-marketplace:8101/mcp
+      PORTFOLIO_MCP_URL: http://mcp-portfolio:8102/mcp
+      WORKSPACE_MCP_URL: http://mcp-workspace:8103/mcp
+      GIGSIM_BASE_URL: http://gigsim:8081
+      WEB_ORIGIN: http://localhost:8080
+      RAG_VARIANT: v5_multivector
+    ports: ["8000:8000"]
+    volumes: [portfolio:/app/data/personas]
+    depends_on:
+      postgres: {condition: service_healthy}
+      redis: {condition: service_healthy}
+      mcp-marketplace: {condition: service_started}
+      mcp-portfolio: {condition: service_started}
+      mcp-workspace: {condition: service_started}
+
+  worker:
+    <<: *api
+    command: arq worker.main.WorkerSettings
+    ports: []
+
+  web:
+    build: {context: .., dockerfile: infra/docker/web.Dockerfile}
+    ports: ["8080:80"]
+    depends_on: [api]
+
+  ollama:
+    image: ollama/ollama:0.5.4
+    profiles: [local-llm]
+    ports: ["11434:11434"]
+    volumes: [ollama:/root/.ollama]
+
+volumes: {pgdata: {}, audit: {}, portfolio: {}, ollama: {}}

@@ -1,0 +1,39 @@
+# Render Blueprint: one free web service (API + web UI + GigSim) built from infra/docker/all-in-one.Dockerfile.
+# Postgres is Neon (external, free). Secrets marked sync:false are entered in the Render dashboard, never committed.
+services:
+  - type: web
+    name: gigbid
+    runtime: docker
+    plan: free
+    region: virginia            # same region as the Neon database (US East 1)
+    dockerfilePath: infra/docker/all-in-one.Dockerfile
+    dockerContext: .
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: MARKETPLACE_MODE
+        value: gigsim
+      - key: MODEL_PROFILE
+        value: open
+      - key: RAG_VARIANT
+        value: v2_hybrid        # measured: fits 512 MB / 0.1 CPU (docs/adr/0004-production-rag-variant.md)
+      - key: INLINE_SCHEDULER
+        value: "1"
+      - key: SCHEDULER_TICK_S
+        value: "120"
+      - key: REVIEWER_EMAIL
+        value: reviewer@gigbid.dev
+      - key: APP_SECRET_KEY
+        generateValue: true
+      - key: MCP_SIGNING_KEY
+        generateValue: true
+      - key: DATABASE_URL       # Neon connection string (unpooled), entered in the dashboard
+        sync: false
+      - key: GROQ_API_KEY
+        sync: false
+      - key: REVIEWER_PASSWORD
+        sync: false
+      - key: WEB_ORIGIN         # the service URL, e.g. https://gigbid.onrender.com
+        sync: false

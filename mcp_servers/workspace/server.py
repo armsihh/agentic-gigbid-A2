@@ -278,6 +278,12 @@ def main() -> None:
     if a.http:
         server = build_server(http_url=f"http://{a.host}:{a.port}")
         server.settings.host, server.settings.port = a.host, a.port
+        if a.host not in ("127.0.0.1", "localhost"):  # containers: allow the compose service names only
+            from mcp.server.transport_security import TransportSecuritySettings
+            hosts = [h.strip() for h in os.environ.get("MCP_ALLOWED_HOSTS", "").split(",") if h.strip()]
+            server.settings.transport_security = TransportSecuritySettings(
+                enable_dns_rebinding_protection=bool(hosts), allowed_hosts=hosts,
+                allowed_origins=[f"http://{h}" for h in hosts])
         server.run("streamable-http")
     else:
         build_server().run("stdio")

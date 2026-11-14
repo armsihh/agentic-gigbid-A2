@@ -64,9 +64,14 @@ def tool_json(result: Any) -> Any:
 async def structured(deps: Deps, node: str, schema: type[T], system: str, user: str) -> tuple[T, dict]:
     """Call the node's configured model for a Pydantic object. Records tokens/cost/latency for budgets."""
     model = deps.model_factory(node)
-    runnable = model.with_structured_output(schema, include_raw=True)
+    msgs = [("system", system), ("user", user)]
     t0 = time.perf_counter()
-    out = await runnable.ainvoke([("system", system), ("user", user)])
+    try:
+        out = await model.with_structured_output(schema, include_raw=True).ainvoke(msgs)
+        if out.get("parsed") is None:
+            raise ValueError(str(out.get("parsing_error")))
+    except Exception:  # noqa: BLE001 - small models sometimes emit a malformed tool call: retry in JSON-schema mode
+        out = await model.with_structured_output(schema, include_raw=True, method="json_schema").ainvoke(msgs)
     latency = time.perf_counter() - t0
     raw, parsed = out.get("raw"), out.get("parsed")
     if parsed is None:

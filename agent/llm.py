@@ -69,7 +69,8 @@ def chat_model(node: str, profile: str | None = None, **overrides: Any):
         prov = _provider(s.provider)
         return ChatOpenAI(model=s.model, base_url=prov["base_url"], api_key=prov["api_key"],
                           temperature=overrides.get("temperature", s.temperature),
-                          max_tokens=overrides.get("max_tokens", s.max_tokens), timeout=60, max_retries=2)
+                          max_tokens=overrides.get("max_tokens", s.max_tokens), timeout=90,
+                          max_retries=int(os.environ.get("LLM_MAX_RETRIES", "3")))
     return _WithFallback(make(spec), make(spec.fallback) if spec.fallback else None)
 
 
@@ -82,6 +83,8 @@ class _WithFallback:
     def with_structured_output(self, schema, **kw):
         # function calling is the most portable structured-output method across Groq/OpenRouter/Ollama
         kw.setdefault("method", "function_calling")
+        if kw["method"] == "json_schema":
+            kw.setdefault("strict", False)
         p = self.primary.with_structured_output(schema, **kw)
         return p.with_fallbacks([self.fallback.with_structured_output(schema, **kw)]) if self.fallback else p
 
