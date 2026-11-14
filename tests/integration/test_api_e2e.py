@@ -131,3 +131,22 @@ def test_settings_memory_and_health(client):
     assert c.get("/api/memory").json() == []
     h = c.get("/api/health").json()
     assert h["api"] == "ok" and h["marketplace"] == "ok"
+
+
+def test_runs_orphaned_by_a_restart_become_retryable(client):
+    """Render OOM-killed the container mid-run: on the next start the run must not stay 'queued' forever."""
+    from apps.api.db import JobRecord, RunRecord, User, session
+    from apps.api.runs import sweep_orphans
+    signup(client, "orphan@example.com")
+    with session() as s:
+        u = s.query(User).filter_by(email="orphan@example.com").first()
+        tid = f"{u.id}:bid:job-x"
+        s.add(RunRecord(id="run-orphan", user_id=u.id, thread_id=tid, kind="bid", trace_id="tr-x"))
+        s.add(JobRecord(user_id=u.id, thread_id=tid, job_id="job-x", title="x", status="queued"))
+        s.commit()
+    assert sweep_orphans() == 1
+    r = client.get("/api/runs/run-orphan").json()
+    assert r["status"] == "failed" and "restarted" in r["error"]
+    with session() as s:
+        assert s.query(JobRecord).filter_by(thread_id=tid).first().status == "interrupted"
+    assert sweep_orphans() == 0

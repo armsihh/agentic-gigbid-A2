@@ -10,6 +10,7 @@ from __future__ import annotations
 import asyncio
 import contextlib
 import json
+import os
 import time
 import uuid
 from collections import defaultdict
@@ -115,10 +116,29 @@ async def project(user: User, thread_id: str, values: dict, interrupted: bool) -
         s.commit()
 
 
+def sweep_orphans() -> int:
+    """In-process mode: runs live in this process, so after a restart (deploy, out-of-memory) every unfinished run
+    is dead. Mark them failed (the run viewer stops waiting) and their jobs 'interrupted' (the job page offers Retry)."""
+    with session() as s:
+        recs = s.query(RunRecord).filter(RunRecord.status.in_(("queued", "running"))).all()
+        for r in recs:
+            r.status, r.finished_at, r.error = "failed", now(), "interrupted: the server restarted before this run finished"
+            r.events = (r.events or []) + [{"seq": len(r.events or []) + 1, "ts": time.time(), "type": "run",
+                                            "status": "failed", "error": r.error}]
+            j = s.query(JobRecord).filter_by(user_id=r.user_id, thread_id=r.thread_id).first()
+            if j and j.status in ("queued", "running"):
+                j.status = "interrupted"
+        s.commit()
+        return len(recs)
+
+
 class RunManager:
     def __init__(self, runtime) -> None:
         self.rt = runtime
         self.tasks: dict[str, asyncio.Task] = {}
+        # one graph run at a time by default: each run holds embedding models + LLM payloads, and two at once
+        # exceeded the 512 MB free-tier container (Render OOM-killed it mid-run). Extra runs wait their turn.
+        self.slots = asyncio.Semaphore(max(1, int(os.environ.get("MAX_CONCURRENT_RUNS", "1"))))
 
     # ------------------------------------------------------------ entry points (return immediately)
     async def start_bid(self, user: User, job: dict) -> str:
@@ -158,8 +178,12 @@ class RunManager:
                                    payload if not isinstance(payload, Command) else {"__resume__": payload.resume},
                                    _job_id=run_id)
         else:
-            self.tasks[run_id] = asyncio.create_task(self.execute(run_id, user, kind, thread_id, payload))
+            self.tasks[run_id] = asyncio.create_task(self._gated(run_id, user, kind, thread_id, payload))
         return run_id
+
+    async def _gated(self, run_id: str, user: User, kind: str, thread_id: str, payload: Any) -> None:
+        async with self.slots:
+            await self.execute(run_id, user, kind, thread_id, payload)
 
     # ------------------------------------------------------------ execution (API task or worker)
     async def execute(self, run_id: str, user: User, kind: str, thread_id: str, payload: Any) -> None:

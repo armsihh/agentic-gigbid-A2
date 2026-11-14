@@ -30,7 +30,7 @@ export default function JobPage() {
         <div className="row"><StatusBadge status={j.halt ?? j.status ?? "running"} />
           {j.pending_approval && <Link className="btn primary" to={`/studio/${id}`}>Review proposal</Link>}
           {!j.pending_approval && j.has_draft && <Link className="btn" to={`/studio/${id}`}>Open proposal</Link>}
-          {["dead_letter", "needs_attention", "queued_marketplace_down"].includes(j.halt ?? "") && (
+          {["dead_letter", "needs_attention", "queued_marketplace_down", "interrupted"].includes(j.halt ?? "") && (
             <button className="btn primary" onClick={async () => {
               try {
                 const r = await must(api.POST("/api/jobs/{job_id}/analyze", { params: { path: { job_id: id } } }));

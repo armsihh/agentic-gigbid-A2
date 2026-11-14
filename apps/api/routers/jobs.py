@@ -46,11 +46,18 @@ async def job_detail(job_id: str, user: User = CurrentUser):
     v = snap.values or {}
     if not v.get("job"):
         raise HTTPException(404, "job not analysed yet")
-    return JobDetail(job=v["job"], status=v.get("status"), halt=halt_of(v), job_spec=v.get("job_spec"),
+    pending = bool(snap.tasks and any(t.interrupts for t in snap.tasks))
+    halt = halt_of(v)
+    if not halt and not pending:
+        with session() as s:
+            rec = s.query(JobRecord).filter_by(user_id=user.id, job_id=job_id).first()
+            if rec and rec.status == "interrupted":
+                halt = "interrupted"          # its run died with the server (restart / out of memory): retryable
+    return JobDetail(job=v["job"], status=v.get("status"), halt=halt, job_spec=v.get("job_spec"),
                      risk_report=v.get("risk_report"), fit_report=v.get("fit_report"), decision=v.get("decision"),
                      price=v.get("price"), evidence=v.get("evidence") or [], trace=v.get("trace") or [],
                      errors=v.get("errors") or [], has_draft=bool(v.get("draft")),
-                     pending_approval=bool(snap.tasks and any(t.interrupts for t in snap.tasks)))
+                     pending_approval=pending)
 
 
 @router.post("/jobs/{job_id}/analyze", response_model=RunStarted)

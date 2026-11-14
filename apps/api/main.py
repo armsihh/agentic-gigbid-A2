@@ -18,7 +18,7 @@ from fastapi.staticfiles import StaticFiles
 from agent.guardrails.pii import mask_text
 from apps.api.db import User, engine, session
 from apps.api.routers import analytics, approvals, auth, jobs, messages, proposals, runs
-from apps.api.runs import RunManager
+from apps.api.runs import RunManager, sweep_orphans
 from apps.api.runtime import runtime
 from apps.api.scheduler import Scheduler
 from apps.api.settings import get_settings
@@ -60,6 +60,10 @@ async def lifespan(app: FastAPI):
     seed_reviewer()
     await runtime.start()
     app.state.runs = RunManager(runtime)
+    if not get_settings().redis_url:      # with a worker, unfinished runs may still be alive there
+        n = sweep_orphans()
+        if n:
+            logging.getLogger(__name__).warning("marked %d runs interrupted by the last restart as failed", n)
     app.state.scheduler = Scheduler(runtime, app.state.runs, tick_s=float(os.environ.get("SCHEDULER_TICK_S", "60")))
     if not get_settings().redis_url and os.environ.get("INLINE_SCHEDULER", "1") == "1":
         app.state.scheduler.start()      # no worker configured: run the schedule in-process
