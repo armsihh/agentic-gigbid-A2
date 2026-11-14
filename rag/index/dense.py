@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import hashlib
 import os
+from contextlib import contextmanager
 from functools import lru_cache
 from pathlib import Path
 
@@ -19,10 +20,36 @@ PREFIX = {
 }
 
 
+LOW_MEMORY = os.environ.get("EMBED_LOW_MEMORY") == "1"
+
+
+@contextmanager
+def _extended_graph_optimisation():
+    """fastembed hard-codes ORT_ENABLE_ALL, whose layout transforms keep extra weight copies. EXTENDED gives the same
+    vectors (identical to 4 decimals) for ~43 MB less. Only used on the 512 MB host (EMBED_LOW_MEMORY=1)."""
+    import onnxruntime as ort
+    orig = ort.InferenceSession.__init__
+
+    def init(self, path_or_bytes, sess_options=None, *a, **k):
+        if sess_options is not None:
+            sess_options.graph_optimization_level = ort.GraphOptimizationLevel.ORT_ENABLE_EXTENDED
+        orig(self, path_or_bytes, sess_options, *a, **k)
+    ort.InferenceSession.__init__ = init
+    try:
+        yield
+    finally:
+        ort.InferenceSession.__init__ = orig
+
+
 @lru_cache(maxsize=4)
 def _model(name: str):
     from fastembed import TextEmbedding
-    return TextEmbedding(model_name=name)
+    if not LOW_MEMORY:
+        return TextEmbedding(model_name=name)
+    # 512 MB host: no memory arena (it kept every batch's peak allocation: +250 MB live), one thread, EXTENDED graph.
+    # Measured: load 80 MB instead of 123 MB, and memory returns to baseline after each batch.
+    with _extended_graph_optimisation():
+        return TextEmbedding(model_name=name, threads=1, enable_cpu_mem_arena=False)
 
 
 class Embedder:

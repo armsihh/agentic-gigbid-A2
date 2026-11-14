@@ -108,7 +108,8 @@ removed before the Critic sees the draft.
 | Proposals (real graph) | Unsupported / proposal before -> after | Judge (1-5) | GigSim reply rate | p95 s | USD / proposal |
 |---|---|---|---|---|---|
 | V0, gpt-oss-120b writer, 5 proposals [proposal_eval_open_gptoss120b_partial.json] | 0.2 -> 0.0 | 3.0 | 0.20 | 342 | 0.0043 |
-| V0 vs V5, qwen3.8-27b writer [proposal_eval_open_eval.json] | ⟨pending⟩ | ⟨pending⟩ | ⟨pending⟩ | ⟨pending⟩ | ⟨pending⟩ |
+| V0, tiered gpt-oss-120b writer, 5 proposals [proposal_eval_open.json] | 1.0 -> 0.0 | 3.0 | 0.00 | 203 | 0.0027 |
+| V5, same jobs and models, 5 proposals [proposal_eval_open.json] | **0.2** -> 0.0 | **3.2** | 0.00 | 639 | 0.0025 |
 
 **Judge calibration.** 30 proposals labelled by me before seeing the judge; Cohen's kappa 0.392 (quadratic-weighted
 0.717), exact agreement 0.53, within one point 0.87; the judge is about 0.2 points more generous (2.77 vs 2.57)
@@ -122,7 +123,11 @@ the cross-encoder: loading the cross-encoder at `verify` added ~103-137 MB and t
 proposal (found live, reproduced locally, `VERIFIER_RELEVANCE=embedding`). Calibrated on 106 claim/evidence pairs it
 agrees with the cross-encoder on 92.5% of labels and still rejects 98% of claims against unrelated evidence; number
 and tool checks are lexical in both, so a wrong number is always removed. Where
-better retrieval did not translate into a better reply rate: ⟨pending: V0 vs V5 reply rates⟩.
+better retrieval did not translate into a better reply rate: on the same six jobs V5 cut unsupported claims in
+the first draft five-fold (1.0 -> 0.2 per proposal; verification removes the rest either way) and the judge scored it
+slightly higher (3.2 vs 3.0), but simulated reply rate was 0 for both: five proposals per arm is far too few to see
+GigSim's outcome differences, and the Critic asked V5 for more revisions (1.8 vs 0.4), which, with free-tier
+rate-limit waits, tripled p95 latency. Better evidence buys honesty in the first draft, not measurable replies at n=5.
 
 ## 5. R&D question C: single agent vs supervisor vs graph
 

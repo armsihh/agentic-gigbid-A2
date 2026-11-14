@@ -8,11 +8,15 @@ import os
 from pathlib import Path
 
 import httpx
-from dotenv import load_dotenv
+from dotenv import dotenv_values, load_dotenv
 
 ROOT = Path(__file__).resolve().parents[1]
-# override: a stale key exported in the OS environment silently won over .env (every Gemini call 402-ed)
-load_dotenv(ROOT / ".env", override=True)
+load_dotenv(ROOT / ".env")
+# API keys in .env win over the OS environment: a stale GEMINI_API_KEY exported in Windows silently won over .env and
+# every Gemini call 402-ed. Only keys: run settings (MODEL_PROFILE, ...) set on the command line must still win.
+for _k, _v in dotenv_values(ROOT / ".env").items():
+    if _k.endswith("_API_KEY") and _v:
+        os.environ[_k] = _v
 os.environ.setdefault("GIGSIM_ERROR_RATE", "0")
 os.environ.setdefault("GIGSIM_SLOW_RATE", "0")
 os.environ.setdefault("GIGSIM_RPM", "100000")

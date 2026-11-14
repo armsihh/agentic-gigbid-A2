@@ -121,7 +121,7 @@ async def run(limit: int | None, node: str, sets: list[str]) -> dict:
         for t in tasks:
             exp_tool, exp_args = t[name]
             msg, malformed = None, False
-            for attempt in range(8):
+            for attempt in range(60):   # free tier: a daily (TPD) cap frees on a rolling window; wait it out
                 try:
                     msg = await bound.ainvoke([("system", SYSTEM), ("user", t["q"])])
                     break
@@ -129,9 +129,11 @@ async def run(limit: int | None, node: str, sets: list[str]) -> dict:
                     if "parse tool call" in str(e) or "tool_use_failed" in str(e):
                         malformed = True  # the model emitted an invalid tool call: counted as a miss
                         break
-                    if attempt == 7:
+                    if attempt == 59:
                         raise
-                    await asyncio.sleep(_wait_s(str(e), attempt))
+                    w = _wait_s(str(e), attempt)
+                    print(f"  {name}: rate limited, waiting {w:.0f}s", flush=True)
+                    await asyncio.sleep(w)
             if msg is None:
                 from langchain_core.messages import AIMessage
                 msg = AIMessage(content="")
