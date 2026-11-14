@@ -19,11 +19,23 @@ SYN = {"machine learning model": "machine learning", "python scikit-learn": "sci
        "amazon web services": "aws", "microsoft excel": "excel", "google sheets": "sheets"}
 
 
+# Words too generic to prove anything on their own: "development" or "data" appear in almost every portfolio, so
+# they must not earn partial credit (holdout error analysis: they turned off-profile jobs into 0.6-0.8 "fits").
+GENERIC_WORDS = {"development", "developer", "design", "designer", "data", "analysis", "analytics", "web", "website",
+                 "model", "models", "report", "reports", "page", "testing", "management", "marketing", "business",
+                 "software", "application", "app", "apps", "services", "service", "content", "support", "tools",
+                 "integration", "engineering", "online", "digital", "media", "social", "visualization", "mobile"}
+PARTIAL_WEIGHT = 0.5
+# Fit needs PROOF of ability. Past proposals are pitches and carry the CLIENT's skill tags, so they are excluded here
+# (they still inform the Writer's phrasing and outcome memory). Holdout error analysis found this leak.
+PROOF_TYPES = ["case_study", "repo_readme", "repo_code", "cv", "review"]
+
+
 def key_terms(skill: str) -> list[str]:
     s = SYN.get(skill.lower(), skill.lower())
     terms = {s}
     if " " in s:
-        terms |= {w for w in s.split() if len(w) > 3}
+        terms |= {w for w in s.split() if len(w) > 3 and w not in GENERIC_WORDS}
     return sorted(terms, key=len, reverse=True)
 
 
@@ -46,7 +58,8 @@ def make_fit_node(deps: Deps):
 
         async def one(skill: str):
             res = tool_json(await deps.toolbox.call("fit_matcher", "search_evidence",
-                                                    {"requirement": f"{skill} - {job['title'][:80]}", "k": 4}))
+                                                    {"requirement": f"{skill} - {job['title'][:80]}", "k": 6,
+                                                     "types": PROOF_TYPES}))
             return skill, res.get("items", []) if isinstance(res, dict) else []
 
         results = await asyncio.gather(*(one(s) for s in skills))
@@ -61,7 +74,8 @@ def make_fit_node(deps: Deps):
                     evidence.append({k: it.get(k) for k in ("evidence_id", "item_id", "type", "source", "title", "text",
                                                             "date", "outcome", "project")})
         n = len(matches)
-        score = round(sum(1.0 if m.status == "covered" else 0.5 if m.status == "partial" else 0 for m in matches) / n, 3)
+        score = round(sum(1.0 if m.status == "covered" else PARTIAL_WEIGHT if m.status == "partial" else 0
+                          for m in matches) / n, 3)
         rep = FitReport(score=score, matches=matches,
                         matched_skills=[m.requirement for m in matches if m.status == "covered"],
                         missing_skills=[m.requirement for m in matches if m.status == "missing"],

@@ -119,6 +119,11 @@ class ClaimVerifier:
             label, reason = "unsupported", "no evidence supports this claim"
         if missing and len(missing) == len(facts) and facts and best < self.high:
             label, reason = "unsupported", f"specific facts not in any evidence: {', '.join(missing)}"
+        # a number the evidence does not contain is a fabricated result, however relevant the rest of the
+        # sentence is ("routed 99% of tickets" when the evidence says 81%): never keep it
+        numeric_missing = [m for m in missing if re.search(r"\d", m)]
+        if numeric_missing:
+            label, reason = "unsupported", f"number not in the evidence: {', '.join(numeric_missing)}"
         return ClaimCheck(claim=claim, label=label, evidence_ids=[e.evidence_id for e in top], relevance=round(best, 3),
                           missing_facts=missing, reason=reason)
 

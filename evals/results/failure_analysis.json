@@ -1,0 +1,302 @@
+{
+  "counts": {
+    "missed evidence": 98,
+    "wrong bid (fit over-estimated)": 35,
+    "tool error (LLM rate limit)": 25,
+    "wrong skip (risk)": 6,
+    "unsupported claim (caught by verifier)": 1
+  },
+  "examples": {
+    "missed evidence": [
+      {
+        "category": "missed evidence",
+        "persona": "ai_ml",
+        "job_id": "job-02ec590c37",
+        "title": "AI based website",
+        "job_skills": [
+          "Browser Extension",
+          "Web Application",
+          "AI Content Creation",
+          "Artificial Neural Network",
+          "Website"
+        ],
+        "our_fit": 0.0,
+        "gold_fit": 0.5,
+        "gold_evidence": [
+          "whatsapp-bot",
+          "speech-notes",
+          "rag-legal"
+        ],
+        "our_reason": "fit 0.00 < 0.4 (missing: Browser Extension, Web Application, AI Content Creation, Artificial Neural Network)",
+        "gold_skip_reasons": []
+      },
+      {
+        "category": "missed evidence",
+        "persona": "ai_ml",
+        "job_id": "job-06655793a7",
+        "title": "Lead Backend Developer: Long term Engagement",
+        "job_skills": [
+          "Back-End Development",
+          "Software Architecture & Design",
+          "Database Maintenance",
+          "Infrastructure as Code",
+          "Automated Deployment Pipeline",
+          "Web Service"
+        ],
+        "our_fit": 0.188,
+        "gold_fit": 0.562,
+        "gold_evidence": [
+          "resume-parser",
+          "sentiment-urdu",
+          "model-serving"
+        ],
+        "our_reason": "fit 0.19 < 0.4 (missing: Back-End Development, Software Architecture & Design, Database Maintenance, Infrastructure as Code)",
+        "gold_skip_reasons": []
+      },
+      {
+        "category": "missed evidence",
+        "persona": "ai_ml",
+        "job_id": "job-0efd62d8e3",
+        "title": "MATLab coding expert in Finite Element Analysis",
+        "job_skills": [
+          "Data Analysis",
+          "MATLAB",
+          "Artificial Neural Network",
+          "Genetic Algorithm",
+          "Machine Learning",
+          "Artificial Intelligence"
+        ],
+        "our_fit": 0.438,
+        "gold_fit": 0.556,
+        "gold_evidence": [
+          "ticket-triage",
+          "speech-notes",
+          "sentiment-urdu"
+        ],
+        "our_reason": "fit 0.44 is borderline (< 0.55)",
+        "gold_skip_reasons": []
+      },
+      {
+        "category": "missed evidence",
+        "persona": "ai_ml",
+        "job_id": "job-1a6431ee6e",
+        "title": "Snowflake expert needed",
+        "job_skills": [
+          "SQL",
+          "Apache Airflow",
+          "Python",
+          "Snowflake",
+          "JSON",
+          "ETL"
+        ],
+        "our_fit": 0.417,
+        "gold_fit": 0.429,
+        "gold_evidence": [
+          "fraud-anomaly"
+        ],
+        "our_reason": "fit 0.42 is borderline (< 0.55)",
+        "gold_skip_reasons": []
+      }
+    ],
+    "wrong skip (risk)": [
+      {
+        "category": "wrong skip (risk)",
+        "persona": "ai_ml",
+        "job_id": "job-82ee281e0c",
+        "title": "Senior Java Developer",
+        "job_skills": [
+          "Java",
+          "Spring Framework",
+          "Linux"
+        ],
+        "our_fit": 0.0,
+        "gold_fit": 0.4,
+        "gold_evidence": [
+          "whatsapp-bot",
+          "resume-parser"
+        ],
+        "our_reason": "risk 0.85 >= 0.7: off_platform",
+        "gold_skip_reasons": []
+      },
+      {
+        "category": "wrong skip (risk)",
+        "persona": "ai_ml",
+        "job_id": "job-c44bcd5f6d",
+        "title": "Full-time OpenAI expert for complex GPT-3/ChatGPT workflows in Python",
+        "job_skills": [
+          "Python",
+          "API Integration",
+          "Web Application"
+        ],
+        "our_fit": 0.667,
+        "gold_fit": 0.8,
+        "gold_evidence": [
+          "whatsapp-bot",
+          "speech-notes",
+          "resume-parser"
+        ],
+        "our_reason": "risk 0.85 >= 0.7: off_platform",
+        "gold_skip_reasons": []
+      },
+      {
+        "category": "wrong skip (risk)",
+        "persona": "web_dev",
+        "job_id": "job-181f60e0fa",
+        "title": "Website /full stack",
+        "job_skills": [
+          "Web Development",
+          "Web Design",
+          "CSS",
+          "HTML",
+          "JavaScript",
+          "API Integration"
+        ],
+        "our_fit": 0.833,
+        "gold_fit": 0.833,
+        "gold_evidence": [
+          "shopify-custom",
+          "realtime-chat",
+          "inventory-pwa"
+        ],
+        "our_reason": "risk 0.85 >= 0.7: off_platform",
+        "gold_skip_reasons": []
+      },
+      {
+        "category": "wrong skip (risk)",
+        "persona": "web_dev",
+        "job_id": "job-82ee281e0c",
+        "title": "Senior Java Developer",
+        "job_skills": [
+          "Java",
+          "Spring Framework",
+          "Linux"
+        ],
+        "our_fit": 0.0,
+        "gold_fit": 0.5,
+        "gold_evidence": [
+          "shopify-custom",
+          "marketplace-api"
+        ],
+        "our_reason": "risk 0.85 >= 0.7: off_platform",
+        "gold_skip_reasons": []
+      }
+    ],
+    "wrong bid (fit over-estimated)": [
+      {
+        "category": "wrong bid (fit over-estimated)",
+        "persona": "ai_ml",
+        "job_id": "job-6c77b6c01e",
+        "title": "AWS Developer",
+        "job_skills": [
+          "Amazon Web Services",
+          "Amazon",
+          "Amazon Webstore",
+          "Amazon Seller Central",
+          "Amazon FBA"
+        ],
+        "our_fit": 0.7,
+        "gold_fit": 0.2,
+        "gold_evidence": [],
+        "our_reason": "fit 0.70, risk 0.23",
+        "gold_skip_reasons": [
+          "low_fit",
+          "no_evidence"
+        ]
+      },
+      {
+        "category": "wrong bid (fit over-estimated)",
+        "persona": "ai_ml",
+        "job_id": "job-74b5aaa408",
+        "title": "Looking for someone proficient in Machine Learning, Chatbot and Artificial Intelligence.",
+        "job_skills": [
+          "Chatbot Development",
+          "Bot Development",
+          "Machine Learning",
+          "Artificial Intelligence"
+        ],
+        "our_fit": 0.75,
+        "gold_fit": 1.0,
+        "gold_evidence": [],
+        "our_reason": "fit 0.75, risk 0.10",
+        "gold_skip_reasons": [
+          "no_evidence"
+        ]
+      },
+      {
+        "category": "wrong bid (fit over-estimated)",
+        "persona": "ai_ml",
+        "job_id": "job-7f9085f03a",
+        "title": "Senior AI/ML Engineer for Lead Role in Development Agency",
+        "job_skills": [
+          "Chatbot",
+          "Machine Learning",
+          "Artificial Intelligence"
+        ],
+        "our_fit": 1.0,
+        "gold_fit": 1.0,
+        "gold_evidence": [],
+        "our_reason": "fit 1.00, risk 0.00",
+        "gold_skip_reasons": [
+          "no_evidence"
+        ]
+      },
+      {
+        "category": "wrong bid (fit over-estimated)",
+        "persona": "ai_ml",
+        "job_id": "job-871f70258d",
+        "title": "Cadence virtuoso expert with machine learning",
+        "job_skills": [
+          "Machine Learning",
+          "Cadence Platform",
+          "Deep Learning"
+        ],
+        "our_fit": 0.667,
+        "gold_fit": 0.667,
+        "gold_evidence": [],
+        "our_reason": "fit 0.67, risk 0.00",
+        "gold_skip_reasons": [
+          "no_evidence"
+        ]
+      }
+    ],
+    "tool error (LLM rate limit)": [
+      {
+        "category": "tool error (LLM rate limit)",
+        "source": "proposal_eval_open_gptoss120b_partial.json",
+        "variant": "v0_naive",
+        "job_id": "job-0097b3201a",
+        "detail": "writer: OpenAIRateLimitError: Error code: 429 - Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01m3cc41dket6agy459pn7b00d` service tier"
+      },
+      {
+        "category": "tool error (LLM rate limit)",
+        "source": "proposal_eval_open_gptoss120b_partial.json",
+        "variant": "v0_naive",
+        "job_id": "job-2e20ba4fff",
+        "detail": "writer: OpenAIRateLimitError: Error code: 429 - Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01m3cc41dket6agy459pn7b00d` service tier"
+      },
+      {
+        "category": "tool error (LLM rate limit)",
+        "source": "proposal_eval_open_gptoss120b_partial.json",
+        "variant": "v0_naive",
+        "job_id": "job-795a1bdf45",
+        "detail": "writer: OpenAIRateLimitError: Error code: 429 - Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01m3cc41dket6agy459pn7b00d` service tier"
+      },
+      {
+        "category": "tool error (LLM rate limit)",
+        "source": "proposal_eval_open_gptoss120b_partial.json",
+        "variant": "v5_multivector",
+        "job_id": "job-01ce9333d8",
+        "detail": "writer: OpenAIRateLimitError: Error code: 429 - Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01m3cc41dket6agy459pn7b00d` service tier"
+      }
+    ],
+    "unsupported claim (caught by verifier)": [
+      {
+        "category": "unsupported claim (caught by verifier)",
+        "source": "proposal_eval_open_gptoss120b_partial.json",
+        "variant": "v0_naive",
+        "job_id": "job-01239d603b",
+        "detail": "1 removed before critic"
+      }
+    ]
+  }
+}

@@ -33,6 +33,31 @@ class JudgeScore(BaseModel):
     justification: str
 
 
+async def wait_for_quota(min_tokens: int = 30000) -> None:
+    """Free tier: don't start a job (~15-30k tokens) unless the writer model has daily quota left; otherwise it would
+    dead-letter half-way. Probes with a 1-token request and waits in 10-minute steps."""
+    import os
+
+    import httpx
+
+    from agent.llm import spec_for
+    if spec_for("writer").provider != "groq":   # only Groq's free tier has the tight daily cap this guards against
+        return
+    model, key = spec_for("writer").model, os.environ.get("GROQ_API_KEY", "")
+    while True:
+        try:
+            async with httpx.AsyncClient(timeout=30) as c:
+                r = await c.post("https://api.groq.com/openai/v1/chat/completions",
+                                 headers={"Authorization": f"Bearer {key}"},
+                                 json={"model": model, "messages": [{"role": "user", "content": "hi"}], "max_tokens": 1})
+            if r.status_code == 200:
+                return
+        except httpx.HTTPError:
+            pass
+        print(f"  waiting for {model} quota...", flush=True)
+        await asyncio.sleep(600)
+
+
 def pick_jobs(per_persona: int, split: str = "dev") -> list[tuple[str, str]]:
     labels = load_jsonl(ROOT / "evals" / "datasets" / split / "labels.jsonl")
     jobs = {j["job_id"]: j for j in load_jsonl(ROOT / "data" / "gigsim_seed" / "jobs.jsonl")}
@@ -64,16 +89,32 @@ async def run_variant(variant: str, picks: list[tuple[str, str]]) -> tuple[dict,
     gigsim_world.policy["proposals"]["max_open_proposals"] = 1000
     rows, items = [], []
     for persona, job_id in picks:
+        await wait_for_quota()
         d = deps(persona, variant)
         g = build_bid_graph(d, InMemorySaver())
         tid = f"eval-{variant}-{job_id}"
         cfg = {"configurable": {"thread_id": tid}}
         job = dict(gigsim_world.jobs[job_id])
         t0 = time.perf_counter()
-        try:
-            out = await g.ainvoke(initial_state(job, tid, "eval", persona), cfg)
-        except Exception as e:  # noqa: BLE001
-            rows.append({"job_id": job_id, "persona": persona, "error": f"{type(e).__name__}: {e}"[:300]})
+        out = None
+        for attempt in range(6):   # free tier: a daily-cap 429 mid-run dead-letters the thread; wait and redo it
+            tid_a = f"{tid}-{attempt}"
+            cfg = {"configurable": {"thread_id": tid_a}}
+            try:
+                out = await g.ainvoke(initial_state(job, tid_a, "eval", persona), cfg)
+            except Exception as e:  # noqa: BLE001
+                out = {"halt": "dead_letter", "errors": [f"{type(e).__name__}: {e}"]}
+            if out.get("halt") == "dead_letter" and any("429" in x for x in out.get("errors", [])):
+                print(f"  {job_id}: rate limited (daily cap), waiting 15 min then retrying", flush=True)
+                await asyncio.sleep(900)
+                await wait_for_quota()
+                d = deps(persona, variant)
+                g = build_bid_graph(d, InMemorySaver())
+                t0 = time.perf_counter()
+                continue
+            break
+        if out is None or (out.get("halt") == "dead_letter" and not out.get("draft")):
+            rows.append({"job_id": job_id, "persona": persona, "error": "; ".join((out or {}).get("errors", []))[:300]})
             continue
         latency = time.perf_counter() - t0
         row = {"job_id": job_id, "persona": persona, "latency_s": round(latency, 1), "halt": out.get("halt"),
@@ -145,9 +186,12 @@ def main() -> None:
         summaries[v], all_rows[v] = s, rows
         items += its
         print(json.dumps(s, indent=1), flush=True)
-        (RESULTS / "proposal_eval.json").write_text(json.dumps({"summaries": summaries, "rows": all_rows,
+        import os as _os
+        prof = _os.environ.get("MODEL_PROFILE", "open")
+        if any(x.get("proposals") for x in summaries.values()):   # never overwrite results with an empty run
+            (RESULTS / f"proposal_eval_{prof}.json").write_text(json.dumps({"summaries": summaries, "rows": all_rows,
                                                                "jobs": picks}, indent=2), encoding="utf-8")
-        (RESULTS / "judge_items.jsonl").write_text("".join(json.dumps(i) + "\n" for i in items), encoding="utf-8")
+            (RESULTS / f"judge_items_{prof}.jsonl").write_text("".join(json.dumps(i) + "\n" for i in items), encoding="utf-8")
     print(f"wrote {RESULTS / 'proposal_eval.json'}")
 
 

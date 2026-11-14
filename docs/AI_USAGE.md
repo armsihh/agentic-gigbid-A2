@@ -30,3 +30,16 @@ I reviewed, ran and tested every change; I am responsible for all code in this r
    appear (e.g. Celery in `cv-rank-api`), so retrieval evaluation would have silently changed. Caught by reviewing the
    staged diff; fixed by excluding `data/` from ruff, regenerating the corpus, and adding
    `test_implied_skills_survive_in_repo_code`.
+6. **An evaluation sample that flattered the system.** The first decision evaluation sorted bid-worthy jobs first to
+   keep a small sample interesting, and reported bid F1 0.92. On the full holdout it was 0.51. Caught by running the
+   holdout; fixed by evaluating the full splits, then fixing two real leaks found by reading false positives.
+7. **Past proposals used as proof of skill.** The Fit Matcher counted a skill as covered if any retrieved past proposal
+   carried it, but proposals store the *client's* job tags. Fixed by restricting fit evidence to case studies, repos,
+   CV and reviews (precision 0.39 -> 0.83 on dev).
+8. **A fabricated number survived verification.** "Routed 99% of tickets" (evidence: 81%) was kept as "partly
+   supported". Caught by the CI smoke gate; any number missing from the evidence now makes a claim unsupported.
+9. **A report example written from memory.** I first described a wrong-skip case as a Skype contact request; checking
+   the data showed the crypto-payment pattern firing on "Crypto, SSL/TLS, PKI". Every report example is now pulled
+   from `evals/results/failure_analysis.json`.
+10. **Results overwritten by a failed run.** A rate-limited evaluation overwrote a file of good results with an empty
+    run. Runners now write per-profile files and never overwrite with zero completed proposals.

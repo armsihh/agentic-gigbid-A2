@@ -17,11 +17,45 @@ jobs:
       - name: No secrets committed
         run: |
           if git ls-files | grep -E '(^|/)\.env$'; then echo ".env must not be committed"; exit 1; fi
-          if git grep -nE '(gsk_[A-Za-z0-9]{20,}|sk-[A-Za-z0-9]{20,}|ghp_[A-Za-z0-9]{20,}|AKIA[0-9A-Z]{16})' -- ':!*.lock'; then
+          if git grep -nE '(gsk_[A-Za-z0-9]{20,}|sk-[A-Za-z0-9]{20,}|ghp_[A-Za-z0-9]{20,}|hf_[A-Za-z0-9]{20,}|AKIA[0-9A-Z]{16}|npg_[A-Za-z0-9]{8,})' -- ':!*.lock'; then
             echo "possible secret committed"; exit 1; fi
       - name: Prompts live in agent/prompts only
         run: uv run python -m scripts.ci_checks prompts
-      - name: Unit + MCP server tests
+      - name: Simulator unchanged (gigsim/ is frozen)
+        run: uv run python -m scripts.ci_checks gigsim
+      - name: Unit + MCP server + integration tests
         run: uv run pytest -q mcp_servers gigsim tests/unit tests/integration
       - name: Contract (MCP tool-schema snapshots)
         run: uv run pytest -q tests/contract
+
+  web:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          python-version: "3.12"
+      - run: uv sync --frozen
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: apps/web/package-lock.json
+      - run: npm ci
+        working-directory: apps/web
+      - name: Typed client is up to date with the API
+        run: |
+          uv run python -m scripts.export_openapi
+          cd apps/web && npm run gen:api && git diff --exit-code src/lib/api/schema.d.ts
+      - run: npm run typecheck
+        working-directory: apps/web
+      - run: npx playwright install --with-deps chromium
+        working-directory: apps/web
+      - name: Playwright end-to-end tests
+        run: npx playwright test
+        working-directory: apps/web
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report
+          path: apps/web/playwright-report

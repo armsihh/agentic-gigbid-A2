@@ -7,7 +7,7 @@ from pydantic import BaseModel, Field
 
 from agent.guardrails.injection import scan, wrap_untrusted
 from agent.handoffs import Claim, ProposalDraft, ScreeningAnswer
-from agent.nodes.common import Deps, step, structured, tool_json
+from agent.nodes.common import Deps, config, step, structured, tool_json
 from agent.prompts import load_prompt
 
 
@@ -43,7 +43,9 @@ def make_writer_node(deps: Deps):
         style = deps.memory.style_rules(user_id) if deps.memory else []
         insights = deps.memory.outcome_insights(user_id, job.get("category")) if deps.memory else []
         crit = (state.get("critiques") or [])[-1:] if state.get("revisions") else []
+        ln = config()["compliance"]["proposal_length"]
         system = load_prompt("writer").render(
+            length_rule=f"{ln['min_words']}-{ln['max_words']} words and at most {ln['max_chars']} characters for the cover letter.",
             style_rules=("Style rules learned from this freelancer's edits:\n" + "\n".join(f"- {r['rule']}" for r in style))
             if style else "",
             outcome_insights=("What has worked for this freelancer:\n" + "\n".join(f"- {i['insight']}" for i in insights))

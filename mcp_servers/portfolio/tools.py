@@ -70,6 +70,9 @@ def to_item(c: Chunk, score: float | None = None) -> EvidenceItem:
 class PortfolioStore:
     def __init__(self, root: str | Path | None = None, variant: str | None = None):
         self.root = Path(root or os.environ.get("PORTFOLIO_DIR", ROOT / "data" / "personas"))
+        if not self.root.is_dir():
+            raise SystemExit(f"Portfolio folder not found: {self.root}. Set PORTFOLIO_DIR to a folder containing one "
+                             "sub-folder per freelancer (see mcp_servers/portfolio/README.md for the layout).")
         self.variant = variant or os.environ.get("RAG_VARIANT") or _config_variant()
         self._lock = threading.Lock()
         self._mtime = -1.0

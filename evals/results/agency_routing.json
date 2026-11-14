@@ -1,0 +1,2188 @@
+{
+  "jobs": 150,
+  "variant": "v2_hybrid",
+  "routing_accuracy": {
+    "chosen": 0.773,
+    "category_baseline": 0.673,
+    "random_baseline": 0.267
+  },
+  "accuracy_when_someone_should_bid": {
+    "chosen": 0.71,
+    "category_baseline": 0.91,
+    "random_baseline": 0.4
+  },
+  "no_member_when_nobody_should_bid": {
+    "chosen": 0.9,
+    "category_baseline": 0.2,
+    "random_baseline": 0.0
+  },
+  "rows": [
+    {
+      "job_id": "job-0097b3201a",
+      "gold": [
+        "web_dev"
+      ],
+      "chosen": "web_dev",
+      "reason": "web_dev: fit 0.67 (2 requirements covered) vs next 0.00",
+      "category_baseline": "web_dev",
+      "random_baseline": "web_dev",
+      "fits": {
+        "web_dev": 0.667,
+        "ai_ml": 0.0,
+        "data_analysis": 0.0
+      }
+    },
+    {
+      "job_id": "job-01239d603b",
+      "gold": [
+        "data_analysis"
+      ],
+      "chosen": "data_analysis",
+      "reason": "data_analysis: fit 0.75 (3 requirements covered) vs next 0.50",
+      "category_baseline": "data_analysis",
+      "random_baseline": "ai_ml",
+      "fits": {
+        "data_analysis": 0.75,
+        "ai_ml": 0.5,
+        "web_dev": 0.25
+      }
+    },
+    {
+      "job_id": "job-01ce9333d8",
+      "gold": [
+        "ai_ml"
+      ],
+      "chosen": "ai_ml",
+      "reason": "ai_ml: fit 0.62 (5 requirements covered) vs next 0.44",
+      "category_baseline": "ai_ml",
+      "random_baseline": "data_analysis",
+      "fits": {
+        "ai_ml": 0.625,
+        "data_analysis": 0.438,
+        "web_dev": 0.375
+      }
+    },
+    {
+      "job_id": "job-02ec590c37",
+      "gold": [
+        "ai_ml",
+        "web_dev"
+      ],
+      "chosen": null,
+      "reason": "no member reaches bid-level fit 0.55 at an acceptable rate (best web_dev 0.25)",
+      "category_baseline": "ai_ml",
+      "random_baseline": "data_analysis",
+      "fits": {
+        "web_dev": 0.25,
+        "data_analysis": 0.125,
+        "ai_ml": 0.0
+      }
+    },
+    {
+      "job_id": "job-038e6c6c5b",
+      "gold": [
+        "ai_ml",
+        "web_dev"
+      ],
+      "chosen": "ai_ml",
+      "reason": "ai_ml: fit 0.67 (4 requirements covered) vs next 0.58",
+      "category_baseline": "ai_ml",
+      "random_baseline": "ai_ml",
+      "fits": {
+        "ai_ml": 0.667,
+        "web_dev": 0.583,
+        "data_analysis": 0.25
+      }
+    },
+    {
+      "job_id": "job-04c69519a0",
+      "gold": [
+        "ai_ml"
+      ],
+      "chosen": "ai_ml",
+      "reason": "ai_ml: fit 0.69 (5 requirements covered) vs next 0.25",
+      "category_baseline": "ai_ml",
+      "random_baseline": "data_analysis",
+      "fits": {
+        "ai_ml": 0.688,
+        "data_analysis": 0.25,
+        "web_dev": 0.125
+      }
+    },
+    {
+      "job_id": "job-058b4d54c2",
+      "gold": [
+        "web_dev"
+      ],
+      "chosen": null,
+      "reason": "no member reaches bid-level fit 0.55 at an acceptable rate (best web_dev 0.43)",
+      "category_baseline": "web_dev",
+      "random_baseline": "ai_ml",
+      "fits": {
+        "web_dev": 0.429,
+        "ai_ml": 0.286,
+        "data_analysis": 0.143
+      }
+    },
+    {
+      "job_id": "job-0613b54e7e",
+      "gold": [
+        "data_analysis"
+      ],
+      "chosen": "data_analysis",
+      "reason": "data_analysis: fit 0.88 (7 requirements covered) vs next 0.44",
+      "category_baseline": "data_analysis",
+      "random_baseline": "data_analysis",
+      "fits": {
+        "data_analysis": 0.875,
+        "ai_ml": 0.438,
+        "web_dev": 0.25
+      }
+    },
+    {
+      "job_id": "job-06655793a7",
+      "gold": [
+        "ai_ml",
+        "web_dev"
+      ],
+      "chosen": null,
+      "reason": "no member reaches bid-level fit 0.55 at an acceptable rate (best web_dev 0.25)",
+      "category_baseline": "ai_ml",
+      "random_baseline": "ai_ml",
+      "fits": {
+        "web_dev": 0.25,
+        "ai_ml": 0.188,
+        "data_analysis": 0.188
+      }
+    },
+    {
+      "job_id": "job-0d59d57067",
+      "gold": [
+        "ai_ml",
+        "web_dev"
+      ],
+      "chosen": "web_dev",
+      "reason": "web_dev: fit 0.83 (5 requirements covered) vs next 0.67",
+      "category_baseline": "ai_ml",
+      "random_baseline": "web_dev",
+      "fits": {
+        "web_dev": 0.833,
+        "ai_ml": 0.667,
+        "data_analysis": 0.25
+      }
+    },
+    {
+      "job_id": "job-0efd62d8e3",
+      "gold": [
+        "ai_ml"
+      ],
+      "chosen": null,
+      "reason": "no member reaches bid-level fit 0.55 at an acceptable rate (best ai_ml 0.44)",
+      "category_baseline": "ai_ml",
+      "random_baseline": "data_analysis",
+      "fits": {
+        "ai_ml": 0.438,
+        "data_analysis": 0.25,
+        "web_dev": 0.062
+      }
+    },
+    {
+      "job_id": "job-0f3dc7453b",
+      "gold": [
+        "data_analysis"
+      ],
+      "chosen": "data_analysis",
+      "reason": "data_analysis: fit 0.94 (7 requirements covered) vs next 0.38",
+      "category_baseline": "data_analysis",
+      "random_baseline": "data_analysis",
+      "fits": {
+        "data_analysis": 0.938,
+        "web_dev": 0.375,
+        "ai_ml": 0.125
+      }
+    },
+    {
+      "job_id": "job-103c94e4d7",
+      "gold": [
+        "web_dev"
+      ],
+      "chosen": null,
+      "reason": "no member reaches bid-level fit 0.55 at an acceptable rate (best ai_ml 0.25)",
+      "category_baseline": "web_dev",
+      "random_baseline": "web_dev",
+      "fits": {
+        "ai_ml": 0.25,
+        "web_dev": 0.25,
+        "data_analysis": 0.062
+      }
+    },
+    {
+      "job_id": "job-10fd913f15",
+      "gold": [
+        "data_analysis"
+      ],
+      "chosen": null,
+      "reason": "no member reaches bid-level fit 0.55 at an acceptable rate (best data_analysis 0.50)",
+      "category_baseline": "data_analysis",
+      "random_baseline": "web_dev",
+      "fits": {
+        "data_analysis": 0.5,
+        "web_dev": 0.375,
+        "ai_ml": 0.312
+      }
+    },
+    {
+      "job_id": "job-12d5fef1d9",
+      "gold": [
+        "data_analysis"
+      ],
+      "chosen": null,
+      "reason": "no member reaches bid-level fit 0.55 at an acceptable rate (best data_analysis 0.50)",
+      "category_baseline": "data_analysis",
+      "random_baseline": "web_dev",
+      "fits": {
+        "data_analysis": 0.5,
+        "ai_ml": 0.25,
+        "web_dev": 0.0
+      }
+    },
+    {
+      "job_id": "job-1516450ca3",
+      "gold": [
+        "ai_ml"
+      ],
+      "chosen": "ai_ml",
+      "reason": "ai_ml: fit 0.69 (5 requirements covered) vs next 0.31",
+      "category_baseline": "ai_ml",
+      "random_baseline": "data_analysis",
+      "fits": {
+        "ai_ml": 0.688,
+        "web_dev": 0.312,
+        "data_analysis": 0.25
+      }
+    },
+    {
+      "job_id": "job-17083bf130",
+      "gold": [
+        "ai_ml"
+      ],
+      "chosen": "ai_ml",
+      "reason": "ai_ml: fit 1.00 (4 requirements covered) vs next 0.38",
+      "category_baseline": "ai_ml",
+      "random_baseline": "web_dev",
+      "fits": {
+        "ai_ml": 1.0,
+        "data_analysis": 0.375,
+        "web_dev": 0.125
+      }
+    },
+    {
+      "job_id": "job-181f60e0fa",
+      "gold": [
+        "web_dev"
+      ],
+      "chosen": "web_dev",
+      "reason": "web_dev: fit 0.83 (5 requirements covered) vs next 0.17",
+      "category_baseline": "web_dev",
+      "random_baseline": "web_dev",
+      "fits": {
+        "web_dev": 0.833,
+        "ai_ml": 0.167,
+        "data_analysis": 0.0
+      }
+    },
+    {
+      "job_id": "job-19607ca612",
+      "gold": [
+        "data_analysis"
+      ],
+      "chosen": "data_analysis",
+      "reason": "data_analysis: fit 0.60 (3 requirements covered) vs next 0.10",
+      "category_baseline": "data_analysis",
+      "random_baseline": "web_dev",
+      "fits": {
+        "data_analysis": 0.6,
+        "ai_ml": 0.1,
+        "web_dev": 0.0
+      }
+    },
+    {
+      "job_id": "job-196e0e0359",
+      "gold": [
+        "ai_ml"
+      ],
+      "chosen": "ai_ml",
+      "reason": "ai_ml: fit 1.00 (3 requirements covered) vs next 0.50",
+      "category_baseline": "ai_ml",
+      "random_baseline": "ai_ml",
+      "fits": {
+        "ai_ml": 1.0,
+        "data_analysis": 0.5,
+        "web_dev": 0.167
+      }
+    },
+    {
+      "job_id": "job-1a464fb7aa",
+      "gold": [
+        "data_analysis"
+      ],
+      "chosen": "data_analysis",
+      "reason": "data_analysis: fit 0.83 (2 requirements covered) vs next 0.33",
+      "category_baseline": "data_analysis",
+      "random_baseline": "ai_ml",
+      "fits": {
+        "data_analysis": 0.833,
+        "web_dev": 0.333,
+        "ai_ml": 0.167
+      }
+    },
+    {
+      "job_id": "job-1a6431ee6e",
+      "gold": [
+        "ai_ml"
+      ],
+      "chosen": null,
+      "reason": "no member reaches bid-level fit 0.55 at an acceptable rate (best ai_ml 0.42)",
+      "category_baseline": "data_analysis",
+      "random_baseline": "data_analysis",
+      "fits": {
+        "ai_ml": 0.417,
+        "data_analysis": 0.333,
+        "web_dev": 0.167
+      }
+    },
+    {
+      "job_id": "job-1a70e5a858",
+      "gold": [
+        "ai_ml",
+        "web_dev"
+      ],
+      "chosen": "web_dev",
+      "reason": "web_dev: fit 1.00 (6 requirements covered) vs next 0.33",
+      "category_baseline": "web_dev",
+      "random_baseline": "ai_ml",
+      "fits": {
+        "web_dev": 1.0,
+        "ai_ml": 0.333,
+        "data_analysis": 0.167
+      }
+    },
+    {
+      "job_id": "job-1bc3b6928c",
+      "gold": [
+        "ai_ml"
+      ],
+      "chosen": "ai_ml",
+      "reason": "ai_ml: fit 1.00 (3 requirements covered) vs next 0.17",
+      "category_baseline": "ai_ml",
+      "random_baseline": "ai_ml",
+      "fits": {
+        "ai_ml": 1.0,
+        "web_dev": 0.167,
+        "data_analysis": 0.167
+      }
+    },
+    {
+      "job_id": "job-1c052817d0",
+      "gold": [
+        "ai_ml",
+        "data_analysis"
+      ],
+      "chosen": "data_analysis",
+      "reason": "data_analysis: fit 0.62 (5 requirements covered) vs next 0.50",
+      "category_baseline": "ai_ml",
+      "random_baseline": "data_analysis",
+      "fits": {
+        "data_analysis": 0.625,
+        "ai_ml": 0.5,
+        "web_dev": 0.312
+      }
+    },
+    {
+      "job_id": "job-1cbaf80a9c",
+      "gold": [
+        "ai_ml"
+      ],
+      "chosen": "ai_ml",
+      "reason": "ai_ml: fit 1.00 (3 requirements covered) vs next 0.50",
+      "category_baseline": "ai_ml",
+      "random_baseline": "web_dev",
+      "fits": {
+        "ai_ml": 1.0,
+        "web_dev": 0.5,
+        "data_analysis": 0.5
+      }
+    },
+    {
+      "job_id": "job-1dd414bb47",
+      "gold": [
+        "ai_ml"
+      ],
+      "chosen": "ai_ml",
+      "reason": "ai_ml: fit 0.88 (3 requirements covered) vs next 0.50",
+      "category_baseline": "ai_ml",
+      "random_baseline": "data_analysis",
+      "fits": {
+        "ai_ml": 0.875,
+        "data_analysis": 0.5,
+        "web_dev": 0.375
+      }
+    },
+    {
+      "job_id": "job-1e1d77352e",
+      "gold": [
+        "ai_ml",
+        "data_analysis"
+      ],
+      "chosen": null,
+      "reason": "no member reaches bid-level fit 0.55 at an acceptable rate (best ai_ml 0.25)",
+      "category_baseline": "data_analysis",
+      "random_baseline": "web_dev",
+      "fits": {
+        "ai_ml": 0.25,
+        "data_analysis": 0.25,
+        "web_dev": 0.0
+      }
+    },
+    {
+      "job_id": "job-2058bb8adf",
+      "gold": [
+        "data_analysis"
+      ],
+      "chosen": null,
+      "reason": "no member reaches bid-level fit 0.55 at an acceptable rate (best data_analysis 0.50)",
+      "category_baseline": "data_analysis",
+      "random_baseline": "web_dev",
+      "fits": {
+        "data_analysis": 0.5,
+        "ai_ml": 0.375,
+        "web_dev": 0.25
+      }
+    },
+    {
+      "job_id": "job-22fab72898",
+      "gold": [
+        "ai_ml"
+      ],
+      "chosen": "ai_ml",
+      "reason": "ai_ml: fit 0.90 (4 requirements covered) vs next 0.50",
+      "category_baseline": "ai_ml",
+      "random_baseline": "data_analysis",
+      "fits": {
+        "ai_ml": 0.9,
+        "data_analysis": 0.5,
+        "web_dev": 0.4
+      }
+    },
+    {
+      "job_id": "job-23761c9302",
+      "gold": [
+        "ai_ml"
+      ],
+      "chosen": "ai_ml",
+      "reason": "ai_ml: fit 1.00 (3 requirements covered) vs next 0.50",
+      "category_baseline": "ai_ml",
+      "random_baseline": "web_dev",
+      "fits": {
+        "ai_ml": 1.0,
+        "data_analysis": 0.5,
+        "web_dev": 0.333
+      }
+    },
+    {
+      "job_id": "job-2ac9a44102",
+      "gold": [
+        "ai_ml"
+      ],
+      "chosen": "ai_ml",
+      "reason": "ai_ml: fit 0.69 (4 requirements covered) vs next 0.12",
+      "category_baseline": "ai_ml",
+      "random_baseline": "web_dev",
+      "fits": {
+        "ai_ml": 0.688,
+        "web_dev": 0.125,
+        "data_analysis": 0.125
+      }
+    },
+    {
+      "job_id": "job-2be4d14f34",
+      "gold": [
+        "ai_ml",
+        "web_dev"
+      ],
+      "chosen": "ai_ml",
+      "reason": "ai_ml: fit 0.62 (5 requirements covered) vs next 0.50",
+      "category_baseline": "data_analysis",
+      "random_baseline": "data_analysis",
+      "fits": {
+        "ai_ml": 0.625,
+        "web_dev": 0.5,
+        "data_analysis": 0.25
+      }
+    },
+    {
+      "job_id": "job-2bf90d5cc4",
+      "gold": [
+        "ai_ml"
+      ],
+      "chosen": "ai_ml",
+      "reason": "ai_ml: fit 0.75 (3 requirements covered) vs next 0.62",
+      "category_baseline": "ai_ml",
+      "random_baseline": "ai_ml",
+      "fits": {
+        "ai_ml": 0.75,
+        "web_dev": 0.625,
+        "data_analysis": 0.375
+      }
+    },
+    {
+      "job_id": "job-2cece4ba16",
+      "gold": [
+        "data_analysis"
+      ],
+      "chosen": "data_analysis",
+      "reason": "data_analysis: fit 0.88 (7 requirements covered) vs next 0.25",
+      "category_baseline": "data_analysis",
+      "random_baseline": "ai_ml",
+      "fits": {
+        "data_analysis": 0.875,
+        "ai_ml": 0.25,
+        "web_dev": 0.25
+      }
+    },
+    {
+      "job_id": "job-2e20ba4fff",
+      "gold": [
+        "data_analysis"
+      ],
+      "chosen": null,
+      "reason": "no member reaches bid-level fit 0.55 at an acceptable rate (best data_analysis 0.33)",
+      "category_baseline": "data_analysis",
+      "random_baseline": "data_analysis",
+      "fits": {
+        "data_analysis": 0.333,
+        "ai_ml": 0.0,
+        "web_dev": 0.0
+      }
+    },
+    {
+      "job_id": "job-2e37648bb5",
+      "gold": [
+        "ai_ml"
+      ],
+      "chosen": "ai_ml",
+      "reason": "ai_ml: fit 0.80 (4 requirements covered) vs next 0.30",
+      "category_baseline": "ai_ml",
+      "random_baseline": "web_dev",
+      "fits": {
+        "ai_ml": 0.8,
+        "data_analysis": 0.3,
+        "web_dev": 0.1
+      }
+    },
+    {
+      "job_id": "job-2e6ad9524a",
+      "gold": [
+        "ai_ml"
+      ],
+      "chosen": "ai_ml",
+      "reason": "ai_ml: fit 0.80 (4 requirements covered) vs next 0.40",
+      "category_baseline": "ai_ml",
+      "random_baseline": "ai_ml",
+      "fits": {
+        "ai_ml": 0.8,
+        "web_dev": 0.4,
+        "data_analysis": 0.2
+      }
+    },
+    {
+      "job_id": "job-300f744cf0",
+      "gold": [
+        "data_analysis"
+      ],
+      "chosen": "data_analysis",
+      "reason": "data_analysis: fit 1.00 (6 requirements covered) vs next 0.33",
+      "category_baseline": "data_analysis",
+      "random_baseline": "web_dev",
+      "fits": {
+        "data_analysis": 1.0,
+        "web_dev": 0.333,
+        "ai_ml": 0.0
+      }
+    },
+    {
+      "job_id": "job-306eb9e67f",
+      "gold": [
+        "web_dev"
+      ],
+      "chosen": null,
+      "reason": "no member reaches bid-level fit 0.55 at an acceptable rate (best web_dev 0.40)",
+      "category_baseline": "web_dev",
+      "random_baseline": "ai_ml",
+      "fits": {
+        "web_dev": 0.4,
+        "ai_ml": 0.2,
+        "data_analysis": 0.2
+      }
+    },
+    {
+      "job_id": "job-31e659ff83",
+      "gold": [
+        "ai_ml"
+      ],
+      "chosen": null,
+      "reason": "no member reaches bid-level fit 0.55 at an acceptable rate (best ai_ml 0.50)",
+      "category_baseline": "ai_ml",
+      "random_baseline": "web_dev",
+      "fits": {
+        "ai_ml": 0.5,
+        "web_dev": 0.5,
+        "data_analysis": 0.25
+      }
+    },
+    {
+      "job_id": "job-31f0c1ada9",
+      "gold": [
+        "web_dev"
+      ],
+      "chosen": "web_dev",
+      "reason": "web_dev: fit 0.70 (3 requirements covered) vs next 0.30",
+      "category_baseline": "web_dev",
+      "random_baseline": "web_dev",
+      "fits": {
+        "web_dev": 0.7,
+        "ai_ml": 0.3,
+        "data_analysis": 0.0
+      }
+    },
+    {
+      "job_id": "job-35bea578bf",
+      "gold": [
+        "ai_ml"
+      ],
+      "chosen": "ai_ml",
+      "reason": "ai_ml: fit 0.75 (5 requirements covered) vs next 0.19",
+      "category_baseline": "ai_ml",
+      "random_baseline": "ai_ml",
+      "fits": {
+        "ai_ml": 0.75,
+        "web_dev": 0.188,
+        "data_analysis": 0.062
+      }
+    },
+    {
+      "job_id": "job-372de37f8a",
+      "gold": [
+        "ai_ml"
+      ],
+      "chosen": "ai_ml",
+      "reason": "ai_ml: fit 0.69 (5 requirements covered) vs next 0.25",
+      "category_baseline": "ai_ml",
+      "random_baseline": "data_analysis",
+      "fits": {
+        "ai_ml": 0.688,
+        "data_analysis": 0.25,
+        "web_dev": 0.0
+      }
+    },
+    {
+      "job_id": "job-37b87b9c39",
+      "gold": [
+        "ai_ml"
+      ],
+      "chosen": "ai_ml",
+      "reason": "ai_ml: fit 0.75 (3 requirements covered) vs next 0.38",
+      "category_baseline": "ai_ml",
+      "random_baseline": "ai_ml",
+      "fits": {
+        "ai_ml": 0.75,
+        "web_dev": 0.375,
+        "data_analysis": 0.375
+      }
+    },
+    {
+      "job_id": "job-38a75da47c",
+      "gold": [
+        "web_dev"
+      ],
+      "chosen": null,
+      "reason": "no member reaches bid-level fit 0.55 at an acceptable rate (best web_dev 0.38)",
+      "category_baseline": "web_dev",
+      "random_baseline": "data_analysis",
+      "fits": {
+        "web_dev": 0.375,
+        "ai_ml": 0.312,
+        "data_analysis": 0.0
+      }
+    },
+    {
+      "job_id": "job-38c9d5e7ba",
+      "gold": [
+        "ai_ml"
+      ],
+      "chosen": null,
+      "reason": "no member reaches bid-level fit 0.55 at an acceptable rate (best ai_ml 0.50)",
+      "category_baseline": "ai_ml",
+      "random_baseline": "data_analysis",
+      "fits": {
+        "ai_ml": 0.5,
+        "data_analysis": 0.375,
+        "web_dev": 0.0
+      }
+    },
+    {
+      "job_id": "job-3947fbe5d1",
+      "gold": [
+        "ai_ml"
+      ],
+      "chosen": "ai_ml",
+      "reason": "ai_ml: fit 0.75 (5 requirements covered) vs next 0.31",
+      "category_baseline": "ai_ml",
+      "random_baseline": "web_dev",
+      "fits": {
+        "ai_ml": 0.75,
+        "data_analysis": 0.312,
+        "web_dev": 0.25
+      }
+    },
+    {
+      "job_id": "job-3a1ca5f097",
+      "gold": [
+        "data_analysis"
+      ],
+      "chosen": "data_analysis",
+      "reason": "data_analysis: fit 0.62 (5 requirements covered) vs next 0.31",
+      "category_baseline": "ai_ml",
+      "random_baseline": "web_dev",
+      "fits": {
+        "data_analysis": 0.625,
+        "ai_ml": 0.312,
+        "web_dev": 0.25
+      }
+    },
+    {
+      "job_id": "job-3ae59b8128",
+      "gold": [
+        "ai_ml"
+      ],
+      "chosen": null,
+      "reason": "no member reaches bid-level fit 0.55 at an acceptable rate (best data_analysis 0.50)",
+      "category_baseline": "ai_ml",
+      "random_baseline": "data_analysis",
+      "fits": {
+        "data_analysis": 0.5,
+        "ai_ml": 0.333,
+        "web_dev": 0.0
+      }
+    },
+    {
+      "job_id": "job-3c6f3652e5",
+      "gold": [
+        "web_dev"
+      ],
+      "chosen": null,
+      "reason": "no member reaches bid-level fit 0.55 at an acceptable rate (best web_dev 0.40)",
+      "category_baseline": "web_dev",
+      "random_baseline": "web_dev",
+      "fits": {
+        "web_dev": 0.4,
+        "ai_ml": 0.2,
+        "data_analysis": 0.2
+      }
+    },
+    {
+      "job_id": "job-3dd6c8adfd",
+      "gold": [
+        "data_analysis"
+      ],
+      "chosen": "data_analysis",
+      "reason": "data_analysis: fit 0.75 (3 requirements covered) vs next 0.25",
+      "category_baseline": "data_analysis",
+      "random_baseline": "data_analysis",
+      "fits": {
+        "data_analysis": 0.75,
+        "ai_ml": 0.25,
+        "web_dev": 0.0
+      }
+    },
+    {
+      "job_id": "job-3df160f4c5",
+      "gold": [
+        "ai_ml"
+      ],
+      "chosen": "ai_ml",
+      "reason": "ai_ml: fit 0.57 (4 requirements covered) vs next 0.29",
+      "category_baseline": "ai_ml",
+      "random_baseline": "web_dev",
+      "fits": {
+        "ai_ml": 0.571,
+        "web_dev": 0.286,
+        "data_analysis": 0.286
+      }
+    },
+    {
+      "job_id": "job-3df391cf62",
+      "gold": [
+        "data_analysis"
+      ],
+      "chosen": null,
+      "reason": "no member reaches bid-level fit 0.55 at an acceptable rate (best data_analysis 0.50)",
+      "category_baseline": "data_analysis",
+      "random_baseline": "data_analysis",
+      "fits": {
+        "data_analysis": 0.5,
+        "ai_ml": 0.286,
+        "web_dev": 0.143
+      }
+    },
+    {
+      "job_id": "job-427deacc52",
+      "gold": [
+        "data_analysis"
+      ],
+      "chosen": "data_analysis",
+      "reason": "data_analysis: fit 0.60 (3 requirements covered) vs next 0.20",
+      "category_baseline": "data_analysis",
+      "random_baseline": "web_dev",
+      "fits": {
+        "data_analysis": 0.6,
+        "ai_ml": 0.2,
+        "web_dev": 0.0
+      }
+    },
+    {
+      "job_id": "job-45918030cb",
+      "gold": [
+        "ai_ml"
+      ],
+      "chosen": "ai_ml",
+      "reason": "ai_ml: fit 1.00 (3 requirements covered) vs next 0.67",
+      "category_baseline": "ai_ml",
+      "random_baseline": "ai_ml",
+      "fits": {
+        "ai_ml": 1.0,
+        "web_dev": 0.667,
+        "data_analysis": 0.0
+      }
+    },
+    {
+      "job_id": "job-4660b50530",
+      "gold": [
+        "ai_ml"
+      ],
+      "chosen": "ai_ml",
+      "reason": "ai_ml: fit 0.86 (6 requirements covered) vs next 0.43",
+      "category_baseline": "ai_ml",
+      "random_baseline": "ai_ml",
+      "fits": {
+        "ai_ml": 0.857,
+        "web_dev": 0.429,
+        "data_analysis": 0.286
+      }
+    },
+    {
+      "job_id": "job-46f7dc87ac",
+      "gold": [
+        "web_dev"
+      ],
+      "chosen": "web_dev",
+      "reason": "web_dev: fit 1.00 (2 requirements covered) vs next 0.50",
+      "category_baseline": "data_analysis",
+      "random_baseline": "web_dev",
+      "fits": {
+        "web_dev": 1.0,
+        "ai_ml": 0.5,
+        "data_analysis": 0.0
+      }
+    },
+    {
+      "job_id": "job-47518e60b9",
+      "gold": [
+        "ai_ml"
+      ],
+      "chosen": "ai_ml",
+      "reason": "ai_ml: fit 0.83 (5 requirements covered) vs next 0.33",
+      "category_baseline": "ai_ml",
+      "random_baseline": "web_dev",
+      "fits": {
+        "ai_ml": 0.833,
+        "web_dev": 0.333,
+        "data_analysis": 0.333
+      }
+    },
+    {
+      "job_id": "job-47e2165278",
+      "gold": [
+        "ai_ml",
+        "web_dev"
+      ],
+      "chosen": "web_dev",
+      "reason": "web_dev: fit 0.56 (4 requirements covered) vs next 0.50",
+      "category_baseline": "ai_ml",
+      "random_baseline": "data_analysis",
+      "fits": {
+        "web_dev": 0.562,
+        "ai_ml": 0.5,
+        "data_analysis": 0.125
+      }
+    },
+    {
+      "job_id": "job-494dc0d2d7",
+      "gold": [
+        "web_dev"
+      ],
+      "chosen": "web_dev",
+      "reason": "web_dev: fit 0.60 (2 requirements covered) vs next 0.30",
+      "category_baseline": "web_dev",
+      "random_baseline": "data_analysis",
+      "fits": {
+        "web_dev": 0.6,
+        "ai_ml": 0.3,
+        "data_analysis": 0.2
+      }
+    },
+    {
+      "job_id": "job-4a7640d5af",
+      "gold": [
+        "ai_ml"
+      ],
+      "chosen": "ai_ml",
+      "reason": "ai_ml: fit 0.71 (4 requirements covered) vs next 0.29",
+      "category_baseline": "ai_ml",
+      "random_baseline": "ai_ml",
+      "fits": {
+        "ai_ml": 0.714,
+        "web_dev": 0.286,
+        "data_analysis": 0.214
+      }
+    },
+    {
+      "job_id": "job-4b3fb3212d",
+      "gold": [
+        "web_dev"
+      ],
+      "chosen": "web_dev",
+      "reason": "web_dev: fit 0.60 (3 requirements covered) vs next 0.20",
+      "category_baseline": "ai_ml",
+      "random_baseline": "ai_ml",
+      "fits": {
+        "web_dev": 0.6,
+        "ai_ml": 0.2,
+        "data_analysis": 0.1
+      }
+    },
+    {
+      "job_id": "job-4f08a39a40",
+      "gold": [
+        "data_analysis"
+      ],
+      "chosen": "data_analysis",
+      "reason": "data_analysis: fit 0.75 (6 requirements covered) vs next 0.25",
+      "category_baseline": "data_analysis",
+      "random_baseline": "data_analysis",
+      "fits": {
+        "data_analysis": 0.75,
+        "ai_ml": 0.25,
+        "web_dev": 0.125
+      }
+    },
+    {
+      "job_id": "job-540082ac6e",
+      "gold": [
+        "data_analysis"
+      ],
+      "chosen": null,
+      "reason": "no member reaches bid-level fit 0.55 at an acceptable rate (best data_analysis 0.50)",
+      "category_baseline": "data_analysis",
+      "random_baseline": "data_analysis",
+      "fits": {
+        "data_analysis": 0.5,
+        "ai_ml": 0.25,
+        "web_dev": 0.062
+      }
+    },
+    {
+      "job_id": "job-55014b0da3",
+      "gold": [
+        "web_dev"
+      ],
+      "chosen": null,
+      "reason": "no member reaches bid-level fit 0.55 at an acceptable rate (best web_dev 0.38)",
+      "category_baseline": "ai_ml",
+      "random_baseline": "web_dev",
+      "fits": {
+        "web_dev": 0.375,
+        "data_analysis": 0.062,
+        "ai_ml": 0.25
+      }
+    },
+    {
+      "job_id": "job-5593eb1146",
+      "gold": [
+        "ai_ml"
+      ],
+      "chosen": "ai_ml",
+      "reason": "ai_ml: fit 0.75 (5 requirements covered) vs next 0.19",
+      "category_baseline": "ai_ml",
+      "random_baseline": "data_analysis",
+      "fits": {
+        "ai_ml": 0.75,
+        "web_dev": 0.188,
+        "data_analysis": 0.188
+      }
+    },
+    {
+      "job_id": "job-56ef256a97",
+      "gold": [
+        "ai_ml"
+      ],
+      "chosen": "ai_ml",
+      "reason": "ai_ml: fit 0.75 (3 requirements covered) vs next 0.75",
+      "category_baseline": "ai_ml",
+      "random_baseline": "data_analysis",
+      "fits": {
+        "ai_ml": 0.75,
+        "data_analysis": 0.75,
+        "web_dev": 0.375
+      }
+    },
+    {
+      "job_id": "job-58e57b030c",
+      "gold": [
+        "ai_ml"
+      ],
+      "chosen": "ai_ml",
+      "reason": "ai_ml: fit 0.83 (5 requirements covered) vs next 0.42",
+      "category_baseline": "ai_ml",
+      "random_baseline": "data_analysis",
+      "fits": {
+        "ai_ml": 0.833,
+        "web_dev": 0.417,
+        "data_analysis": 0.167
+      }
+    },
+    {
+      "job_id": "job-590bca1e39",
+      "gold": [
+        "web_dev"
+      ],
+      "chosen": "web_dev",
+      "reason": "web_dev: fit 0.75 (6 requirements covered) vs next 0.25",
+      "category_baseline": "web_dev",
+      "random_baseline": "web_dev",
+      "fits": {
+        "web_dev": 0.75,
+        "ai_ml": 0.25,
+        "data_analysis": 0.0
+      }
+    },
+    {
+      "job_id": "job-597f3af85d",
+      "gold": [
+        "data_analysis",
+        "web_dev"
+      ],
+      "chosen": "web_dev",
+      "reason": "web_dev: fit 0.67 (2 requirements covered) vs next 0.33",
+      "category_baseline": "data_analysis",
+      "random_baseline": "web_dev",
+      "fits": {
+        "web_dev": 0.667,
+        "data_analysis": 0.333,
+        "ai_ml": 0.667
+      }
+    },
+    {
+      "job_id": "job-59b7f34ff0",
+      "gold": [
+        "ai_ml"
+      ],
+      "chosen": "ai_ml",
+      "reason": "ai_ml: fit 0.69 (5 requirements covered) vs next 0.56",
+      "category_baseline": "ai_ml",
+      "random_baseline": "data_analysis",
+      "fits": {
+        "ai_ml": 0.688,
+        "web_dev": 0.562,
+        "data_analysis": 0.375
+      }
+    },
+    {
+      "job_id": "job-5cbc0f57e0",
+      "gold": [
+        "web_dev"
+      ],
+      "chosen": null,
+      "reason": "no member reaches bid-level fit 0.55 at an acceptable rate (best web_dev 0.38)",
+      "category_baseline": "ai_ml",
+      "random_baseline": "web_dev",
+      "fits": {
+        "web_dev": 0.375,
+        "ai_ml": 0.25,
+        "data_analysis": 0.0
+      }
+    },
+    {
+      "job_id": "job-5cd7c02366",
+      "gold": [
+        "ai_ml",
+        "web_dev"
+      ],
+      "chosen": "ai_ml",
+      "reason": "ai_ml: fit 1.00 (5 requirements covered) vs next 0.70",
+      "category_baseline": "ai_ml",
+      "random_baseline": "data_analysis",
+      "fits": {
+        "ai_ml": 1.0,
+        "web_dev": 0.7,
+        "data_analysis": 0.2
+      }
+    },
+    {
+      "job_id": "job-5de52a98dd",
+      "gold": [
+        "web_dev"
+      ],
+      "chosen": null,
+      "reason": "no member reaches bid-level fit 0.55 at an acceptable rate (best web_dev 0.44)",
+      "category_baseline": "web_dev",
+      "random_baseline": "web_dev",
+      "fits": {
+        "web_dev": 0.438,
+        "ai_ml": 0.188,
+        "data_analysis": 0.0
+      }
+    },
+    {
+      "job_id": "job-5e96a6f952",
+      "gold": [
+        "web_dev"
+      ],
+      "chosen": "web_dev",
+      "reason": "web_dev: fit 0.69 (4 requirements covered) vs next 0.31",
+      "category_baseline": "web_dev",
+      "random_baseline": "ai_ml",
+      "fits": {
+        "web_dev": 0.688,
+        "ai_ml": 0.312,
+        "data_analysis": 0.0
+      }
+    },
+    {
+      "job_id": "job-5e996cbd41",
+      "gold": [
+        "ai_ml"
+      ],
+      "chosen": "ai_ml",
+      "reason": "ai_ml: fit 1.00 (3 requirements covered) vs next 0.33",
+      "category_baseline": "ai_ml",
+      "random_baseline": "web_dev",
+      "fits": {
+        "ai_ml": 1.0,
+        "data_analysis": 0.333,
+        "web_dev": 0.333
+      }
+    },
+    {
+      "job_id": "job-5fad168c25",
+      "gold": [
+        "data_analysis"
+      ],
+      "chosen": "data_analysis",
+      "reason": "data_analysis: fit 0.75 (3 requirements covered) vs next 0.50",
+      "category_baseline": "data_analysis",
+      "random_baseline": "web_dev",
+      "fits": {
+        "data_analysis": 0.75,
+        "web_dev": 0.5,
+        "ai_ml": 0.25
+      }
+    },
+    {
+      "job_id": "job-61e516589a",
+      "gold": [
+        "data_analysis"
+      ],
+      "chosen": null,
+      "reason": "no member reaches bid-level fit 0.55 at an acceptable rate (best data_analysis 0.50)",
+      "category_baseline": "data_analysis",
+      "random_baseline": "ai_ml",
+      "fits": {
+        "data_analysis": 0.5,
+        "ai_ml": 0.25,
+        "web_dev": 0.0
+      }
+    },
+    {
+      "job_id": "job-627a204e0e",
+      "gold": [
+        "ai_ml"
+      ],
+      "chosen": "ai_ml",
+      "reason": "ai_ml: fit 0.75 (6 requirements covered) vs next 0.38",
+      "category_baseline": "ai_ml",
+      "random_baseline": "data_analysis",
+      "fits": {
+        "ai_ml": 0.75,
+        "web_dev": 0.375,
+        "data_analysis": 0.25
+      }
+    },
+    {
+      "job_id": "job-6322077a8e",
+      "gold": [
+        "web_dev"
+      ],
+      "chosen": null,
+      "reason": "no member reaches bid-level fit 0.55 at an acceptable rate (best ai_ml 0.50)",
+      "category_baseline": "web_dev",
+      "random_baseline": "ai_ml",
+      "fits": {
+        "ai_ml": 0.5,
+        "web_dev": 0.5,
+        "data_analysis": 0.0
+      }
+    },
+    {
+      "job_id": "job-66373af6df",
+      "gold": [
+        "ai_ml",
+        "web_dev"
+      ],
+      "chosen": null,
+      "reason": "no member reaches bid-level fit 0.55 at an acceptable rate (best web_dev 0.33)",
+      "category_baseline": "web_dev",
+      "random_baseline": "web_dev",
+      "fits": {
+        "web_dev": 0.333,
+        "ai_ml": 0.0,
+        "data_analysis": 0.0
+      }
+    },
+    {
+      "job_id": "job-66913cd282",
+      "gold": [
+        "ai_ml",
+        "data_analysis"
+      ],
+      "chosen": "data_analysis",
+      "reason": "data_analysis: fit 1.00 (3 requirements covered) vs next 0.67",
+      "category_baseline": "data_analysis",
+      "random_baseline": "ai_ml",
+      "fits": {
+        "data_analysis": 1.0,
+        "ai_ml": 0.667,
+        "web_dev": 0.333
+      }
+    },
+    {
+      "job_id": "job-697f08ae33",
+      "gold": [
+        "ai_ml"
+      ],
+      "chosen": null,
+      "reason": "no member reaches bid-level fit 0.55 at an acceptable rate (best ai_ml 0.33)",
+      "category_baseline": "ai_ml",
+      "random_baseline": "ai_ml",
+      "fits": {
+        "ai_ml": 0.333,
+        "web_dev": 0.167,
+        "data_analysis": 0.083
+      }
+    },
+    {
+      "job_id": "job-6bf3f544c0",
+      "gold": [
+        "ai_ml"
+      ],
+      "chosen": "ai_ml",
+      "reason": "ai_ml: fit 0.71 (4 requirements covered) vs next 0.29",
+      "category_baseline": "ai_ml",
+      "random_baseline": "web_dev",
+      "fits": {
+        "ai_ml": 0.714,
+        "web_dev": 0.286,
+        "data_analysis": 0.143
+      }
+    },
+    {
+      "job_id": "job-6c7b7e94d2",
+      "gold": [
+        "data_analysis",
+        "web_dev"
+      ],
+      "chosen": "web_dev",
+      "reason": "web_dev: fit 1.00 (2 requirements covered) vs next 0.00",
+      "category_baseline": "web_dev",
+      "random_baseline": "ai_ml",
+      "fits": {
+        "web_dev": 1.0,
+        "ai_ml": 0.0,
+        "data_analysis": 0.0
+      }
+    },
+    {
+      "job_id": "job-6d7dc3d276",
+      "gold": [
+        "ai_ml"
+      ],
+      "chosen": "ai_ml",
+      "reason": "ai_ml: fit 1.00 (5 requirements covered) vs next 0.30",
+      "category_baseline": "ai_ml",
+      "random_baseline": "data_analysis",
+      "fits": {
+        "ai_ml": 1.0,
+        "web_dev": 0.3,
+        "data_analysis": 0.3
+      }
+    },
+    {
+      "job_id": "job-6e4d4ae7dc",
+      "gold": [
+        "web_dev"
+      ],
+      "chosen": null,
+      "reason": "no member reaches bid-level fit 0.55 at an acceptable rate (best web_dev 0.50)",
+      "category_baseline": "web_dev",
+      "random_baseline": "ai_ml",
+      "fits": {
+        "web_dev": 0.5,
+        "ai_ml": 0.25,
+        "data_analysis": 0.0
+      }
+    },
+    {
+      "job_id": "job-6e90f7606a",
+      "gold": [
+        "ai_ml",
+        "web_dev"
+      ],
+      "chosen": "ai_ml",
+      "reason": "ai_ml: fit 0.75 (3 requirements covered) vs next 0.62",
+      "category_baseline": "ai_ml",
+      "random_baseline": "web_dev",
+      "fits": {
+        "ai_ml": 0.75,
+        "web_dev": 0.625,
+        "data_analysis": 0.375
+      }
+    },
+    {
+      "job_id": "job-6ebe62f0f3",
+      "gold": [
+        "ai_ml"
+      ],
+      "chosen": "ai_ml",
+      "reason": "ai_ml: fit 0.80 (4 requirements covered) vs next 0.30",
+      "category_baseline": "ai_ml",
+      "random_baseline": "web_dev",
+      "fits": {
+        "ai_ml": 0.8,
+        "web_dev": 0.3,
+        "data_analysis": 0.2
+      }
+    },
+    {
+      "job_id": "job-7317a3b6d8",
+      "gold": [
+        "ai_ml"
+      ],
+      "chosen": null,
+      "reason": "no member reaches bid-level fit 0.55 at an acceptable rate (best ai_ml 0.50)",
+      "category_baseline": "ai_ml",
+      "random_baseline": "web_dev",
+      "fits": {
+        "ai_ml": 0.5,
+        "web_dev": 0.167,
+        "data_analysis": 0.083
+      }
+    },
+    {
+      "job_id": "job-744f1a5182",
+      "gold": [
+        "ai_ml",
+        "web_dev"
+      ],
+      "chosen": "web_dev",
+      "reason": "web_dev: fit 0.56 (4 requirements covered) vs next 0.31",
+      "category_baseline": "web_dev",
+      "random_baseline": "ai_ml",
+      "fits": {
+        "web_dev": 0.562,
+        "ai_ml": 0.312,
+        "data_analysis": 0.062
+      }
+    },
+    {
+      "job_id": "job-75956eec4c",
+      "gold": [
+        "ai_ml"
+      ],
+      "chosen": "ai_ml",
+      "reason": "ai_ml: fit 0.71 (5 requirements covered) vs next 0.29",
+      "category_baseline": "ai_ml",
+      "random_baseline": "ai_ml",
+      "fits": {
+        "ai_ml": 0.714,
+        "web_dev": 0.286,
+        "data_analysis": 0.214
+      }
+    },
+    {
+      "job_id": "job-75df7ae113",
+      "gold": [
+        "ai_ml"
+      ],
+      "chosen": "ai_ml",
+      "reason": "ai_ml: fit 0.56 (4 requirements covered) vs next 0.25",
+      "category_baseline": "ai_ml",
+      "random_baseline": "web_dev",
+      "fits": {
+        "ai_ml": 0.562,
+        "web_dev": 0.25,
+        "data_analysis": 0.188
+      }
+    },
+    {
+      "job_id": "job-760ef8b993",
+      "gold": [
+        "data_analysis"
+      ],
+      "chosen": "data_analysis",
+      "reason": "data_analysis: fit 0.75 (3 requirements covered) vs next 0.12",
+      "category_baseline": "ai_ml",
+      "random_baseline": "web_dev",
+      "fits": {
+        "data_analysis": 0.75,
+        "ai_ml": 0.125,
+        "web_dev": 0.0
+      }
+    },
+    {
+      "job_id": "job-771f1dad2d",
+      "gold": [
+        "ai_ml"
+      ],
+      "chosen": "ai_ml",
+      "reason": "ai_ml: fit 0.75 (6 requirements covered) vs next 0.38",
+      "category_baseline": "ai_ml",
+      "random_baseline": "data_analysis",
+      "fits": {
+        "ai_ml": 0.75,
+        "data_analysis": 0.375,
+        "web_dev": 0.25
+      }
+    },
+    {
+      "job_id": "job-78ec18c293",
+      "gold": [
+        "data_analysis"
+      ],
+      "chosen": "data_analysis",
+      "reason": "data_analysis: fit 1.00 (3 requirements covered) vs next 0.00",
+      "category_baseline": "data_analysis",
+      "random_baseline": "web_dev",
+      "fits": {
+        "data_analysis": 1.0,
+        "ai_ml": 0.0,
+        "web_dev": 0.0
+      }
+    },
+    {
+      "job_id": "job-78efaf2738",
+      "gold": [
+        "web_dev"
+      ],
+      "chosen": null,
+      "reason": "no member reaches bid-level fit 0.55 at an acceptable rate (best ai_ml 0.30)",
+      "category_baseline": "data_analysis",
+      "random_baseline": "ai_ml",
+      "fits": {
+        "ai_ml": 0.3,
+        "web_dev": 0.3,
+        "data_analysis": 0.0
+      }
+    },
+    {
+      "job_id": "job-7930028467",
+      "gold": [
+        "ai_ml",
+        "web_dev"
+      ],
+      "chosen": "ai_ml",
+      "reason": "ai_ml: fit 0.67 (4 requirements covered) vs next 0.67",
+      "category_baseline": "ai_ml",
+      "random_baseline": "web_dev",
+      "fits": {
+        "ai_ml": 0.667,
+        "web_dev": 0.667,
+        "data_analysis": 0.083
+      }
+    },
+    {
+      "job_id": "job-795a1bdf45",
+      "gold": [
+        "data_analysis"
+      ],
+      "chosen": "data_analysis",
+      "reason": "data_analysis: fit 0.83 (2 requirements covered) vs next 0.00",
+      "category_baseline": "data_analysis",
+      "random_baseline": "data_analysis",
+      "fits": {
+        "data_analysis": 0.833,
+        "ai_ml": 0.0,
+        "web_dev": 0.0
+      }
+    },
+    {
+      "job_id": "job-6c77b6c01e",
+      "gold": [],
+      "chosen": "ai_ml",
+      "reason": "ai_ml: fit 0.70 (2 requirements covered) vs next 0.70",
+      "category_baseline": "web_dev",
+      "random_baseline": "web_dev",
+      "fits": {
+        "ai_ml": 0.7,
+        "web_dev": 0.7,
+        "data_analysis": 0.0
+      }
+    },
+    {
+      "job_id": "job-316dcd76b3",
+      "gold": [],
+      "chosen": null,
+      "reason": "no member reaches bid-level fit 0.55 at an acceptable rate (best ai_ml 1.00)",
+      "category_baseline": "data_analysis",
+      "random_baseline": "data_analysis",
+      "fits": {
+        "ai_ml": 1.0,
+        "data_analysis": 1.0,
+        "web_dev": 0.5
+      }
+    },
+    {
+      "job_id": "job-82c6e86fe8",
+      "gold": [],
+      "chosen": null,
+      "reason": "no member reaches bid-level fit 0.55 at an acceptable rate (best web_dev 0.50)",
+      "category_baseline": "web_dev",
+      "random_baseline": "web_dev",
+      "fits": {
+        "web_dev": 0.5,
+        "ai_ml": 0.0,
+        "data_analysis": 0.0
+      }
+    },
+    {
+      "job_id": "job-d4e300de60",
+      "gold": [],
+      "chosen": null,
+      "reason": "no member reaches bid-level fit 0.55 at an acceptable rate (best data_analysis 0.44)",
+      "category_baseline": "data_analysis",
+      "random_baseline": "web_dev",
+      "fits": {
+        "data_analysis": 0.438,
+        "ai_ml": 0.25,
+        "web_dev": 0.125
+      }
+    },
+    {
+      "job_id": "job-0dbd9c97bd",
+      "gold": [],
+      "chosen": null,
+      "reason": "no member reaches bid-level fit 0.55 at an acceptable rate (best data_analysis 0.40)",
+      "category_baseline": null,
+      "random_baseline": "data_analysis",
+      "fits": {
+        "data_analysis": 0.4,
+        "web_dev": 0.0,
+        "ai_ml": 0.3
+      }
+    },
+    {
+      "job_id": "job-154537de44",
+      "gold": [],
+      "chosen": null,
+      "reason": "no member reaches bid-level fit 0.55 at an acceptable rate (best web_dev 0.50)",
+      "category_baseline": "web_dev",
+      "random_baseline": "web_dev",
+      "fits": {
+        "web_dev": 0.5,
+        "ai_ml": 0.0,
+        "data_analysis": 0.0
+      }
+    },
+    {
+      "job_id": "job-b18faff81e",
+      "gold": [],
+      "chosen": "ai_ml",
+      "reason": "ai_ml: fit 0.75 (1 requirements covered) vs next 0.25",
+      "category_baseline": "ai_ml",
+      "random_baseline": "ai_ml",
+      "fits": {
+        "ai_ml": 0.75,
+        "data_analysis": 0.25,
+        "web_dev": 0.0
+      }
+    },
+    {
+      "job_id": "job-203f98973e",
+      "gold": [],
+      "chosen": null,
+      "reason": "no member reaches bid-level fit 0.55 at an acceptable rate (best data_analysis 0.38)",
+      "category_baseline": null,
+      "random_baseline": "ai_ml",
+      "fits": {
+        "data_analysis": 0.375,
+        "web_dev": 0.25,
+        "ai_ml": 0.125
+      }
+    },
+    {
+      "job_id": "job-7cc2c0add3",
+      "gold": [],
+      "chosen": null,
+      "reason": "no member reaches bid-level fit 0.55 at an acceptable rate (best data_analysis 0.06)",
+      "category_baseline": "ai_ml",
+      "random_baseline": "ai_ml",
+      "fits": {
+        "data_analysis": 0.062,
+        "ai_ml": 0.625,
+        "web_dev": 0.188
+      }
+    },
+    {
+      "job_id": "job-bf89774ad1",
+      "gold": [],
+      "chosen": null,
+      "reason": "no member reaches bid-level fit 0.55 at an acceptable rate (best ai_ml 0.25)",
+      "category_baseline": "web_dev",
+      "random_baseline": "ai_ml",
+      "fits": {
+        "ai_ml": 0.25,
+        "web_dev": 0.25,
+        "data_analysis": 0.0
+      }
+    },
+    {
+      "job_id": "job-0f77619a72",
+      "gold": [],
+      "chosen": null,
+      "reason": "no member reaches bid-level fit 0.55 at an acceptable rate (best ai_ml 0.14)",
+      "category_baseline": null,
+      "random_baseline": "ai_ml",
+      "fits": {
+        "ai_ml": 0.143,
+        "data_analysis": 0.143,
+        "web_dev": 0.0
+      }
+    },
+    {
+      "job_id": "job-a96e80998d",
+      "gold": [],
+      "chosen": null,
+      "reason": "no member reaches bid-level fit 0.55 at an acceptable rate (best data_analysis 0.00)",
+      "category_baseline": "data_analysis",
+      "random_baseline": "ai_ml",
+      "fits": {
+        "data_analysis": 0.0,
+        "ai_ml": 0.0,
+        "web_dev": 0.0
+      }
+    },
+    {
+      "job_id": "job-46c7960fd5",
+      "gold": [],
+      "chosen": null,
+      "reason": "no member reaches bid-level fit 0.55 at an acceptable rate (best data_analysis 0.00)",
+      "category_baseline": "data_analysis",
+      "random_baseline": "data_analysis",
+      "fits": {
+        "data_analysis": 0.0,
+        "ai_ml": 0.5,
+        "web_dev": 0.5
+      }
+    },
+    {
+      "job_id": "job-0b4e399143",
+      "gold": [],
+      "chosen": null,
+      "reason": "no member reaches bid-level fit 0.55 at an acceptable rate (best ai_ml 0.00)",
+      "category_baseline": "web_dev",
+      "random_baseline": "ai_ml",
+      "fits": {
+        "ai_ml": 0.0,
+        "web_dev": 0.0,
+        "data_analysis": 0.0
+      }
+    },
+    {
+      "job_id": "job-1d66a0cbef",
+      "gold": [],
+      "chosen": null,
+      "reason": "no member reaches bid-level fit 0.55 at an acceptable rate (best data_analysis 0.00)",
+      "category_baseline": "web_dev",
+      "random_baseline": "ai_ml",
+      "fits": {
+        "data_analysis": 0.0,
+        "web_dev": 0.571,
+        "ai_ml": 0.0
+      }
+    },
+    {
+      "job_id": "job-91cd932757",
+      "gold": [],
+      "chosen": null,
+      "reason": "no member reaches bid-level fit 0.55 at an acceptable rate (best data_analysis 0.12)",
+      "category_baseline": "data_analysis",
+      "random_baseline": "web_dev",
+      "fits": {
+        "data_analysis": 0.125,
+        "ai_ml": 0.062,
+        "web_dev": 0.062
+      }
+    },
+    {
+      "job_id": "job-8a48c27be6",
+      "gold": [],
+      "chosen": null,
+      "reason": "no member reaches bid-level fit 0.55 at an acceptable rate (best data_analysis 0.33)",
+      "category_baseline": "data_analysis",
+      "random_baseline": "data_analysis",
+      "fits": {
+        "data_analysis": 0.333,
+        "ai_ml": 0.167,
+        "web_dev": 0.0
+      }
+    },
+    {
+      "job_id": "job-13b927ef7a",
+      "gold": [],
+      "chosen": null,
+      "reason": "no member reaches bid-level fit 0.55 at an acceptable rate (best data_analysis 0.17)",
+      "category_baseline": null,
+      "random_baseline": "ai_ml",
+      "fits": {
+        "data_analysis": 0.167,
+        "ai_ml": 0.0,
+        "web_dev": 0.0
+      }
+    },
+    {
+      "job_id": "job-525e3b6116",
+      "gold": [],
+      "chosen": null,
+      "reason": "no member reaches bid-level fit 0.55 at an acceptable rate (best ai_ml 0.07)",
+      "category_baseline": null,
+      "random_baseline": "web_dev",
+      "fits": {
+        "ai_ml": 0.071,
+        "data_analysis": 0.071,
+        "web_dev": 0.0
+      }
+    },
+    {
+      "job_id": "job-1ed5a3a4e4",
+      "gold": [],
+      "chosen": null,
+      "reason": "no member reaches bid-level fit 0.55 at an acceptable rate (best data_analysis 0.20)",
+      "category_baseline": "data_analysis",
+      "random_baseline": "web_dev",
+      "fits": {
+        "data_analysis": 0.2,
+        "ai_ml": 0.0,
+        "web_dev": 0.0
+      }
+    },
+    {
+      "job_id": "job-b676fc5c99",
+      "gold": [],
+      "chosen": null,
+      "reason": "no member reaches bid-level fit 0.55 at an acceptable rate (best ai_ml 0.00)",
+      "category_baseline": null,
+      "random_baseline": "ai_ml",
+      "fits": {
+        "ai_ml": 0.0,
+        "web_dev": 0.0,
+        "data_analysis": 0.0
+      }
+    },
+    {
+      "job_id": "job-8f4f7d55c7",
+      "gold": [],
+      "chosen": "data_analysis",
+      "reason": "data_analysis: fit 0.62 (1 requirements covered) vs next 0.25",
+      "category_baseline": "data_analysis",
+      "random_baseline": "ai_ml",
+      "fits": {
+        "data_analysis": 0.625,
+        "ai_ml": 0.25,
+        "web_dev": 0.0
+      }
+    },
+    {
+      "job_id": "job-0fec89e3df",
+      "gold": [],
+      "chosen": null,
+      "reason": "no member reaches bid-level fit 0.55 at an acceptable rate (best ai_ml 0.00)",
+      "category_baseline": "web_dev",
+      "random_baseline": "web_dev",
+      "fits": {
+        "ai_ml": 0.0,
+        "web_dev": 0.0,
+        "data_analysis": 0.0
+      }
+    },
+    {
+      "job_id": "job-bbb12420a1",
+      "gold": [],
+      "chosen": null,
+      "reason": "no member reaches bid-level fit 0.55 at an acceptable rate (best web_dev 0.33)",
+      "category_baseline": null,
+      "random_baseline": "data_analysis",
+      "fits": {
+        "web_dev": 0.333,
+        "data_analysis": 0.333,
+        "ai_ml": 0.0
+      }
+    },
+    {
+      "job_id": "job-281d235b75",
+      "gold": [],
+      "chosen": null,
+      "reason": "no member reaches bid-level fit 0.55 at an acceptable rate (best data_analysis 0.50)",
+      "category_baseline": "data_analysis",
+      "random_baseline": "web_dev",
+      "fits": {
+        "data_analysis": 0.5,
+        "ai_ml": 0.125,
+        "web_dev": 0.0
+      }
+    },
+    {
+      "job_id": "job-4d03609599",
+      "gold": [],
+      "chosen": null,
+      "reason": "no member reaches bid-level fit 0.55 at an acceptable rate (best ai_ml 0.50)",
+      "category_baseline": "data_analysis",
+      "random_baseline": "data_analysis",
+      "fits": {
+        "ai_ml": 0.5,
+        "web_dev": 0.0,
+        "data_analysis": 0.0
+      }
+    },
+    {
+      "job_id": "job-cd576eb566",
+      "gold": [],
+      "chosen": "ai_ml",
+      "reason": "ai_ml: fit 1.00 (3 requirements covered) vs next 0.17",
+      "category_baseline": "ai_ml",
+      "random_baseline": "data_analysis",
+      "fits": {
+        "ai_ml": 1.0,
+        "web_dev": 0.167,
+        "data_analysis": 0.167
+      }
+    },
+    {
+      "job_id": "job-cd3998fb91",
+      "gold": [],
+      "chosen": null,
+      "reason": "no member reaches bid-level fit 0.55 at an acceptable rate (best ai_ml 1.00)",
+      "category_baseline": "ai_ml",
+      "random_baseline": "web_dev",
+      "fits": {
+        "ai_ml": 1.0,
+        "web_dev": 0.375,
+        "data_analysis": 0.25
+      }
+    },
+    {
+      "job_id": "job-1123ac1e60",
+      "gold": [],
+      "chosen": null,
+      "reason": "no member reaches bid-level fit 0.55 at an acceptable rate (best ai_ml 0.00)",
+      "category_baseline": "web_dev",
+      "random_baseline": "ai_ml",
+      "fits": {
+        "ai_ml": 0.0,
+        "web_dev": 0.0,
+        "data_analysis": 0.0
+      }
+    },
+    {
+      "job_id": "job-beebfb2517",
+      "gold": [],
+      "chosen": null,
+      "reason": "no member reaches bid-level fit 0.55 at an acceptable rate (best ai_ml 1.00)",
+      "category_baseline": "ai_ml",
+      "random_baseline": "data_analysis",
+      "fits": {
+        "ai_ml": 1.0,
+        "web_dev": 0.5,
+        "data_analysis": 0.333
+      }
+    },
+    {
+      "job_id": "job-bff45ad11b",
+      "gold": [],
+      "chosen": null,
+      "reason": "no member reaches bid-level fit 0.55 at an acceptable rate (best data_analysis 0.38)",
+      "category_baseline": "data_analysis",
+      "random_baseline": "data_analysis",
+      "fits": {
+        "data_analysis": 0.375,
+        "ai_ml": 0.25,
+        "web_dev": 0.125
+      }
+    },
+    {
+      "job_id": "job-830012376b",
+      "gold": [],
+      "chosen": null,
+      "reason": "no member reaches bid-level fit 0.55 at an acceptable rate (best web_dev 0.33)",
+      "category_baseline": "web_dev",
+      "random_baseline": "data_analysis",
+      "fits": {
+        "web_dev": 0.333,
+        "ai_ml": 0.0,
+        "data_analysis": 0.0
+      }
+    },
+    {
+      "job_id": "job-0e4bac57ed",
+      "gold": [],
+      "chosen": null,
+      "reason": "no member reaches bid-level fit 0.55 at an acceptable rate (best web_dev 0.50)",
+      "category_baseline": "web_dev",
+      "random_baseline": "data_analysis",
+      "fits": {
+        "web_dev": 0.5,
+        "ai_ml": 0.0,
+        "data_analysis": 0.0
+      }
+    },
+    {
+      "job_id": "job-4ce8682b1a",
+      "gold": [],
+      "chosen": null,
+      "reason": "no member reaches bid-level fit 0.55 at an acceptable rate (best data_analysis 0.00)",
+      "category_baseline": null,
+      "random_baseline": "data_analysis",
+      "fits": {
+        "data_analysis": 0.0,
+        "ai_ml": 0.5,
+        "web_dev": 0.5
+      }
+    },
+    {
+      "job_id": "job-0d7f023418",
+      "gold": [],
+      "chosen": null,
+      "reason": "no member reaches bid-level fit 0.55 at an acceptable rate (best ai_ml 0.00)",
+      "category_baseline": "web_dev",
+      "random_baseline": "data_analysis",
+      "fits": {
+        "ai_ml": 0.0,
+        "web_dev": 0.0,
+        "data_analysis": 0.0
+      }
+    },
+    {
+      "job_id": "job-b7f87e0732",
+      "gold": [],
+      "chosen": "data_analysis",
+      "reason": "data_analysis: fit 0.83 (2 requirements covered) vs next 0.50",
+      "category_baseline": "data_analysis",
+      "random_baseline": "ai_ml",
+      "fits": {
+        "data_analysis": 0.833,
+        "web_dev": 0.5,
+        "ai_ml": 0.167
+      }
+    },
+    {
+      "job_id": "job-2a984fd21e",
+      "gold": [],
+      "chosen": null,
+      "reason": "no member reaches bid-level fit 0.55 at an acceptable rate (best data_analysis 0.42)",
+      "category_baseline": "data_analysis",
+      "random_baseline": "web_dev",
+      "fits": {
+        "data_analysis": 0.417,
+        "web_dev": 0.167,
+        "ai_ml": 0.0
+      }
+    },
+    {
+      "job_id": "job-6094e482d9",
+      "gold": [],
+      "chosen": null,
+      "reason": "no member reaches bid-level fit 0.55 at an acceptable rate (best ai_ml 0.00)",
+      "category_baseline": "web_dev",
+      "random_baseline": "data_analysis",
+      "fits": {
+        "ai_ml": 0.0,
+        "web_dev": 0.0,
+        "data_analysis": 0.0
+      }
+    },
+    {
+      "job_id": "job-2e8ac492d4",
+      "gold": [],
+      "chosen": null,
+      "reason": "no member reaches bid-level fit 0.55 at an acceptable rate (best data_analysis 0.25)",
+      "category_baseline": "web_dev",
+      "random_baseline": "data_analysis",
+      "fits": {
+        "data_analysis": 0.25,
+        "ai_ml": 0.25,
+        "web_dev": 0.0
+      }
+    },
+    {
+      "job_id": "job-b32fa22019",
+      "gold": [],
+      "chosen": null,
+      "reason": "no member reaches bid-level fit 0.55 at an acceptable rate (best web_dev 0.50)",
+      "category_baseline": "ai_ml",
+      "random_baseline": "web_dev",
+      "fits": {
+        "web_dev": 0.5,
+        "ai_ml": 0.25,
+        "data_analysis": 0.0
+      }
+    },
+    {
+      "job_id": "job-27c80191ab",
+      "gold": [],
+      "chosen": null,
+      "reason": "no member reaches bid-level fit 0.55 at an acceptable rate (best data_analysis 0.20)",
+      "category_baseline": "data_analysis",
+      "random_baseline": "web_dev",
+      "fits": {
+        "data_analysis": 0.2,
+        "web_dev": 0.1,
+        "ai_ml": 0.0
+      }
+    },
+    {
+      "job_id": "job-bd1e4eb818",
+      "gold": [],
+      "chosen": null,
+      "reason": "no member reaches bid-level fit 0.55 at an acceptable rate (best ai_ml 0.00)",
+      "category_baseline": null,
+      "random_baseline": "web_dev",
+      "fits": {
+        "ai_ml": 0.0,
+        "web_dev": 0.0,
+        "data_analysis": 0.0
+      }
+    },
+    {
+      "job_id": "job-67b9745cff",
+      "gold": [],
+      "chosen": null,
+      "reason": "no member reaches bid-level fit 0.55 at an acceptable rate (best ai_ml 0.75)",
+      "category_baseline": "ai_ml",
+      "random_baseline": "web_dev",
+      "fits": {
+        "ai_ml": 0.75,
+        "web_dev": 0.625,
+        "data_analysis": 0.5
+      }
+    },
+    {
+      "job_id": "job-b855e4b9f3",
+      "gold": [],
+      "chosen": null,
+      "reason": "no member reaches bid-level fit 0.55 at an acceptable rate (best data_analysis 0.00)",
+      "category_baseline": "web_dev",
+      "random_baseline": "ai_ml",
+      "fits": {
+        "data_analysis": 0.0,
+        "web_dev": 0.5,
+        "ai_ml": 0.0
+      }
+    },
+    {
+      "job_id": "job-dbc7693e61",
+      "gold": [],
+      "chosen": null,
+      "reason": "no member reaches bid-level fit 0.55 at an acceptable rate (best web_dev 0.50)",
+      "category_baseline": "web_dev",
+      "random_baseline": "web_dev",
+      "fits": {
+        "web_dev": 0.5,
+        "ai_ml": 0.0,
+        "data_analysis": 0.0
+      }
+    },
+    {
+      "job_id": "job-3cc1d1e1e7",
+      "gold": [],
+      "chosen": null,
+      "reason": "no member reaches bid-level fit 0.55 at an acceptable rate (best web_dev 0.67)",
+      "category_baseline": "web_dev",
+      "random_baseline": "data_analysis",
+      "fits": {
+        "web_dev": 0.667,
+        "ai_ml": 0.0,
+        "data_analysis": 0.0
+      }
+    },
+    {
+      "job_id": "job-22a47bfb20",
+      "gold": [],
+      "chosen": null,
+      "reason": "no member reaches bid-level fit 0.55 at an acceptable rate (best data_analysis 0.06)",
+      "category_baseline": "web_dev",
+      "random_baseline": "web_dev",
+      "fits": {
+        "data_analysis": 0.062,
+        "ai_ml": 0.0,
+        "web_dev": 0.0
+      }
+    },
+    {
+      "job_id": "job-bf7d201f52",
+      "gold": [],
+      "chosen": null,
+      "reason": "no member reaches bid-level fit 0.55 at an acceptable rate (best data_analysis 0.29)",
+      "category_baseline": "ai_ml",
+      "random_baseline": "ai_ml",
+      "fits": {
+        "data_analysis": 0.286,
+        "web_dev": 0.214,
+        "ai_ml": 0.143
+      }
+    },
+    {
+      "job_id": "job-d0d73b8402",
+      "gold": [],
+      "chosen": null,
+      "reason": "no member reaches bid-level fit 0.55 at an acceptable rate (best ai_ml 0.10)",
+      "category_baseline": null,
+      "random_baseline": "ai_ml",
+      "fits": {
+        "ai_ml": 0.1,
+        "web_dev": 0.0,
+        "data_analysis": 0.0
+      }
+    },
+    {
+      "job_id": "job-3eebfed5ac",
+      "gold": [],
+      "chosen": null,
+      "reason": "no member reaches bid-level fit 0.55 at an acceptable rate (best data_analysis 0.00)",
+      "category_baseline": "web_dev",
+      "random_baseline": "ai_ml",
+      "fits": {
+        "data_analysis": 0.0,
+        "ai_ml": 1.0,
+        "web_dev": 0.667
+      }
+    }
+  ]
+}

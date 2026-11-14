@@ -189,7 +189,11 @@ class World:
         return out
 
     def connects_cost(self, j: dict) -> int:
-        return int(j.get("connects_cost") or 8)
+        base = int(j.get("connects_cost") or 8)
+        for rule in self.policy.get("connects", {}).get("surcharges", []):   # platform policy updates
+            if all(str(j.get(k)) == str(v) for k, v in rule.get("when", {}).items()):
+                base += int(rule.get("extra", 0))
+        return base
 
     def search_jobs(self, q: str | None, category: str | None, skills: list[str], payment_type: str | None,
                     min_budget: float | None, posted_after: str | None, limit: int, cursor: int) -> dict:

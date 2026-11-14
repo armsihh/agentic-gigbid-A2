@@ -1,0 +1,7 @@
+{
+  "smoke_variant": "v2_hybrid",
+  "recall@5": 0.55,
+  "bid_f1": 0.65,
+  "scam_recall": 0.95,
+  "verifier_accuracy": 0.99
+}

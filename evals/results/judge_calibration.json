@@ -1,0 +1,258 @@
+{
+  "n": 30,
+  "cohen_kappa": 0.392,
+  "cohen_kappa_quadratic": 0.717,
+  "exact_agreement": 0.533,
+  "within_one": 0.867,
+  "mean_mine": 2.57,
+  "mean_judge": 2.77,
+  "biggest_disagreements": [
+    {
+      "item_id": "ai_ml-prop-128",
+      "source": "past_proposal",
+      "mine": 5,
+      "judge": 3,
+      "judge_justification": "The proposal is highly specific with concrete metrics (96% recall, 2% false alarms, 45 FPS, 6,200 frames) and a clear next step, and it stays consistent with the provided evidence, though it omits several requested skills (MATLAB, TensorFlow, Image Processing) and contains a minor grammar slip (\"would trained\")."
+    },
+    {
+      "item_id": "ai_ml-prop-049",
+      "source": "past_proposal",
+      "mine": 2,
+      "judge": 4,
+      "judge_justification": "The proposal shows concrete results and clear writing but is only loosely related to training a ChatGPT model with the OpenAI CLI."
+    },
+    {
+      "item_id": "ai_ml-prop-132",
+      "source": "past_proposal",
+      "mine": 3,
+      "judge": 1,
+      "judge_justification": "The proposal does not address Instagram automation, provides no concrete evidence, and makes unsupported claims, though it is readable."
+    },
+    {
+      "item_id": "data_analysis-prop-064",
+      "source": "past_proposal",
+      "mine": 2,
+      "judge": 4,
+      "judge_justification": "The proposal is clear and relevant with a concrete example, but lacks detailed evidence or metrics to fully demonstrate expertise."
+    },
+    {
+      "item_id": "v0_naive:job-01239d603b",
+      "source": "generated",
+      "mine": 3,
+      "judge": 4,
+      "judge_justification": "The proposal directly addresses all core requirements (daily scraping, stock/price capture, change and row-creation timestamps, visualization, proxies, multi-threading, three competitors) and grounds its credibility in a specific, relevant B2B pricing-analysis project, though it lacks concrete numbers or a defined next step."
+    }
+  ],
+  "rows": [
+    {
+      "item_id": "v0_naive:job-01ce9333d8",
+      "source": "generated",
+      "mine": 4,
+      "judge": 4,
+      "judge_justification": "The proposal directly addresses voice cloning, TTS, avatar integration, and continuous improvement with a concrete Tortoise TTS roadmap and a clear next step, though it lacks specific metrics or named projects and makes a few plausible but unverified claims."
+    },
+    {
+      "item_id": "v0_naive:job-47e2165278",
+      "source": "generated",
+      "mine": 4,
+      "judge": 4,
+      "judge_justification": "The proposal is relevant and provides concrete, well\u2011grounded examples, though it ends abruptly and lacks some detail."
+    },
+    {
+      "item_id": "v0_naive:job-7e98231709",
+      "source": "generated",
+      "mine": 3,
+      "judge": 3,
+      "judge_justification": "The proposal hits all key requirements but lacks concrete evidence or detailed plans, making it moderately strong overall."
+    },
+    {
+      "item_id": "v0_naive:job-cc68d751c0",
+      "source": "generated",
+      "mine": 4,
+      "judge": 4,
+      "judge_justification": "The proposal shows solid, specific experience and clear writing, but lacks explicit AWS/MERN details and a concrete next step."
+    },
+    {
+      "item_id": "v0_naive:job-01239d603b",
+      "source": "generated",
+      "mine": 3,
+      "judge": 4,
+      "judge_justification": "The proposal directly addresses all core requirements (daily scraping, stock/price capture, change and row-creation timestamps, visualization, proxies, multi-threading, three competitors) and grounds its credibility in a specific, relevant B2B pricing-analysis project, though it lacks concrete numbers or a defined next step."
+    },
+    {
+      "item_id": "ai_ml-prop-112",
+      "source": "past_proposal",
+      "mine": 4,
+      "judge": 4,
+      "judge_justification": "The proposal is fairly relevant and specific with concrete past results, well\u2011grounded and clear, though it could better emphasize WordPress plugin specifics."
+    },
+    {
+      "item_id": "ai_ml-prop-144",
+      "source": "past_proposal",
+      "mine": 1,
+      "judge": 2,
+      "judge_justification": "The proposal focuses on data science modeling rather than guest post writing, offers unrelated metrics, and lacks verifiable evidence, though it is reasonably readable."
+    },
+    {
+      "item_id": "ai_ml-prop-116",
+      "source": "past_proposal",
+      "mine": 1,
+      "judge": 1,
+      "judge_justification": "The proposal is clear and concise, but it is fundamentally irrelevant to the job (it describes an NLP ticket-triage project, not PyTorch art-based style transfer) and misrepresents itself as a plan for this job, so its claims are not grounded in the actual requirements."
+    },
+    {
+      "item_id": "ai_ml-prop-128",
+      "source": "past_proposal",
+      "mine": 5,
+      "judge": 3,
+      "judge_justification": "The proposal is highly specific with concrete metrics (96% recall, 2% false alarms, 45 FPS, 6,200 frames) and a clear next step, and it stays consistent with the provided evidence, though it omits several requested skills (MATLAB, TensorFlow, Image Processing) and contains a minor grammar slip (\"would trained\")."
+    },
+    {
+      "item_id": "ai_ml-prop-049",
+      "source": "past_proposal",
+      "mine": 2,
+      "judge": 4,
+      "judge_justification": "The proposal shows concrete results and clear writing but is only loosely related to training a ChatGPT model with the OpenAI CLI."
+    },
+    {
+      "item_id": "ai_ml-prop-045",
+      "source": "past_proposal",
+      "mine": 2,
+      "judge": 1,
+      "judge_justification": "The proposal is irrelevant to a PyTorch/Deep Learning role (it describes an NLP/Scikit-Learn ticket classifier), and the past-tense claim of having \"fine-tuned a DistilBERT classifier on 38k tickets\" is an unsupported, likely fabricated accomplishment with no evidence provided."
+    },
+    {
+      "item_id": "ai_ml-prop-132",
+      "source": "past_proposal",
+      "mine": 3,
+      "judge": 1,
+      "judge_justification": "The proposal does not address Instagram automation, provides no concrete evidence, and makes unsupported claims, though it is readable."
+    },
+    {
+      "item_id": "ai_ml-prop-121",
+      "source": "past_proposal",
+      "mine": 1,
+      "judge": 2,
+      "judge_justification": "The proposal is clear but unrelated, offers some specific numbers yet lacks evidence tied to the visualizer task."
+    },
+    {
+      "item_id": "ai_ml-prop-019",
+      "source": "past_proposal",
+      "mine": 2,
+      "judge": 2,
+      "judge_justification": "The proposal mentions a retrieval pipeline unrelated to a Chrome extension, lacks concrete examples, and provides unsupported claims, though it is readable."
+    },
+    {
+      "item_id": "web_dev-prop-107",
+      "source": "past_proposal",
+      "mine": 2,
+      "judge": 3,
+      "judge_justification": "The proposal mentions Wix briefly but then suggests unrelated Next.js work, giving specific numbers for a different project; the claims lack evidence for Wix expertise, though the text is clear and concise."
+    },
+    {
+      "item_id": "web_dev-prop-078",
+      "source": "past_proposal",
+      "mine": 1,
+      "judge": 2,
+      "judge_justification": "The proposal focuses on a web dashboard unrelated to duplicating a TRC-20 contract, offering irrelevant specifics and limited alignment with the job."
+    },
+    {
+      "item_id": "web_dev-prop-035",
+      "source": "past_proposal",
+      "mine": 4,
+      "judge": 4,
+      "judge_justification": "The proposal is clear and specific with concrete results, but its focus on a booking app may not directly match the client\u2019s vague, broad skill request."
+    },
+    {
+      "item_id": "web_dev-prop-027",
+      "source": "past_proposal",
+      "mine": 3,
+      "judge": 3,
+      "judge_justification": "The proposal is clear and provides specific past results, but it focuses on a Next.js dashboard rather than a WordPress/graphic design website, making it only partially relevant."
+    },
+    {
+      "item_id": "web_dev-prop-125",
+      "source": "past_proposal",
+      "mine": 2,
+      "judge": 2,
+      "judge_justification": "The proposal is specific and well\u2011grounded about a Shopify quiz project, but it fails to address the WordPress focus of the job."
+    },
+    {
+      "item_id": "web_dev-prop-010",
+      "source": "past_proposal",
+      "mine": 1,
+      "judge": 2,
+      "judge_justification": "The proposal is clear but offers no evidence supporting its claims and is unrelated to the WordPress document task."
+    },
+    {
+      "item_id": "web_dev-prop-110",
+      "source": "past_proposal",
+      "mine": 2,
+      "judge": 2,
+      "judge_justification": "The proposal does not address Shopify store design, provides no concrete evidence, and its claims are unrelated, though it is readable."
+    },
+    {
+      "item_id": "web_dev-prop-126",
+      "source": "past_proposal",
+      "mine": 2,
+      "judge": 2,
+      "judge_justification": "The proposal does not address the Vue/Nuxt requirements, offers generic tech not asked for, lacks concrete evidence, and only loosely matches the job."
+    },
+    {
+      "item_id": "web_dev-prop-043",
+      "source": "past_proposal",
+      "mine": 1,
+      "judge": 1,
+      "judge_justification": "The proposal does not address AR or game development needs, offers no concrete evidence, and its claims are unsupported, though it is brief and readable."
+    },
+    {
+      "item_id": "data_analysis-prop-141",
+      "source": "past_proposal",
+      "mine": 3,
+      "judge": 3,
+      "judge_justification": "The proposal shows clear communication and some concrete results, but its focus on deduplication rather than website scraping reduces its relevance."
+    },
+    {
+      "item_id": "data_analysis-prop-002",
+      "source": "past_proposal",
+      "mine": 4,
+      "judge": 5,
+      "judge_justification": "The proposal directly addresses the Tableau dashboard need with concrete past experience and clear next steps."
+    },
+    {
+      "item_id": "data_analysis-prop-115",
+      "source": "past_proposal",
+      "mine": 1,
+      "judge": 1,
+      "judge_justification": "The proposal does not address listing creation/management and provides unrelated analytics examples, lacking relevant specifics."
+    },
+    {
+      "item_id": "data_analysis-prop-015",
+      "source": "past_proposal",
+      "mine": 5,
+      "judge": 4,
+      "judge_justification": "The proposal directly addresses the Power BI/data modeling/SQL requirements with a concrete, quantified example (3 days to 0 reporting time, 45 weekly users), though it lacks explicit Transact-SQL detail and contains a minor grammatical slip."
+    },
+    {
+      "item_id": "data_analysis-prop-014",
+      "source": "past_proposal",
+      "mine": 4,
+      "judge": 4,
+      "judge_justification": "The proposal is relevant and specific with concrete results, well\u2011grounded, and clearly written with a call to discuss further."
+    },
+    {
+      "item_id": "data_analysis-prop-008",
+      "source": "past_proposal",
+      "mine": 1,
+      "judge": 2,
+      "judge_justification": "The proposal does not address lead scraping or email list building, offers only tangential project details, lacks supporting evidence, and contains grammatical errors, resulting in low relevance and specificity."
+    },
+    {
+      "item_id": "data_analysis-prop-064",
+      "source": "past_proposal",
+      "mine": 2,
+      "judge": 4,
+      "judge_justification": "The proposal is clear and relevant with a concrete example, but lacks detailed evidence or metrics to fully demonstrate expertise."
+    }
+  ]
+}

@@ -44,7 +44,8 @@ def make_critic_node(deps: Deps):
                 + f"\n\nEVIDENCE:\n{render_evidence(state.get('evidence') or [], 10)}")
         crit, usage = await structured(deps, "critic", Critique, load_prompt("critic").render(), user)
         words = len(draft["cover_letter"].split())
-        crit.length_ok = 100 <= words <= 250
+        ln = config()["compliance"]["proposal_length"]
+        crit.length_ok = ln["min_words"] <= words <= ln["max_words"] + 30 and len(draft["cover_letter"]) <= ln["max_chars"]
         crit.approve = crit.approve and crit.length_ok and crit.grounding >= 4 and crit.personalisation >= 4
         crit.revision_number = int(state.get("revisions", 0))
         out = {"critiques": [crit.model_dump()], "tokens_used": usage["tokens"],

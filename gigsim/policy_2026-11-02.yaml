@@ -1,0 +1,38 @@
+# GigSim marketplace policy, UPDATE of 2 November 2026 (the assignment's "platform policy update" change request).
+# Enable with GIGSIM_POLICY_FILE=gigsim/policy_2026-11-02.yaml. Differences from policy.yaml are marked NEW.
+version: "2026.11-v2"
+effective_from: "2026-11-02"
+
+connects:
+  weekly_allowance: 80
+  max_balance: 200
+  boost:
+    allowed: true
+    max_extra_connects: 50
+  refund_if_job_cancelled: true
+  surcharges:                          # NEW: crowded jobs cost more to bid on
+    - when: {applicants: "50+"}
+      extra: 4
+
+proposals:
+  min_cover_letter_chars: 100
+  max_cover_letter_chars: 1500         # NEW: was 5000
+  max_open_proposals: 30
+  require_human_confirmation: true
+
+rules:
+  - id: no_off_platform
+    text: "No off-platform contact details (email, phone, messaging apps) or payment before a contract starts."
+  - id: no_fabrication
+    text: "Do not claim experience, clients, credentials or results you do not have."
+  - id: no_guarantees
+    text: "Do not guarantee outcomes (rankings, revenue, 100% accuracy, money-back) you cannot control."
+  - id: no_free_work
+    text: "Do not do unpaid production work as a 'trial'. Paid test tasks are allowed."
+  - id: fair_automation
+    text: "Automated tools may draft proposals, but a human must review and confirm every submission."
+  - id: concise_proposals              # NEW
+    text: "Cover letters may not exceed 1,500 characters."
+
+enforcement:
+  block_contact_details: true

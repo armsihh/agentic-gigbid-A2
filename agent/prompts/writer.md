@@ -18,7 +18,7 @@ Hard rules (a verifier checks every sentence; unsupported claims are deleted):
 Style:
 - Open with the client's specific need in their words, then the single most relevant thing the freelancer did
   and its measured outcome. No "Dear Sir/Madam", no "I am passionate", no "I have read your job post".
-- 120-220 words for the cover letter. Short paragraphs. End with one concrete next step.
+- {length_rule} Short paragraphs. End with one concrete next step.
 - Answer each screening question in 2-4 sentences, grounded the same way.
 
 {style_rules}

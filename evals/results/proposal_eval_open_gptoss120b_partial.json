@@ -1,0 +1,464 @@
+{
+  "summaries": {
+    "v0_naive": {
+      "variant": "v0_naive",
+      "jobs": 12,
+      "proposals": 5,
+      "unsupported_per_proposal_before": 0.2,
+      "unsupported_per_proposal_after": 0.0,
+      "claims_per_proposal": 2.0,
+      "judge_overall_mean": 3.0,
+      "critic_revisions_mean": 1.6,
+      "reply_rate": 0.2,
+      "hire_rate": 0.0,
+      "p50_latency_s": 93.75,
+      "p95_latency_s": 341.615,
+      "tokens_per_proposal": 15082,
+      "usd_per_proposal": 0.00425,
+      "errors": 3
+    },
+    "v5_multivector": {
+      "variant": "v5_multivector",
+      "jobs": 12,
+      "proposals": 0,
+      "unsupported_per_proposal_before": null,
+      "unsupported_per_proposal_after": null,
+      "claims_per_proposal": null,
+      "judge_overall_mean": null,
+      "critic_revisions_mean": null,
+      "reply_rate": null,
+      "hire_rate": null,
+      "p50_latency_s": 28.05,
+      "p95_latency_s": 29.424999999999997,
+      "tokens_per_proposal": null,
+      "usd_per_proposal": null,
+      "errors": 10
+    }
+  },
+  "rows": {
+    "v0_naive": [
+      {
+        "job_id": "job-01ce9333d8",
+        "persona": "ai_ml",
+        "latency_s": 98.8,
+        "halt": null,
+        "status": "waiting_approval",
+        "action": "bid",
+        "tokens": 21463,
+        "cost_usd": 0.006969,
+        "errors": [],
+        "claims_checked": 3,
+        "unsupported_before": 0,
+        "revisions": 2,
+        "compliance_violations": 0,
+        "words": 141,
+        "unsupported_after": 0,
+        "judge": {
+          "relevance": 5,
+          "specificity": 3,
+          "grounding": 2,
+          "clarity": 5,
+          "overall": 4,
+          "justification": "The proposal aligns well with the job requirements and is clearly written, but its supporting evidence for voice\u2011cloning expertise is limited and somewhat generic."
+        },
+        "submitted": true,
+        "outcome": "replied"
+      },
+      {
+        "job_id": "job-47e2165278",
+        "persona": "ai_ml",
+        "latency_s": 150.7,
+        "halt": null,
+        "status": "waiting_approval",
+        "action": "bid",
+        "tokens": 16545,
+        "cost_usd": 0.00466,
+        "errors": [],
+        "claims_checked": 1,
+        "unsupported_before": 0,
+        "revisions": 2,
+        "compliance_violations": 0,
+        "words": 86,
+        "unsupported_after": 0,
+        "judge": {
+          "relevance": 4,
+          "specificity": 4,
+          "grounding": 4,
+          "clarity": 3,
+          "overall": 4,
+          "justification": "The proposal is relevant and provides concrete, well\u2011grounded examples, though its abrupt ending and repetitive evidence list hurt clarity."
+        },
+        "submitted": true,
+        "outcome": "lost"
+      },
+      {
+        "job_id": "job-7e98231709",
+        "persona": "ai_ml",
+        "latency_s": 53.4,
+        "halt": null,
+        "status": "waiting_approval",
+        "action": "bid",
+        "tokens": 5751,
+        "cost_usd": 0.002028,
+        "errors": [],
+        "claims_checked": 2,
+        "unsupported_before": 0,
+        "revisions": 0,
+        "compliance_violations": 2,
+        "words": 76,
+        "unsupported_after": 0,
+        "judge": {
+          "relevance": 4,
+          "specificity": 2,
+          "grounding": 2,
+          "clarity": 4,
+          "overall": 3,
+          "justification": "The proposal addresses the core needs and is clear, but lacks concrete Ruby/Sinatra evidence and its claims aren't well supported by the provided past work."
+        },
+        "submitted": true,
+        "outcome": "lost"
+      },
+      {
+        "job_id": "job-c44bcd5f6d",
+        "persona": "ai_ml",
+        "latency_s": 62.9,
+        "halt": null,
+        "status": "skipped",
+        "action": "skip",
+        "tokens": 1241,
+        "cost_usd": 0.000386,
+        "errors": []
+      },
+      {
+        "job_id": "job-0097b3201a",
+        "persona": "web_dev",
+        "latency_s": 356.3,
+        "halt": "dead_letter",
+        "status": "running",
+        "action": "bid",
+        "tokens": 13327,
+        "cost_usd": 0.003587,
+        "errors": [
+          "writer: OpenAIRateLimitError: Error code: 429 - Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01m3cc41dket6agy459pn7b00d` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 197037, Requested 3683. Please try again in 5m11.039999999s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing"
+        ]
+      },
+      {
+        "job_id": "job-47e2165278",
+        "persona": "web_dev",
+        "latency_s": 88.7,
+        "halt": null,
+        "status": "watching",
+        "action": "watch",
+        "tokens": 952,
+        "cost_usd": 0.000248,
+        "errors": []
+      },
+      {
+        "job_id": "job-9d85264e3d",
+        "persona": "web_dev",
+        "latency_s": 49.7,
+        "halt": null,
+        "status": "watching",
+        "action": "watch",
+        "tokens": 1123,
+        "cost_usd": 0.000309,
+        "errors": []
+      },
+      {
+        "job_id": "job-cc68d751c0",
+        "persona": "web_dev",
+        "latency_s": 329.6,
+        "halt": null,
+        "status": "waiting_approval",
+        "action": "bid",
+        "tokens": 16379,
+        "cost_usd": 0.004047,
+        "errors": [],
+        "claims_checked": 2,
+        "unsupported_before": 0,
+        "revisions": 2,
+        "compliance_violations": 0,
+        "words": 71,
+        "unsupported_after": 0,
+        "judge": {
+          "relevance": 2,
+          "specificity": 3,
+          "grounding": 4,
+          "clarity": 2,
+          "overall": 2,
+          "justification": "The proposal is cut off mid-sentence and omits the required word 'cucumber', so it fails the explicit screening instruction and reads as incomplete; it does address the architect role with concrete, evidence-backed project details (multi-tenant SaaS dashboard, 60 companies, 1.2s p95), but it never mentions the required MERN/MEAN stack, AWS, or 7+ years of experience, and the truncated ending leaves no clear next step."
+        },
+        "submitted": true,
+        "outcome": "lost"
+      },
+      {
+        "job_id": "job-01239d603b",
+        "persona": "data_analysis",
+        "latency_s": 270.5,
+        "halt": null,
+        "status": "waiting_approval",
+        "action": "bid",
+        "tokens": 15271,
+        "cost_usd": 0.003522,
+        "errors": [],
+        "claims_checked": 2,
+        "unsupported_before": 1,
+        "revisions": 2,
+        "compliance_violations": 0,
+        "words": 60,
+        "unsupported_after": 0,
+        "judge": {
+          "relevance": 2,
+          "specificity": 2,
+          "grounding": 3,
+          "clarity": 2,
+          "overall": 2,
+          "justification": "The proposal correctly restates the client's requirements (daily scraping, front-end stock values, visualization with timestamps, proxies, multi-threading, sitemap discovery, three competitors), but it is a single truncated sentence with no fixed price, no estimated timeline, no concrete scraping/architecture plan, and its only cited evidence (a B2B packaging margin model) is tangential to web scraping, so it is relevant but thin and incomplete."
+        },
+        "submitted": true,
+        "outcome": "lost"
+      },
+      {
+        "job_id": "job-2e20ba4fff",
+        "persona": "data_analysis",
+        "latency_s": 164.8,
+        "halt": "dead_letter",
+        "status": "running",
+        "action": "bid",
+        "tokens": 9148,
+        "cost_usd": 0.002264,
+        "errors": [
+          "writer: OpenAIRateLimitError: Error code: 429 - Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01m3cc41dket6agy459pn7b00d` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 199651, Requested 3238. Please try again in 20m48.048s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing"
+        ]
+      },
+      {
+        "job_id": "job-795a1bdf45",
+        "persona": "data_analysis",
+        "latency_s": 6.5,
+        "halt": "dead_letter",
+        "status": "running",
+        "action": "bid",
+        "tokens": 1231,
+        "cost_usd": 0.000351,
+        "errors": [
+          "writer: OpenAIRateLimitError: Error code: 429 - Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01m3cc41dket6agy459pn7b00d` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 199635, Requested 2981. Please try again in 18m50.112s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing"
+        ]
+      },
+      {
+        "job_id": "job-c6add118a8",
+        "persona": "data_analysis",
+        "latency_s": 3.5,
+        "halt": null,
+        "status": "watching",
+        "action": "watch",
+        "tokens": 0,
+        "cost_usd": 0,
+        "errors": []
+      }
+    ],
+    "v5_multivector": [
+      {
+        "job_id": "job-01ce9333d8",
+        "persona": "ai_ml",
+        "latency_s": 8.0,
+        "halt": "dead_letter",
+        "status": "running",
+        "action": "bid",
+        "tokens": 0,
+        "cost_usd": 0,
+        "errors": [
+          "writer: OpenAIRateLimitError: Error code: 429 - Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01m3cc41dket6agy459pn7b00d` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 199606, Requested 2958. Please try again in 18m27.648s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing"
+        ]
+      },
+      {
+        "job_id": "job-47e2165278",
+        "persona": "ai_ml",
+        "latency_s": 21.2,
+        "halt": "dead_letter",
+        "status": "running",
+        "action": "bid",
+        "tokens": 0,
+        "cost_usd": 0,
+        "errors": [
+          "writer: OpenAIRateLimitError: Error code: 429 - Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01m3cc41dket6agy459pn7b00d` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 199557, Requested 2839. Please try again in 17m15.071999999s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing"
+        ]
+      },
+      {
+        "job_id": "job-7e98231709",
+        "persona": "ai_ml",
+        "latency_s": 28.0,
+        "halt": "dead_letter",
+        "status": "running",
+        "action": "bid",
+        "tokens": 0,
+        "cost_usd": 0,
+        "errors": [
+          "writer: OpenAIRateLimitError: Error code: 429 - Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01m3cc41dket6agy459pn7b00d` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 199491, Requested 2706. Please try again in 15m49.104s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing"
+        ]
+      },
+      {
+        "job_id": "job-c44bcd5f6d",
+        "persona": "ai_ml",
+        "latency_s": 24.1,
+        "halt": null,
+        "status": "skipped",
+        "action": "skip",
+        "tokens": 0,
+        "cost_usd": 0,
+        "errors": []
+      },
+      {
+        "job_id": "job-0097b3201a",
+        "persona": "web_dev",
+        "latency_s": 28.1,
+        "halt": "dead_letter",
+        "status": "running",
+        "action": "bid",
+        "tokens": 0,
+        "cost_usd": 0,
+        "errors": [
+          "writer: OpenAIRateLimitError: Error code: 429 - Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01m3cc41dket6agy459pn7b00d` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 199370, Requested 2023. Please try again in 10m1.776s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing"
+        ]
+      },
+      {
+        "job_id": "job-47e2165278",
+        "persona": "web_dev",
+        "latency_s": 28.6,
+        "halt": "dead_letter",
+        "status": "running",
+        "action": "bid",
+        "tokens": 0,
+        "cost_usd": 0,
+        "errors": [
+          "writer: OpenAIRateLimitError: Error code: 429 - Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01m3cc41dket6agy459pn7b00d` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 199303, Requested 2537. Please try again in 13m14.88s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing"
+        ]
+      },
+      {
+        "job_id": "job-9d85264e3d",
+        "persona": "web_dev",
+        "latency_s": 29.2,
+        "halt": "dead_letter",
+        "status": "running",
+        "action": "bid",
+        "tokens": 0,
+        "cost_usd": 0,
+        "errors": [
+          "writer: OpenAIRateLimitError: Error code: 429 - Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01m3cc41dket6agy459pn7b00d` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 199234, Requested 2935. Please try again in 15m37.008s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing"
+        ]
+      },
+      {
+        "job_id": "job-cc68d751c0",
+        "persona": "web_dev",
+        "latency_s": 29.7,
+        "halt": "dead_letter",
+        "status": "running",
+        "action": "bid",
+        "tokens": 0,
+        "cost_usd": 0,
+        "errors": [
+          "writer: OpenAIRateLimitError: Error code: 429 - Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01m3cc41dket6agy459pn7b00d` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 199165, Requested 2438. Please try again in 11m32.496s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing"
+        ]
+      },
+      {
+        "job_id": "job-01239d603b",
+        "persona": "data_analysis",
+        "latency_s": 29.2,
+        "halt": "dead_letter",
+        "status": "running",
+        "action": "bid",
+        "tokens": 0,
+        "cost_usd": 0,
+        "errors": [
+          "writer: OpenAIRateLimitError: Error code: 429 - Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01m3cc41dket6agy459pn7b00d` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 199098, Requested 2718. Please try again in 13m4.512s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing"
+        ]
+      },
+      {
+        "job_id": "job-2e20ba4fff",
+        "persona": "data_analysis",
+        "latency_s": 28.6,
+        "halt": "dead_letter",
+        "status": "running",
+        "action": "bid",
+        "tokens": 0,
+        "cost_usd": 0,
+        "errors": [
+          "writer: OpenAIRateLimitError: Error code: 429 - Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01m3cc41dket6agy459pn7b00d` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 199030, Requested 2150. Please try again in 8m29.76s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing"
+        ]
+      },
+      {
+        "job_id": "job-795a1bdf45",
+        "persona": "data_analysis",
+        "latency_s": 27.9,
+        "halt": "dead_letter",
+        "status": "running",
+        "action": "bid",
+        "tokens": 0,
+        "cost_usd": 0,
+        "errors": [
+          "writer: OpenAIRateLimitError: Error code: 429 - Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01m3cc41dket6agy459pn7b00d` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198965, Requested 2772. Please try again in 12m30.384s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing"
+        ]
+      },
+      {
+        "job_id": "job-c6add118a8",
+        "persona": "data_analysis",
+        "latency_s": 23.6,
+        "halt": null,
+        "status": "watching",
+        "action": "watch",
+        "tokens": 0,
+        "cost_usd": 0,
+        "errors": []
+      }
+    ]
+  },
+  "jobs": [
+    [
+      "ai_ml",
+      "job-01ce9333d8"
+    ],
+    [
+      "ai_ml",
+      "job-47e2165278"
+    ],
+    [
+      "ai_ml",
+      "job-7e98231709"
+    ],
+    [
+      "ai_ml",
+      "job-c44bcd5f6d"
+    ],
+    [
+      "web_dev",
+      "job-0097b3201a"
+    ],
+    [
+      "web_dev",
+      "job-47e2165278"
+    ],
+    [
+      "web_dev",
+      "job-9d85264e3d"
+    ],
+    [
+      "web_dev",
+      "job-cc68d751c0"
+    ],
+    [
+      "data_analysis",
+      "job-01239d603b"
+    ],
+    [
+      "data_analysis",
+      "job-2e20ba4fff"
+    ],
+    [
+      "data_analysis",
+      "job-795a1bdf45"
+    ],
+    [
+      "data_analysis",
+      "job-c6add118a8"
+    ]
+  ]
+}

@@ -1,0 +1,31 @@
+name: Eval
+on:
+  pull_request:
+  workflow_dispatch:
+
+# 30-job smoke eval with failure thresholds (evals/thresholds.json). LLM-free, so it needs no API keys:
+# retrieval Recall@5, bid-or-skip F1, scam recall, and the claim verifier on fixed fabricated claims.
+jobs:
+  smoke-eval:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          python-version: "3.12"
+      - run: uv sync --frozen
+      - name: Cache embedding models
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/fastembed
+          key: fastembed-${{ hashFiles('uv.lock') }}
+      - name: Smoke eval (fails if metrics drop past thresholds)
+        env:
+          FASTEMBED_CACHE_PATH: ~/.cache/fastembed
+        run: uv run python -m evals.runners.smoke_gate
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: smoke-eval
+          path: evals/results/smoke_gate.json

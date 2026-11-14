@@ -59,37 +59,61 @@ def _provider(name: str) -> dict:
             "api_key": os.environ.get(p["api_key_env"], "") if p.get("api_key_env") else "not-needed"}
 
 
+def chain_for(node: str, profile: str | None = None) -> list[ModelSpec]:
+    """The tier's provider chain, in order: primary, then each `fallback` (e.g. Groq -> Gemini/Gemma -> OpenRouter)."""
+    out, s = [], spec_for(node, profile)
+    while s is not None and len(out) < 6:
+        out.append(s)
+        s = s.fallback
+    return out
+
+
 def chat_model(node: str, profile: str | None = None, **overrides: Any):
-    """LangChain chat model for a node, with the configured fallback model chained on errors."""
+    """LangChain chat model for a node: the configured provider chain, tried in order on any error.
+    Every link but the last gets few retries, so a rate-limited provider hands over quickly."""
     from langchain_openai import ChatOpenAI
 
-    spec = spec_for(node, profile)
+    chain = chain_for(node, profile)
+    last_retries = int(os.environ.get("LLM_MAX_RETRIES", "3"))
 
-    def make(s: ModelSpec):
+    def make(s: ModelSpec, retries: int):
         prov = _provider(s.provider)
-        return ChatOpenAI(model=s.model, base_url=prov["base_url"], api_key=prov["api_key"],
+        return ChatOpenAI(model=s.model, base_url=prov["base_url"], api_key=prov["api_key"] or "missing",
                           temperature=overrides.get("temperature", s.temperature),
-                          max_tokens=overrides.get("max_tokens", s.max_tokens), timeout=90,
-                          max_retries=int(os.environ.get("LLM_MAX_RETRIES", "3")))
-    return _WithFallback(make(spec), make(spec.fallback) if spec.fallback else None)
+                          max_tokens=overrides.get("max_tokens", s.max_tokens), timeout=90, max_retries=retries)
+
+    def method(s: ModelSpec) -> str:
+        return _cfg()["providers"][s.provider].get("structured_method", "function_calling")
+
+    links = [(make(s, 1 if i < len(chain) - 1 else last_retries), method(s)) for i, s in enumerate(chain)
+             if not _cfg()["providers"][s.provider].get("api_key_env") or os.environ.get(
+                 _cfg()["providers"][s.provider]["api_key_env"])]          # skip providers with no key configured
+    if not links:
+        raise RuntimeError(f"no provider with an API key configured for node {node!r}")
+    return _ProviderChain(links)
 
 
-class _WithFallback:
-    """Primary model + configured fallback. Structured output is applied to EACH model, then chained
-    (a RunnableWithFallbacks itself has no with_structured_output)."""
-    def __init__(self, primary, fallback):
-        self.primary, self.fallback = primary, fallback
+class _ProviderChain:
+    """Ordered provider chain. Structured output is applied to EACH link with that provider's method
+    (function calling for Groq/OpenRouter, JSON schema for Gemma on the Gemini API), then chained with fallbacks."""
+    def __init__(self, links: list[tuple[Any, str]]):
+        self.links = links
+        self.primary = links[0][0]
+
+    @staticmethod
+    def _so(model, schema, method: str, kw: dict):
+        k = dict(kw, method=kw.get("method") or method)
+        if k["method"] == "json_schema":
+            k.setdefault("strict", False)
+        return model.with_structured_output(schema, **k)
 
     def with_structured_output(self, schema, **kw):
-        # function calling is the most portable structured-output method across Groq/OpenRouter/Ollama
-        kw.setdefault("method", "function_calling")
-        if kw["method"] == "json_schema":
-            kw.setdefault("strict", False)
-        p = self.primary.with_structured_output(schema, **kw)
-        return p.with_fallbacks([self.fallback.with_structured_output(schema, **kw)]) if self.fallback else p
+        runs = [self._so(m, schema, meth, kw) for m, meth in self.links]
+        return runs[0].with_fallbacks(runs[1:]) if len(runs) > 1 else runs[0]
 
     async def ainvoke(self, *a, **kw):
-        r = self.primary.with_fallbacks([self.fallback]) if self.fallback else self.primary
+        models = [m for m, _ in self.links]
+        r = models[0].with_fallbacks(models[1:]) if len(models) > 1 else models[0]
         return await r.ainvoke(*a, **kw)
 
 

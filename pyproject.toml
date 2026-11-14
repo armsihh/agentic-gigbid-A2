@@ -33,13 +33,25 @@ dependencies = [
   "aiosqlite>=0.22.1",
   "email-validator>=2.3.0",
   "psutil>=7.2.2",
+  "langgraph-supervisor>=0.0.31",
 ]
+
+[project.scripts]
+# The Portfolio MCP server, installable on its own:  uvx --from git+https://github.com/armsihh/agentic-gigbid-A2 gigbid-portfolio-mcp
+gigbid-portfolio-mcp = "mcp_servers.portfolio.server:main"
+
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["agent", "rag", "mcp_servers", "apps", "gigsim"]
 
 [dependency-groups]
 dev = ["pytest>=8", "pytest-asyncio>=0.23", "ruff>=0.6", "mypy>=1.10"]
 
 [tool.uv]
-package = false
+package = true
 
 [tool.ruff]
 line-length = 100

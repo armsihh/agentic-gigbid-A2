@@ -42,6 +42,8 @@ def check(text: str, profile: dict | None = None, policy_version: str | None = N
         m = YEARS.search(s)
         if m and profile and int(m.group(1)) > int(profile.get("years", 0)):
             violations.append(Violation(rule_id="no_fabrication", excerpt=s[:160], action="blocked"))
+    if len(text) > cfg["proposal_length"]["max_chars"] + 400:  # + room for screening answers in `text`
+        violations.append(Violation(rule_id="concise_proposals", excerpt=f"{len(text)} characters", action="blocked"))
     if scan(text).detected:
         violations.append(Violation(rule_id="injection_echo", excerpt="draft repeats instructions aimed at AI tools",
                                     action="blocked"))

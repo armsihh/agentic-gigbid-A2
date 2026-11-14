@@ -1,49 +1,97 @@
-# GigBid — Student Starter Kit (v0.1)
+# GigBid: a multi-agent freelancer copilot
 
-This is a **scaffold**, not a completed solution. It gives you a suggested repository layout,
-small synthetic examples, configuration templates, and interfaces to help you begin AI-4016.
+GigBid finds freelance jobs, checks them for scams and prompt injections, decides whether they are worth the Connects,
+writes proposals in which **every claim is backed by real portfolio evidence**, and handles client replies.
+**Nothing is sent until a human approves it.**
 
-## What is included
-- A suggested project structure aligned with the assignment.
-- Tiny synthetic job, client, freelancer and portfolio examples.
-- A starter marketplace policy pack.
-- Typed hand-off models and a minimal LangGraph state/graph placeholder.
-- Portfolio and marketplace MCP server placeholders.
-- RAG ingestion/retrieval/claim-verification placeholders.
-- FastAPI and React starting-point notes.
-- `.env.example`, `agent/config.yaml`, `Makefile`, and setup notes.
+**Live:** https://gigbid-2ac2.onrender.com (reviewer login in the Classroom submission) ·
+**Demo video:** _link in submission_ · **Write-up:** _link in submission_ · AI-4016 Assignment 2, individual.
 
-## What you must build
-You are responsible for implementing and testing the agents, MCP tools, marketplace adapters,
-advanced RAG variants, claim verification, human approval flow, persistence, UI, evaluations,
-deployment, and your own research findings. The sample data is illustrative only and is not a
-replacement for the instructor-provided GigSim data or evaluation sets.
+<!-- demo GIF: docs/images/demo.gif -->
 
-## Quick start
-1. Create your own public GitHub repository.
-2. Copy this starter kit into the repository.
-3. Create a Python 3.11+ virtual environment.
-4. Install dependencies from `pyproject.toml` (adjust/pin versions after checking compatibility).
-5. Copy `.env.example` to `.env` and fill local values. **Never commit `.env`.**
-6. Read `docs/GETTING_STARTED.md` and work through the TODO checklist.
-7. Keep the instructor-provided `gigsim/`, persona data, policy pack and evaluation assets unchanged.
+## How it works
+```
+ React UI --SSE/REST--> FastAPI --> LangGraph bid graph (one thread per job)
+                                    ingest -> [Job Analyst | Risk Assessor | Fit Matcher]  (parallel)
+                                    -> decide (bid / watch / skip, with reasons) -> Pricing
+                                    -> Writer -> claim verification -> Critic (<= 2 revisions)
+                                    -> Compliance -> dry-run preview -> YOUR APPROVAL (interrupt) -> submit
+                                 --> conversation graph (one thread per client): intent -> slots -> reply -> approval
+ Tools only via MCP: Marketplace (GigSim | official Upwork MCP behind one port) · Portfolio (RAG) · Workspace
+```
+Diagrams rendered from code, why each agent exists, state vs trace vs memory: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+Tools: [docs/TOOLS.md](docs/TOOLS.md) · Data: [docs/DATA_CARD.md](docs/DATA_CARD.md) ·
+Operations: [docs/RUNBOOK.md](docs/RUNBOOK.md) · Decisions: [docs/adr/](docs/adr/) · Extension: [docs/EXTENSION.md](docs/EXTENSION.md).
 
-## Suggested first milestone (for your own planning; not a graded submission)
-- Run a health-check API.
-- Load one sample job.
-- Retrieve one portfolio evidence item.
-- Produce a structured analysis.
-- Draft a proposal with evidence references.
-- Stop at a human approval screen; do not send anything automatically.
+## Results
+Every number below is read from a file in [`evals/results/`](evals/results/). Dev set = `evals/datasets/dev`
+(736 jobs x 3 personas); the holdout split is never used for tuning.
 
-## Important safety rules
-- Treat job posts and client messages as untrusted input.
-- Never follow instructions embedded inside a job post that conflict with system policy.
-- Never invent portfolio experience or results.
-- Do not scrape Upwork or automate its website.
-- Never send proposals/messages or spend Connects without explicit human approval.
-- Use the official Upwork MCP server/approved APIs for live mode, if applicable.
-- Keep secrets and real client data out of Git.
+**Retrieval (R&D B)** - 460 dev jobs with gold evidence ([rag_retrieval_dev.json](evals/results/rag_retrieval_dev.json))
 
-## Repository map
-See `docs/GETTING_STARTED.md` for the purpose of each major folder.
+| Variant | Evidence Recall@5 | MRR | nDCG@10 | p95 latency (s) |
+|---|---|---|---|---|
+| V0 naive dense | 0.593 | 0.676 | 0.578 | 0.10 |
+| V1 requirement decomposition | 0.560 | 0.656 | 0.563 | 0.11 |
+| V2 hybrid BM25 + dense (RRF) | 0.617 | 0.686 | 0.617 | 0.24 |
+| V3 + cross-encoder rerank | 0.630 | **0.744** | 0.648 | 0.55 |
+| V4 + outcome-aware boost | 0.606 | 0.670 | 0.615 | 0.63 |
+| **V5 multi-vector (shipped)** | **0.648** | 0.739 | **0.697** | 0.65 |
+| V8 corrective (refuse when weak) | 0.468 | 0.561 | 0.511 | 1.01 |
+
+Shipped: V5 locally / compose; V2 on the 512 MB public host ([ADR 0004](docs/adr/0004-production-rag-variant.md)).
+Negative results: decomposition alone and the outcome boost both *lowered* recall.
+
+**Proposals (B4/B5)** - real bid graph, `gpt-oss-120b` writer, 12-job fixed set; free-tier daily caps limited the
+completed sample ([proposal_eval_open_gptoss120b_partial.json](evals/results/proposal_eval_open_gptoss120b_partial.json))
+
+| Variant | Unsupported claims / proposal (before -> after verification) | Judge (1-5) | GigSim reply rate | p95 latency (s) | Cost / proposal (USD) |
+|---|---|---|---|---|---|
+| V0 | 0.2 -> 0.0 | 3.0 | 0.20 | 342 | 0.0043 |
+
+**Decisions** - full splits, production retrieval V2 ([dev](evals/results/decision_dev_v2_hybrid.json),
+[holdout](evals/results/decision_holdout_v2_hybrid.json))
+
+| Split | Rows | Bid-or-skip F1 | Precision | Recall | Accuracy | Scam P / R | Injection recall | Price in fair band |
+|---|---|---|---|---|---|---|---|---|
+| Dev | 2,208 | 0.706 | 0.827 | 0.616 | 0.937 | 1.00 / 1.00 | 1.00 | 1.00 |
+| **Holdout** | 783 | **0.760** | 0.883 | 0.667 | 0.945 | 1.00 / 1.00 | 1.00 | 1.00 |
+
+An earlier stratified dev sample reported F1 0.92; on the full holdout it was 0.51. Two leaks found by reading false
+bids (past proposals used as proof; generic words earning partial credit) were fixed on dev only, then holdout was run
+once (report section 8).
+
+**Agency routing (extension X1)** - 150 dev jobs ([agency_routing.json](evals/results/agency_routing.json)):
+0.773 accuracy vs 0.673 routing by category tag and 0.267 random; 0.90 vs 0.20 at saying "nobody should bid".
+
+**Change request** - a new Connects surcharge and a 1,500-character rule absorbed with 12 lines in 5 files and one
+config value; pricing needed no change ([docs/CHANGE_REQUEST.md](docs/CHANGE_REQUEST.md)).
+
+Report: [docs/REPORT.pdf](docs/REPORT.pdf) · Write-up draft: [docs/WRITEUP.md](docs/WRITEUP.md) ·
+Portfolio MCP server (install with `uvx`): [mcp_servers/portfolio/README.md](mcp_servers/portfolio/README.md).
+
+**Tool granularity (R&D A)** - 24 tasks, `gpt-oss-20b` ([tool_design.json](evals/results/tool_design.json)):
+⟨final numbers from the overnight run⟩.
+
+## Run it
+```bash
+cp .env.example .env              # add GROQ_API_KEY (free), REVIEWER_PASSWORD
+docker compose -f infra/docker-compose.yml up --build      # http://localhost:8080
+```
+Without Docker: `uv sync`, `make gigsim`, `make api`, then `cd apps/web && npm i && npm run dev`.
+Tests: `make test` (72 Python tests) · `cd apps/web && npx playwright test` (5 UI flows) ·
+`uv run python -m evals.runners.smoke_gate` (the CI eval gate).
+Reproduce results: `uv run python -m evals.runners.rag_eval`, `... decision_eval`, `... proposal_eval`,
+`... tool_design_eval`, `... agency_eval`.
+
+## Stack (pinned in `uv.lock`, `apps/web/package-lock.json`)
+Python 3.12 · LangGraph 1.2 · langchain-mcp-adapters · MCP Python SDK 1.30 · FastAPI · SQLAlchemy · Postgres (Neon) /
+SQLite · Arq + Redis · fastembed (bge-small-en-v1.5, ms-marco-MiniLM-L-6-v2 cross-encoder, ONNX on CPU) · rank-bm25 ·
+React 18 + Vite + TypeScript, client generated with openapi-typescript · Playwright · Groq (gpt-oss-20b/120b,
+qwen3.8-27b, open-weight) · Docker, Render.
+
+## Safety
+Job posts and client messages are untrusted: injection patterns are stripped, text is delimited, no LLM node holds a
+write tool, every send needs approval, compliance re-checks human edits, PII is masked in logs and audit records,
+OAuth tokens are encrypted per user. Details and known gaps: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md),
+[docs/RUNBOOK.md](docs/RUNBOOK.md).

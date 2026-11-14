@@ -41,9 +41,14 @@ async def run(split: str, per_persona: int, variant: str | None) -> dict:
         d = deps(persona, variant)
         fit_node = make_fit_node(d)
         pl = [r for r in labels if r["persona"] == persona]
-        # stratified: keep every scam/injection/dupe + all gold-bid rows first, then fill with the rest
-        pl.sort(key=lambda r: (not (r["bid"] or r["is_scam"] or r["has_injection"]), r["job_id"]))
-        for r in pl[:per_persona]:
+        # stratified: scams + injections first, then gold-bid rows, then the rest (small samples still test all)
+        pl = pl[:]
+        pl.sort(key=lambda r: (not (r["is_scam"] or r["has_injection"]), not r["bid"], r["job_id"]))
+        scams = [r for r in pl if r['is_scam']]
+        injs = [r for r in pl if r['has_injection']]
+        rest = [r for r in pl if not (r['is_scam'] or r['has_injection'])]
+        k = max(2, per_persona // 3)
+        for r in (scams[:k // 2 + 1] + injs[:k // 2] + rest)[:per_persona]:
             job = dict(jobs[r["job_id"]], duplicate_of=r["duplicate_of"])
             client = clients.get(job["client_id"], {})
             risk = assess(job, client, job["duplicate_of"])
