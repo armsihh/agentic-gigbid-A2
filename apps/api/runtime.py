@@ -103,7 +103,7 @@ class Runtime:
             skills = set()
             for p in (ROOT / "data" / "personas").iterdir():
                 skills |= {s.lower() for s in load_profile(p).get("skills", [])}
-            self._verifier = ClaimVerifier(Reranker(self.cfg["models"]["reranker"]),
+            self._verifier = ClaimVerifier(Reranker(self.cfg["models"]["reranker"], batch_size=1, max_chars=600),
                                            known_terms=skills | {"kubernetes", "celery", "pinecone", "dbt", "spark"})
         return self._verifier
 

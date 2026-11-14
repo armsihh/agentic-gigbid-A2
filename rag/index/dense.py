@@ -78,15 +78,21 @@ def _reranker(name: str):
 
 
 class Reranker:
-    """Cross-encoder reranker with a (query, doc) score cache."""
+    """Cross-encoder reranker with a (query, doc) score cache.
 
-    def __init__(self, model: str = "Xenova/ms-marco-MiniLM-L-6-v2"):
+    Memory: ONNX activations grow with batch x sequence length. 32 full 512-token chunks took ~350 MB on top of the
+    model, which OOM-killed the 512 MB production container at the claim verifier. Production builds it with
+    batch_size=1, max_chars=600 (~15 MB, same claims removed); offline evals keep the defaults so their numbers are unchanged."""
+
+    def __init__(self, model: str = "Xenova/ms-marco-MiniLM-L-6-v2", batch_size: int = 32, max_chars: int | None = None):
         self.model = model
+        self.batch_size, self.max_chars = batch_size, max_chars
         self._cache: dict[tuple[str, str], float] = {}
 
     def score(self, query: str, docs: list[str]) -> list[float]:
         todo = [d for d in docs if (query, d) not in self._cache]
         if todo:
-            for d, s in zip(todo, _reranker(self.model).rerank(query, todo, batch_size=32)):
+            inputs = [d[: self.max_chars] for d in todo] if self.max_chars else todo
+            for d, s in zip(todo, _reranker(self.model).rerank(query, inputs, batch_size=self.batch_size)):
                 self._cache[(query, d)] = float(s)
         return [self._cache[(query, d)] for d in docs]
