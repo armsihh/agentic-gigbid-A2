@@ -96,3 +96,25 @@ class Reranker:
             for d, s in zip(todo, _reranker(self.model).rerank(query, inputs, batch_size=self.batch_size)):
                 self._cache[(query, d)] = float(s)
         return [self._cache[(query, d)] for d in docs]
+
+
+class EmbeddingRelevance:
+    """Drop-in for Reranker.score() that reuses the bi-encoder the dense index already loaded, so the claim verifier
+    adds no model (the cross-encoder costs ~137 MB, which pushed the 512 MB free host over its limit at `verify`).
+    Cosine is mapped to a logit so ClaimVerifier's sigmoid thresholds (0.6 / 0.3) keep their meaning. Calibrated
+    against the cross-encoder on 106 claim/evidence pairs from the personas (source chunk removed): 92.5% label
+    agreement; unrelated evidence rejected 98% (cross-encoder 100%). Hard facts (numbers, tools) are checked
+    lexically either way, so a wrong number is still always removed."""
+
+    MID, SLOPE = 0.6787, 35.79
+
+    def __init__(self, embedder: Embedder | None = None, max_chars: int = 600):
+        self.embedder = embedder or Embedder()
+        self.max_chars = max_chars
+
+    def score(self, query: str, docs: list[str]) -> list[float]:
+        if not docs:
+            return []
+        q = self.embedder.queries([query])[0]
+        d = self.embedder.docs([t[: self.max_chars] for t in docs])
+        return [float((c - self.MID) * self.SLOPE) for c in d @ q]

@@ -11,7 +11,8 @@ import httpx
 from dotenv import load_dotenv
 
 ROOT = Path(__file__).resolve().parents[1]
-load_dotenv(ROOT / ".env")
+# override: a stale key exported in the OS environment silently won over .env (every Gemini call 402-ed)
+load_dotenv(ROOT / ".env", override=True)
 os.environ.setdefault("GIGSIM_ERROR_RATE", "0")
 os.environ.setdefault("GIGSIM_SLOW_RATE", "0")
 os.environ.setdefault("GIGSIM_RPM", "100000")

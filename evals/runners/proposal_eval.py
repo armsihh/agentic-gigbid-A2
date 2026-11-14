@@ -181,14 +181,22 @@ def main() -> None:
     a = ap.parse_args()
     picks = pick_jobs(a.per_persona)
     print(f"{len(picks)} jobs x {len(a.variants)} variants")
+    import os as _os
+    prof = _os.environ.get("MODEL_PROFILE", "open")
+    prev = RESULTS / f"proposal_eval_{prof}.json"
     summaries, all_rows, items = {}, {}, []
+    if prev.exists():   # keep variants finished by an earlier run (re-running one variant must not drop the others)
+        old = json.loads(prev.read_text(encoding="utf-8"))
+        summaries = {k: v for k, v in old["summaries"].items() if k not in a.variants}
+        all_rows = {k: v for k, v in old["rows"].items() if k not in a.variants}
+        items_path = RESULTS / f"judge_items_{prof}.jsonl"
+        if items_path.exists():
+            items = [i for i in load_jsonl(items_path) if i["variant"] not in a.variants]
     for v in a.variants:
         s, rows, its = asyncio.run(run_variant(v, picks))
         summaries[v], all_rows[v] = s, rows
         items += its
         print(json.dumps(s, indent=1), flush=True)
-        import os as _os
-        prof = _os.environ.get("MODEL_PROFILE", "open")
         if any(x.get("proposals") for x in summaries.values()):   # never overwrite results with an empty run
             (RESULTS / f"proposal_eval_{prof}.json").write_text(json.dumps({"summaries": summaries, "rows": all_rows,
                                                                "jobs": picks}, indent=2), encoding="utf-8")

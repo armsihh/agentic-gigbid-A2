@@ -1,7 +1,9 @@
 """Analytics + health (degraded-mode banner)."""
 from __future__ import annotations
 
+import os
 from collections import Counter, defaultdict
+from pathlib import Path
 
 import numpy as np
 from fastapi import APIRouter
@@ -69,4 +71,26 @@ async def health():
     snap = mcp_health.snapshot()
     if (snap.get("marketplace") or {}).get("status") == "degraded":
         status, detail = "degraded", snap["marketplace"].get("last_error")
-    return Health(api="ok", marketplace=status, marketplace_detail=detail, mode=runtime.mode, servers=snap)
+    return Health(api="ok", marketplace=status, marketplace_detail=detail, mode=runtime.mode, servers=snap,
+                  version=(os.environ.get("RENDER_GIT_COMMIT") or os.environ.get("GIT_COMMIT") or "")[:7] or None,
+                  memory_mb=_memory_mb())
+
+
+def _memory_mb() -> dict | None:
+    """Container memory (cgroup v2/v1) and this process's RSS: the free host has 512 MB and OOM-kills above it."""
+    out = {}
+    for path in ("/sys/fs/cgroup/memory.current", "/sys/fs/cgroup/memory/memory.usage_in_bytes"):
+        try:
+            out["container"] = int(Path(path).read_text()) >> 20
+            break
+        except (OSError, ValueError):
+            continue
+    for path in ("/sys/fs/cgroup/memory.peak", "/sys/fs/cgroup/memory/memory.max_usage_in_bytes"):
+        try:
+            out["container_peak"] = int(Path(path).read_text()) >> 20
+            break
+        except (OSError, ValueError):
+            continue
+    import psutil
+    out["api_rss"] = psutil.Process().memory_info().rss >> 20
+    return out or None

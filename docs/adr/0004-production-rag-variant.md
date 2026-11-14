@@ -12,3 +12,12 @@ In a container capped at 512 MB / 0.1 CPU the all-in-one image used 372 MB.
 **Consequences.** Production gives up 0.031 Recall@5 and 0.080 nDCG@10 versus V5 (`rag_retrieval_dev.json`) to stay
 inside memory and the declared latency budget. Bid F1 measured with V2: 0.760 holdout / 0.706 dev (`decision_*_v2_hybrid.json`).
 With a paid tier or a hosted open reranker, V5 is the drop-in upgrade.
+
+**Addendum (2026-11-15, found live).** The 372 MB was measured idle. The claim verifier loaded the cross-encoder
+at `verify`, on top of the embedder that the Fit Matcher had loaded, and the host was OOM-killed on every proposal
+(the "Ran out of memory (used over 512MB)" event). Production now also sets `VERIFIER_RELEVANCE=embedding`: claim
+relevance comes from the already-loaded bi-encoder (cosine mapped onto the same thresholds, `EmbeddingRelevance`
+in `rag/index/dense.py`). Measured with every model loaded: verify +103 MB with the cross-encoder, +0 MB with the
+embedding scorer. 92.5% label agreement with the cross-encoder on 106 calibration pairs; numbers and tools are still
+checked lexically. Runs are also serialised (`MAX_CONCURRENT_RUNS=1`) and runs killed by a restart are marked
+failed so the job can be retried. `/api/health` now reports the deployed commit and container memory.

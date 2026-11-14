@@ -110,11 +110,18 @@ removed before the Critic sees the draft.
 | V0, gpt-oss-120b writer, 5 proposals [proposal_eval_open_gptoss120b_partial.json] | 0.2 -> 0.0 | 3.0 | 0.20 | 342 | 0.0043 |
 | V0 vs V5, qwen3.8-27b writer [proposal_eval_open_eval.json] | ⟨pending⟩ | ⟨pending⟩ | ⟨pending⟩ | ⟨pending⟩ | ⟨pending⟩ |
 
-**Judge calibration.** 30 proposals labelled by me before seeing the judge; Cohen's kappa ⟨pending⟩
-(quadratic-weighted ⟨pending⟩) [judge_calibration.json].
+**Judge calibration.** 30 proposals labelled by me before seeing the judge; Cohen's kappa 0.392 (quadratic-weighted
+0.717), exact agreement 0.53, within one point 0.87; the judge is about 0.2 points more generous (2.77 vs 2.57)
+[judge_calibration.json]. So judge scores are trustworthy for ranking variants, not as absolute grades; its biggest
+misses reward concrete metrics in a proposal that does not answer the job.
 
 **Shipped.** V5 locally and in compose; **V2 on the public host** because V5 needs ~480 MB and ~1 s/search on a
-laptop (~10 s at 0.1 CPU) while V2 needs 291 MB and 0.1 s; production gives up 0.031 Recall@5 (ADR 0004). Where
+laptop (~10 s at 0.1 CPU) while V2 needs 291 MB and 0.1 s; production gives up 0.031 Recall@5 (ADR 0004).
+For the same reason the public host scores claim relevance with the bi-encoder the index already loaded instead of
+the cross-encoder: loading the cross-encoder at `verify` added ~103-137 MB and the host was OOM-killed on every
+proposal (found live, reproduced locally, `VERIFIER_RELEVANCE=embedding`). Calibrated on 106 claim/evidence pairs it
+agrees with the cross-encoder on 92.5% of labels and still rejects 98% of claims against unrelated evidence; number
+and tool checks are lexical in both, so a wrong number is always removed. Where
 better retrieval did not translate into a better reply rate: ⟨pending: V0 vs V5 reply rates⟩.
 
 ## 5. R&D question C: single agent vs supervisor vs graph

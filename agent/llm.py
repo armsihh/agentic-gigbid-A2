@@ -85,7 +85,10 @@ def chat_model(node: str, profile: str | None = None, **overrides: Any):
     def method(s: ModelSpec) -> str:
         return _cfg()["providers"][s.provider].get("structured_method", "function_calling")
 
-    links = [(make(s, 1 if i < len(chain) - 1 else last_retries), method(s)) for i, s in enumerate(chain)
+    def retries(i: int, s: ModelSpec) -> int:   # a provider can ask for more (Gemma: transient 500s, ~1 s each)
+        return last_retries if i == len(chain) - 1 else int(_cfg()["providers"][s.provider].get("retries", 1))
+
+    links = [(make(s, retries(i, s)), method(s)) for i, s in enumerate(chain)
              if not _cfg()["providers"][s.provider].get("api_key_env") or os.environ.get(
                  _cfg()["providers"][s.provider]["api_key_env"])]          # skip providers with no key configured
     if not links:

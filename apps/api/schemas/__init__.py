@@ -145,6 +145,8 @@ class Health(BaseModel):
     marketplace_detail: str | None = None
     mode: str
     servers: dict[str, Any] = Field(default_factory=dict)
+    version: str | None = None          # deployed git commit (Render sets RENDER_GIT_COMMIT)
+    memory_mb: dict | None = None
 
 
 class MemoryItem(BaseModel):

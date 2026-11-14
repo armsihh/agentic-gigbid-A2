@@ -14,7 +14,7 @@ FROM python:3.12-slim
 ENV PYTHONUNBUFFERED=1 PYTHONDONTWRITEBYTECODE=1 \
     UV_PROJECT_ENVIRONMENT=/opt/venv UV_COMPILE_BYTECODE=1 UV_LINK_MODE=copy PATH=/opt/venv/bin:$PATH \
     FASTEMBED_CACHE_PATH=/opt/models EMB_CACHE_DIR=/opt/emb_cache APP_DATA_DIR=/app/data/runtime \
-    RAG_VARIANT=v2_hybrid SERVE_WEB_DIR=/app/web GIGSIM_BASE_URL=http://127.0.0.1:8081 \
+    RAG_VARIANT=v2_hybrid VERIFIER_RELEVANCE=embedding SERVE_WEB_DIR=/app/web GIGSIM_BASE_URL=http://127.0.0.1:8081 \
     OMP_NUM_THREADS=1 MALLOC_ARENA_MAX=2
 COPY --from=ghcr.io/astral-sh/uv:0.11.23 /uv /usr/local/bin/uv
 WORKDIR /app

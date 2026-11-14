@@ -103,7 +103,12 @@ class Runtime:
             skills = set()
             for p in (ROOT / "data" / "personas").iterdir():
                 skills |= {s.lower() for s in load_profile(p).get("skills", [])}
-            self._verifier = ClaimVerifier(Reranker(self.cfg["models"]["reranker"], batch_size=1, max_chars=600),
+            if os.environ.get("VERIFIER_RELEVANCE") == "embedding":   # 512 MB host: no extra model (rag/index/dense.py)
+                from rag.index.dense import Embedder, EmbeddingRelevance
+                scorer = EmbeddingRelevance(Embedder(self.cfg["models"]["embeddings"]))
+            else:
+                scorer = Reranker(self.cfg["models"]["reranker"], batch_size=1, max_chars=600)
+            self._verifier = ClaimVerifier(scorer,
                                            known_terms=skills | {"kubernetes", "celery", "pinecone", "dbt", "spark"})
         return self._verifier
 
