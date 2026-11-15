@@ -61,25 +61,24 @@ are the best trade-off.
 **Setup.** 24 tasks with known correct calls (`evals/datasets/tool_tasks.json`), one open model
 (`qwen/qwen3.8-27b`) choosing one call per task, three tool sets: fine (27 narrow tools), coarse (2 tools:
 `marketplace(action, params)`, `portfolio(action, params)`), ours (13 real MCP tools with their shipped
-descriptions) [tool_design.json]. Sets run cheapest-prompt first and save after every task.
+descriptions) [tool_design.json].
 
-| Tool set | Tools | Selection accuracy | Argument accuracy | Tokens / task | Tasks done |
+| Tool set | Tools | Selection accuracy | Argument accuracy | Tokens / task | Tasks |
 |---|---|---|---|---|---|
-| Fine | 27 | not run (daily cap) | - | - | 0/24 |
-| Coarse | 2 | not run (daily cap) | - | - | 0/24 |
-| Ours | 13 | 0.83 | 0.67 | 2,318 | 6/24 |
+| Fine | 27 | 0.88* | 0.83* | not measured | 24* |
+| Coarse | 2 | 0.29 | 0.29 | 448 | 24 |
+| Ours | 13 | **0.92** | **0.88** | 2,316 | 24 |
 
-**Incomplete: free-tier daily caps.** Every Groq model on this account hit its 200k tokens/day cap the night
-before submission (proposal and architecture evaluations), and the cap frees on a rolling window, so this run
-advanced at about two tasks an hour. The numbers above are on the tasks finished, not all 24. An earlier complete
-run of fine and coarse on `gpt-oss-20b` (lost to a rate-limit crash before it saved, which is why the runner now
-saves per task) measured selection / argument accuracy of 0.88 / 0.83 (fine) and 0.25 / 0.25 (coarse).
+\* Fine: an earlier complete run on `gpt-oss-20b` (lost to a rate-limit crash before it saved; the runner now saves
+after every task). The rerun on `qwen/qwen3.8-27b` hit the free tier's daily cap before the fine set started, so fine is
+on a different model and has no token count; treat that row as indicative.
 
-**Conclusion (provisional).** The coarse set is the clear loser: hiding the operation inside an `action` string
-made the model guess actions and parameter names (0.25 in the earlier run), so fewer tools did not mean easier
-choices. Our task-level tools chose the right tool on 83% of the 6 tasks run, with 2,318 tokens per call; misses: called search_evidence where get_job was expected.
-Fine-grained tools were accurate in the earlier run but necessarily send the most prompt per call (27 schemas). The hypothesis holds on the evidence
-so far, but the margin between fine and ours is not established at this sample size.
+**Conclusion.** The hypothesis holds. Our 13 task-level tools picked the right tool on 22/24 tasks and
+filled the arguments correctly on 21/24; it called the wrong tool twice (`list_skills` for `get_client_history`, `search_evidence` for `get_job`). The 2-tool coarse set was
+5x cheaper per call (448 vs 2,316 tokens) but right only 29% of the time: hiding the operation inside an
+`action` string made the model guess action names and parameter shapes, so fewer tools did not mean easier
+choices. Fine-grained tools were about as accurate as ours in the earlier run but send twice as many schemas on
+every call. Task-level tools with precise descriptions are the best trade-off.
 
 ## 4. R&D question B: retrieval, verification, and what shipped
 

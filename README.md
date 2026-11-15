@@ -7,7 +7,7 @@ writes proposals in which **every claim is backed by real portfolio evidence**, 
 **Live:** https://gigbid-2ac2.onrender.com (reviewer login in the Classroom submission) ·
 **Demo video:** _link in submission_ · **Write-up:** _link in submission_ · AI-4016 Assignment 2, individual.
 
-<!-- demo GIF: docs/images/demo.gif -->
+![GigBid demo: inbox, agent run, evidence-backed proposal, scam and prompt injection caught](docs/images/demo.gif)
 
 ## How it works
 ```
@@ -74,9 +74,9 @@ config value; pricing needed no change ([docs/CHANGE_REQUEST.md](docs/CHANGE_REQ
 Report: [docs/REPORT.pdf](docs/REPORT.pdf) · Write-up draft: [docs/WRITEUP.md](docs/WRITEUP.md) ·
 Portfolio MCP server (install with `uvx`): [mcp_servers/portfolio/README.md](mcp_servers/portfolio/README.md).
 
-**Tool granularity (R&D A)** - 24 tasks, `qwen3.8-27b` ([tool_design.json](evals/results/tool_design.json)): partial,
-the night before submission every free Groq model was at its daily cap. Our 13 task-level tools: right tool on 0.83
-of the tasks finished; an earlier unsaved run had the 2-tool coarse set at 0.25. Details and caveats: report section 3.
+**Tool granularity (R&D A)** - 24 tasks, `qwen/qwen3.8-27b` ([tool_design.json](evals/results/tool_design.json)): our 13
+task-level tools 0.92 selection / 0.88 arguments (2,316 tokens per call) vs the 2-tool coarse set 0.29 / 0.29
+(448 tokens). Fine (27 tools) from an earlier run: 0.88 / 0.83. Report section 3.
 
 ## Run it
 ```bash

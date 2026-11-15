@@ -4,11 +4,11 @@
   "sets": {
     "ours": {
       "tools": 13,
-      "tasks_done": 6,
-      "complete": false,
-      "tool_selection_accuracy": 0.833,
-      "argument_accuracy": 0.667,
-      "tokens_per_task": 2318,
+      "tasks_done": 24,
+      "complete": true,
+      "tool_selection_accuracy": 0.917,
+      "argument_accuracy": 0.875,
+      "tokens_per_task": 2316,
       "rows": [
         {
           "q": "Find open machine learning jobs on the marketplace.",
@@ -80,6 +80,588 @@
           "args_ok": true,
           "malformed": false,
           "tokens": 2322
+        },
+        {
+          "q": "Is client cl-e24db096de payment verified and how much have they spent?",
+          "expected": "get_client_history",
+          "got": "list_skills",
+          "args": {},
+          "tool_ok": false,
+          "args_ok": false,
+          "malformed": false,
+          "tokens": 2301
+        },
+        {
+          "q": "Has client cl-af6daf9984 hired freelancers before? What is their hire rate?",
+          "expected": "get_client_history",
+          "got": "get_client_history",
+          "args": {
+            "client_id": "cl-af6daf9984"
+          },
+          "tool_ok": true,
+          "args_ok": true,
+          "malformed": false,
+          "tokens": 2327
+        },
+        {
+          "q": "How many Connects do I have left?",
+          "expected": "get_connects_balance",
+          "got": "get_connects_balance",
+          "args": {},
+          "tool_ok": true,
+          "args_ok": true,
+          "malformed": false,
+          "tokens": 2292
+        },
+        {
+          "q": "What do data analysis fixed-price projects usually pay?",
+          "expected": "get_market_stats",
+          "got": "get_market_stats",
+          "args": {
+            "category": "data_analysis"
+          },
+          "tool_ok": true,
+          "args_ok": true,
+          "malformed": false,
+          "tokens": 2305
+        },
+        {
+          "q": "What hourly rates are typical for expert AI/ML work?",
+          "expected": "get_market_stats",
+          "got": "get_market_stats",
+          "args": {
+            "category": "ai_ml",
+            "experience_level": "Expert"
+          },
+          "tool_ok": true,
+          "args_ok": true,
+          "malformed": false,
+          "tokens": 2322
+        },
+        {
+          "q": "Which marketplace policy version is in force and what are the rules?",
+          "expected": "get_policy",
+          "got": "get_policy",
+          "args": {},
+          "tool_ok": true,
+          "args_ok": true,
+          "malformed": false,
+          "tokens": 2294
+        },
+        {
+          "q": "List my client conversations.",
+          "expected": "list_messages",
+          "got": "list_messages",
+          "args": {},
+          "tool_ok": true,
+          "args_ok": true,
+          "malformed": false,
+          "tokens": 2286
+        },
+        {
+          "q": "Show every message in thread th-12ab34cd56.",
+          "expected": "list_messages",
+          "got": "list_messages",
+          "args": {
+            "thread_id": "th-12ab34cd56"
+          },
+          "tool_ok": true,
+          "args_ok": true,
+          "malformed": false,
+          "tokens": 2321
+        },
+        {
+          "q": "Which of my proposals got a reply?",
+          "expected": "list_proposals",
+          "got": "list_proposals",
+          "args": {
+            "status": "replied"
+          },
+          "tool_ok": true,
+          "args_ok": true,
+          "malformed": false,
+          "tokens": 2304
+        },
+        {
+          "q": "What happened on the marketplace since event 40?",
+          "expected": "list_events",
+          "got": "list_events",
+          "args": {
+            "after": 40
+          },
+          "tool_ok": true,
+          "args_ok": true,
+          "malformed": false,
+          "tokens": 2305
+        },
+        {
+          "q": "Preview what it would cost to submit proposal prop-77aa88bb99 (do not submit).",
+          "expected": "submit_proposal",
+          "got": "submit_proposal",
+          "args": {
+            "dry_run": true,
+            "idempotency_key": "preview-prop-77aa88bb99",
+            "proposal_id": "prop-77aa88bb99"
+          },
+          "tool_ok": true,
+          "args_ok": true,
+          "malformed": false,
+          "tokens": 2370
+        },
+        {
+          "q": "Do I have portfolio evidence for building Celery background job queues?",
+          "expected": "search_evidence",
+          "got": "search_evidence",
+          "args": {
+            "requirement": "building Celery background job queues"
+          },
+          "tool_ok": true,
+          "args_ok": true,
+          "malformed": false,
+          "tokens": 2314
+        },
+        {
+          "q": "Find code in my repositories that uses PyTorch.",
+          "expected": "search_evidence",
+          "got": "search_evidence",
+          "args": {
+            "requirement": "PyTorch",
+            "types": [
+              "repo_code"
+            ]
+          },
+          "tool_ok": true,
+          "args_ok": true,
+          "malformed": false,
+          "tokens": 2324
+        },
+        {
+          "q": "Show my past proposals about chatbots that won the job.",
+          "expected": "search_evidence",
+          "got": "search_evidence",
+          "args": {
+            "outcome": [
+              "won"
+            ],
+            "requirement": "chatbot",
+            "types": [
+              "past_proposal"
+            ]
+          },
+          "tool_ok": true,
+          "args_ok": true,
+          "malformed": false,
+          "tokens": 2339
+        },
+        {
+          "q": "What did clients say in reviews about my dashboard work?",
+          "expected": "search_evidence",
+          "got": "search_evidence",
+          "args": {
+            "requirement": "dashboard",
+            "types": [
+              "review"
+            ]
+          },
+          "tool_ok": true,
+          "args_ok": true,
+          "malformed": false,
+          "tokens": 2321
+        },
+        {
+          "q": "Open the full case study for project rag-legal.",
+          "expected": "get_case_study",
+          "got": "get_case_study",
+          "args": {
+            "id": "rag-legal"
+          },
+          "tool_ok": true,
+          "args_ok": true,
+          "malformed": false,
+          "tokens": 2306
+        },
+        {
+          "q": "Which skills can I prove with case studies?",
+          "expected": "list_skills",
+          "got": "list_skills",
+          "args": {},
+          "tool_ok": true,
+          "args_ok": true,
+          "malformed": false,
+          "tokens": 2290
+        },
+        {
+          "q": "Find jobs posted after 2026-11-10T00:00:00Z for my scheduled scout.",
+          "expected": "search_jobs",
+          "got": "search_jobs",
+          "args": {
+            "posted_after": "2026-11-10T00:00:00Z"
+          },
+          "tool_ok": true,
+          "args_ok": true,
+          "malformed": false,
+          "tokens": 2345
+        }
+      ]
+    },
+    "coarse": {
+      "tools": 2,
+      "tasks_done": 24,
+      "complete": true,
+      "tool_selection_accuracy": 0.292,
+      "argument_accuracy": 0.292,
+      "tokens_per_task": 448,
+      "rows": [
+        {
+          "q": "Find open machine learning jobs on the marketplace.",
+          "expected": "marketplace",
+          "got": "marketplace",
+          "args": {
+            "action": "search_jobs",
+            "params": {
+              "query": "machine learning"
+            }
+          },
+          "tool_ok": true,
+          "args_ok": true,
+          "malformed": false,
+          "tokens": 440
+        },
+        {
+          "q": "Search for jobs that mention Django.",
+          "expected": "marketplace",
+          "got": "marketplace",
+          "args": {
+            "action": "search_jobs",
+            "params": {
+              "query": "Django"
+            }
+          },
+          "tool_ok": true,
+          "args_ok": true,
+          "malformed": false,
+          "tokens": 438
+        },
+        {
+          "q": "Show me hourly web development jobs.",
+          "expected": "marketplace",
+          "got": "marketplace",
+          "args": {
+            "action": "search_jobs",
+            "params": {
+              "category": "web development",
+              "rate_type": "hourly"
+            }
+          },
+          "tool_ok": true,
+          "args_ok": true,
+          "malformed": false,
+          "tokens": 446
+        },
+        {
+          "q": "Get the full post for job job-a532010879.",
+          "expected": "marketplace",
+          "got": "marketplace",
+          "args": {
+            "action": "get_post",
+            "params": {
+              "id": "job-a532010879"
+            }
+          },
+          "tool_ok": false,
+          "args_ok": false,
+          "malformed": false,
+          "tokens": 458
+        },
+        {
+          "q": "How many Connects does job job-885ee7c883 cost to apply?",
+          "expected": "marketplace",
+          "got": "portfolio",
+          "args": {
+            "action": "get_job",
+            "params": {
+              "job_id": "job-885ee7c883"
+            }
+          },
+          "tool_ok": false,
+          "args_ok": false,
+          "malformed": false,
+          "tokens": 461
+        },
+        {
+          "q": "What is the budget of job job-cb4411c3ac?",
+          "expected": "marketplace",
+          "got": "marketplace",
+          "args": {
+            "action": "get_job",
+            "params": {
+              "job_id": "job-cb4411c3ac"
+            }
+          },
+          "tool_ok": true,
+          "args_ok": true,
+          "malformed": false,
+          "tokens": 457
+        },
+        {
+          "q": "Is client cl-e24db096de payment verified and how much have they spent?",
+          "expected": "marketplace",
+          "got": "marketplace",
+          "args": {
+            "action": "get_client",
+            "params": {
+              "client_id": "cl-e24db096de"
+            }
+          },
+          "tool_ok": false,
+          "args_ok": false,
+          "malformed": false,
+          "tokens": 459
+        },
+        {
+          "q": "Has client cl-af6daf9984 hired freelancers before? What is their hire rate?",
+          "expected": "marketplace",
+          "got": "marketplace",
+          "args": {
+            "action": "get_client",
+            "params": {
+              "client_id": "cl-af6daf9984"
+            }
+          },
+          "tool_ok": false,
+          "args_ok": false,
+          "malformed": false,
+          "tokens": 461
+        },
+        {
+          "q": "How many Connects do I have left?",
+          "expected": "marketplace",
+          "got": "marketplace",
+          "args": {
+            "action": "get_connects_balance"
+          },
+          "tool_ok": true,
+          "args_ok": true,
+          "malformed": false,
+          "tokens": 435
+        },
+        {
+          "q": "What do data analysis fixed-price projects usually pay?",
+          "expected": "marketplace",
+          "got": "portfolio",
+          "args": {
+            "action": "get_average_rates",
+            "params": {
+              "category": "data analysis",
+              "pricing_type": "fixed-price"
+            }
+          },
+          "tool_ok": false,
+          "args_ok": false,
+          "malformed": false,
+          "tokens": 449
+        },
+        {
+          "q": "What hourly rates are typical for expert AI/ML work?",
+          "expected": "marketplace",
+          "got": "marketplace",
+          "args": {
+            "action": "get_typical_rates",
+            "params": {
+              "level": "expert",
+              "skill": "AI/ML"
+            }
+          },
+          "tool_ok": false,
+          "args_ok": false,
+          "malformed": false,
+          "tokens": 452
+        },
+        {
+          "q": "Which marketplace policy version is in force and what are the rules?",
+          "expected": "marketplace",
+          "got": "marketplace",
+          "args": {
+            "action": "get_policy",
+            "params": {}
+          },
+          "tool_ok": true,
+          "args_ok": true,
+          "malformed": false,
+          "tokens": 438
+        },
+        {
+          "q": "List my client conversations.",
+          "expected": "marketplace",
+          "got": "portfolio",
+          "args": {
+            "action": "list_conversations"
+          },
+          "tool_ok": false,
+          "args_ok": false,
+          "malformed": false,
+          "tokens": 427
+        },
+        {
+          "q": "Show every message in thread th-12ab34cd56.",
+          "expected": "marketplace",
+          "got": "marketplace",
+          "args": {
+            "action": "get_thread",
+            "params": {
+              "thread_id": "th-12ab34cd56"
+            }
+          },
+          "tool_ok": false,
+          "args_ok": false,
+          "malformed": false,
+          "tokens": 456
+        },
+        {
+          "q": "Which of my proposals got a reply?",
+          "expected": "marketplace",
+          "got": "marketplace",
+          "args": {
+            "action": "list_proposals",
+            "params": {
+              "replied": true
+            }
+          },
+          "tool_ok": true,
+          "args_ok": true,
+          "malformed": false,
+          "tokens": 439
+        },
+        {
+          "q": "What happened on the marketplace since event 40?",
+          "expected": "marketplace",
+          "got": "portfolio",
+          "args": {
+            "action": "get_events",
+            "params": {
+              "since": 40
+            }
+          },
+          "tool_ok": false,
+          "args_ok": false,
+          "malformed": false,
+          "tokens": 441
+        },
+        {
+          "q": "Preview what it would cost to submit proposal prop-77aa88bb99 (do not submit).",
+          "expected": "marketplace",
+          "got": "marketplace",
+          "args": {
+            "action": "preview_proposal_cost",
+            "params": {
+              "proposal_id": "prop-77aa88bb99"
+            }
+          },
+          "tool_ok": false,
+          "args_ok": false,
+          "malformed": false,
+          "tokens": 465
+        },
+        {
+          "q": "Do I have portfolio evidence for building Celery background job queues?",
+          "expected": "portfolio",
+          "got": "portfolio",
+          "args": {
+            "action": "search",
+            "params": {
+              "query": "Celery background job queues"
+            }
+          },
+          "tool_ok": false,
+          "args_ok": false,
+          "malformed": false,
+          "tokens": 445
+        },
+        {
+          "q": "Find code in my repositories that uses PyTorch.",
+          "expected": "portfolio",
+          "got": "portfolio",
+          "args": {
+            "action": "search_code"
+          },
+          "tool_ok": false,
+          "args_ok": false,
+          "malformed": false,
+          "tokens": 442
+        },
+        {
+          "q": "Show my past proposals about chatbots that won the job.",
+          "expected": "portfolio",
+          "got": "marketplace",
+          "args": {
+            "action": "list_proposals",
+            "params": {
+              "outcome": "won",
+              "topic": "chatbot"
+            }
+          },
+          "tool_ok": false,
+          "args_ok": false,
+          "malformed": false,
+          "tokens": 450
+        },
+        {
+          "q": "What did clients say in reviews about my dashboard work?",
+          "expected": "portfolio",
+          "got": "portfolio",
+          "args": {
+            "action": "reviews",
+            "params": {
+              "filter": "dashboard"
+            }
+          },
+          "tool_ok": false,
+          "args_ok": false,
+          "malformed": false,
+          "tokens": 439
+        },
+        {
+          "q": "Open the full case study for project rag-legal.",
+          "expected": "portfolio",
+          "got": "portfolio",
+          "args": {
+            "action": "open_case_study",
+            "params": {
+              "project_id": "rag-legal"
+            }
+          },
+          "tool_ok": false,
+          "args_ok": false,
+          "malformed": false,
+          "tokens": 444
+        },
+        {
+          "q": "Which skills can I prove with case studies?",
+          "expected": "portfolio",
+          "got": "portfolio",
+          "args": {
+            "action": "list_case_studies",
+            "params": {}
+          },
+          "tool_ok": false,
+          "args_ok": false,
+          "malformed": false,
+          "tokens": 435
+        },
+        {
+          "q": "Find jobs posted after 2026-11-10T00:00:00Z for my scheduled scout.",
+          "expected": "marketplace",
+          "got": "marketplace",
+          "args": {
+            "action": "list_jobs",
+            "params": {
+              "posted_after": "2026-11-10T00:00:00Z"
+            }
+          },
+          "tool_ok": false,
+          "args_ok": false,
+          "malformed": false,
+          "tokens": 480
         }
       ]
     }
