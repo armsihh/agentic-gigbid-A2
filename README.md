@@ -5,9 +5,14 @@ writes proposals in which **every claim is backed by real portfolio evidence**, 
 **Nothing is sent until a human approves it.**
 
 **Live:** https://gigbid-2ac2.onrender.com (reviewer login in the Classroom submission) ·
-**Demo video:** _link in submission_ · **Write-up:** _link in submission_ · AI-4016 Assignment 2, individual.
+**Demo video:** _link in submission_ · **Write-up:** [https://big-thorn-db3.notion.site/My-agent-scored-0-92-Then-I-looked-at-the-data-it-had-never-seen-419afaecfe588078b348edcf1cedf538](https://big-thorn-db3.notion.site/My-agent-scored-0-92-Then-I-looked-at-the-data-it-had-never-seen-419afaecfe588078b348edcf1cedf538) · AI-4016 Assignment 2, individual.
 
 ![GigBid demo: inbox, agent run, evidence-backed proposal, scam and prompt injection caught](docs/images/demo.gif)
+
+**Public traces (LangSmith):**
+[full bid run, proposal drafted and verified, 9.9k tokens, 211 s](https://smith.langchain.com/public/5f4a75f9-d2f5-4fdc-9b43-37e927c0c5da/r) ·
+[bid run with Critic revisions, 7.6k tokens, 296 s](https://smith.langchain.com/public/d36f0c57-fa2d-4146-a082-0c0ec9b138db/r) ·
+[job skipped by the deterministic decision, 0 tokens](https://smith.langchain.com/public/d820cc9b-2e4d-4a60-9743-86eda509f418/r)
 
 ## How it works
 ```
