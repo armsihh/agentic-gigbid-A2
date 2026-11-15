@@ -5,7 +5,7 @@ writes proposals in which **every claim is backed by real portfolio evidence**, 
 **Nothing is sent until a human approves it.**
 
 **Live:** https://gigbid-2ac2.onrender.com (reviewer login in the Classroom submission) ·
-**Demo video:** _link in submission_ · **Write-up:** [https://big-thorn-db3.notion.site/My-agent-scored-0-92-Then-I-looked-at-the-data-it-had-never-seen-419afaecfe588078b348edcf1cedf538](https://big-thorn-db3.notion.site/My-agent-scored-0-92-Then-I-looked-at-the-data-it-had-never-seen-419afaecfe588078b348edcf1cedf538) · AI-4016 Assignment 2, individual.
+**Demo video:** [https://drive.google.com/file/d/1L6qOdnYN_kYTlw36egZKv00jFGBVx7V5/view?usp=sharing](https://drive.google.com/file/d/1L6qOdnYN_kYTlw36egZKv00jFGBVx7V5/view?usp=sharing) · **Write-up:** [https://big-thorn-db3.notion.site/My-agent-scored-0-92-Then-I-looked-at-the-data-it-had-never-seen-419afaecfe588078b348edcf1cedf538](https://big-thorn-db3.notion.site/My-agent-scored-0-92-Then-I-looked-at-the-data-it-had-never-seen-419afaecfe588078b348edcf1cedf538) · AI-4016 Assignment 2, individual.
 
 ![GigBid demo: inbox, agent run, evidence-backed proposal, scam and prompt injection caught](docs/images/demo.gif)
 
