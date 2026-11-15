@@ -79,6 +79,16 @@ config value; pricing needed no change ([docs/CHANGE_REQUEST.md](docs/CHANGE_REQ
 Report: [docs/REPORT.pdf](docs/REPORT.pdf) · Write-up draft: [docs/WRITEUP.md](docs/WRITEUP.md) ·
 Portfolio MCP server (install with `uvx`): [mcp_servers/portfolio/README.md](mcp_servers/portfolio/README.md).
 
+**Multi-agent comparison (R&D C)** - same bid-worthy job and model family
+([architecture_comparison.json](evals/results/architecture_comparison.json), [proposal_eval_open.json](evals/results/proposal_eval_open.json));
+partial, free-tier daily caps stopped it after one job, so indicative only (report section 5):
+
+| Design | Outcome | Tokens | Unsupported claims | Scams / injections |
+|---|---|---|---|---|
+| Single ReAct agent (all tools) | no answer before the daily cap | 15,080+ | n/a | must read the injected text to decide |
+| `langgraph-supervisor` | not run (cap) | - | - | - |
+| Our graph | verified draft, judge 3/5 | 11,327 | 0 | skipped before any LLM call, 0 tokens (72/72 scams, 45/45 injections) |
+
 **Tool granularity (R&D A)** - 24 tasks, `qwen/qwen3.8-27b` ([tool_design.json](evals/results/tool_design.json)): our 13
 task-level tools 0.92 selection / 0.88 arguments (2,316 tokens per call) vs the 2-tool coarse set 0.29 / 0.29
 (448 tokens). Fine (27 tools) from an earlier run: 0.88 / 0.83. Report section 3.
