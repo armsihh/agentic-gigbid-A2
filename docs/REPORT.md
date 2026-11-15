@@ -58,18 +58,28 @@ insights need >= 10 outcomes per arm and disjoint Wilson 90% intervals (`agent/m
 **Hypothesis.** A few coarse tools save prompt tokens but cost selection accuracy; well-described task-level tools
 are the best trade-off.
 
-**Setup.** 24 tasks with known correct calls (`evals/datasets/tool_tasks.json`), one model (`gpt-oss-20b`) choosing
-one call per task, three tool sets: fine (27 narrow tools), coarse (2 tools: `marketplace(action, params)`,
-`portfolio(action, params)`), ours (13 real MCP tools with their shipped descriptions) [tool_design.json].
+**Setup.** 24 tasks with known correct calls (`evals/datasets/tool_tasks.json`), one open model
+(`qwen/qwen3.8-27b`) choosing one call per task, three tool sets: fine (27 narrow tools), coarse (2 tools:
+`marketplace(action, params)`, `portfolio(action, params)`), ours (13 real MCP tools with their shipped
+descriptions) [tool_design.json]. Sets run cheapest-prompt first and save after every task.
 
-| Tool set | Tools | Selection accuracy | Argument accuracy | Tokens / task |
-|---|---|---|---|---|
-| Fine | 27 | ⟨pending⟩ | ⟨pending⟩ | ⟨pending⟩ |
-| Coarse | 2 | ⟨pending⟩ | ⟨pending⟩ | ⟨pending⟩ |
-| Ours | 13 | ⟨pending⟩ | ⟨pending⟩ | ⟨pending⟩ |
+| Tool set | Tools | Selection accuracy | Argument accuracy | Tokens / task | Tasks done |
+|---|---|---|---|---|---|
+| Fine | 27 | not run (daily cap) | - | - | 0/24 |
+| Coarse | 2 | not run (daily cap) | - | - | 0/24 |
+| Ours | 13 | 0.83 | 0.67 | 2,318 | 6/24 |
 
-An earlier complete run of fine and coarse (lost to a rate-limit crash before saving) measured 0.88 / 0.83 and
-0.25 / 0.25. **Conclusion:** ⟨pending⟩.
+**Incomplete: free-tier daily caps.** Every Groq model on this account hit its 200k tokens/day cap the night
+before submission (proposal and architecture evaluations), and the cap frees on a rolling window, so this run
+advanced at about two tasks an hour. The numbers above are on the tasks finished, not all 24. An earlier complete
+run of fine and coarse on `gpt-oss-20b` (lost to a rate-limit crash before it saved, which is why the runner now
+saves per task) measured selection / argument accuracy of 0.88 / 0.83 (fine) and 0.25 / 0.25 (coarse).
+
+**Conclusion (provisional).** The coarse set is the clear loser: hiding the operation inside an `action` string
+made the model guess actions and parameter names (0.25 in the earlier run), so fewer tools did not mean easier
+choices. Our task-level tools chose the right tool on 83% of the 6 tasks run, with 2,318 tokens per call; misses: called search_evidence where get_job was expected.
+Fine-grained tools were accurate in the earlier run but necessarily send the most prompt per call (27 schemas). The hypothesis holds on the evidence
+so far, but the margin between fine and ours is not established at this sample size.
 
 ## 4. R&D question B: retrieval, verification, and what shipped
 
@@ -96,8 +106,7 @@ through their code (the Celery case, `test_implied_skills_survive_in_repo_code`)
 wins correlate with popular projects, not with relevance to the job. V8 refuses 81% of off-profile jobs but also 30%
 of jobs that have evidence at threshold 0.5; it needs a tuned threshold before it can ship.
 
-**Ablation of V5** (one stage removed at a time): see `rag_eval.py --ablation v5_multivector` ⟨pending if time⟩;
-the variant table already isolates each stage cumulatively (V2 = +hybrid, V3 = +rerank, V5 = +grouping).
+**Ablation of V5:** a remove-one-stage ablation was not run (free-tier time); the variant table isolates each stage cumulatively (V2 = +hybrid, V3 = +rerank, V5 = +grouping).
 
 **Claim verification (B3).** Each experience claim is checked against retrieved evidence with the cross-encoder plus
 hard facts: every number and named tool in the claim must appear in the evidence, and "N years" must be literal. A
@@ -134,15 +143,24 @@ rate-limit waits, tripled p95 latency. Better evidence buys honesty in the first
 Same jobs (2 bid-worthy, 1 scam, 1 injected post), same model, three designs: one ReAct agent holding all read tools,
 `langgraph-supervisor` over three ReAct sub-agents, and our graph [architecture_comparison.json].
 
-| Design | Bid/skip accuracy | Scams/injections bid on | Unsupported claims / draft | Violations in final text | Tokens / job | Latency |
-|---|---|---|---|---|---|---|
-| Single ReAct | ⟨pending⟩ | ⟨pending⟩ | ⟨pending⟩ | ⟨pending⟩ | ⟨pending⟩ | ⟨pending⟩ |
-| Supervisor | ⟨pending⟩ | ⟨pending⟩ | ⟨pending⟩ | ⟨pending⟩ | ⟨pending⟩ | ⟨pending⟩ |
-| Our graph | ⟨pending⟩ | ⟨pending⟩ | ⟨pending⟩ | ⟨pending⟩ | ⟨pending⟩ | ⟨pending⟩ |
+**Not completed: free-tier daily caps.** The planned 4 jobs x 3 designs did not fit Groq's 200k tokens/model/day
+alongside the proposal evaluation; I stopped it after the first design on the first job rather than spend the quota
+the live demo needs. What was measured, on the same bid-worthy job (`job-01ce9333d8`) and model family:
 
-Observed already: the single ReAct agent with all tools called a tool that does not exist (`job`), which Groq
-rejected; our graph skips scams and injected posts before any LLM call (0.4 s, zero tokens). ⟨pending: where (a)
-wins, if anywhere, and why⟩.
+| Design | Outcome | Tokens | Unsupported claims | Violations |
+|---|---|---|---|---|
+| Single ReAct (all read tools) | no answer: hit the daily cap mid-run | 15,080 (and counting) | n/a | n/a |
+| Supervisor | not run | - | - | - |
+| Our graph (V5, proposal eval) [proposal_eval_open.json] | verified draft waiting for approval, judge 3/5, 336 s | 11,327 | 0 before and after verification | 0 |
+
+This is one job, so it is indicative, not a result. What it shows is consistent with the design argument: the single
+agent spent more tokens without reaching an answer (in an earlier attempt it also called a tool that does not exist,
+`job`, which Groq rejected), while the graph's deterministic nodes (risk, decision, pricing, compliance) cost zero tokens and
+its LLM calls are bounded per node. On scams and injected posts the gap is structural, not statistical: our graph skips
+them before any LLM call (0.4 s, zero tokens; 72/72 scams and 45/45 injections in section 2), whereas a ReAct agent
+has to read the injected text to decide. Where (a) would plausibly win: open-ended, one-off questions the graph has no
+node for ("which of my repos fits this?"), where its flexibility beats a fixed pipeline. The runner
+(`evals/runners/architecture_eval.py`) is complete and resumable; with a paid tier it is a ~1-hour run.
 
 ## 6. The change request
 

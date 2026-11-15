@@ -1,0 +1,87 @@
+{
+  "model": "qwen/qwen3.8-27b",
+  "n_tasks": 24,
+  "sets": {
+    "ours": {
+      "tools": 13,
+      "tasks_done": 6,
+      "complete": false,
+      "tool_selection_accuracy": 0.833,
+      "argument_accuracy": 0.667,
+      "tokens_per_task": 2318,
+      "rows": [
+        {
+          "q": "Find open machine learning jobs on the marketplace.",
+          "expected": "search_jobs",
+          "got": "search_jobs",
+          "args": {},
+          "tool_ok": true,
+          "args_ok": false,
+          "malformed": false,
+          "tokens": 2306
+        },
+        {
+          "q": "Search for jobs that mention Django.",
+          "expected": "search_jobs",
+          "got": "search_jobs",
+          "args": {
+            "query": "Django"
+          },
+          "tool_ok": true,
+          "args_ok": true,
+          "malformed": false,
+          "tokens": 2301
+        },
+        {
+          "q": "Show me hourly web development jobs.",
+          "expected": "search_jobs",
+          "got": "search_jobs",
+          "args": {
+            "category": "web_dev",
+            "payment_type": "hourly"
+          },
+          "tool_ok": true,
+          "args_ok": true,
+          "malformed": false,
+          "tokens": 2319
+        },
+        {
+          "q": "Get the full post for job job-a532010879.",
+          "expected": "get_job",
+          "got": "get_job",
+          "args": {
+            "job_id": "job-a532010879"
+          },
+          "tool_ok": true,
+          "args_ok": true,
+          "malformed": false,
+          "tokens": 2324
+        },
+        {
+          "q": "How many Connects does job job-885ee7c883 cost to apply?",
+          "expected": "get_job",
+          "got": "search_evidence",
+          "args": {
+            "requirement": "\"how many Connects does job job-885ee7c883 cost to apply?\"\n</Cat"
+          },
+          "tool_ok": false,
+          "args_ok": false,
+          "malformed": false,
+          "tokens": 2339
+        },
+        {
+          "q": "What is the budget of job job-cb4411c3ac?",
+          "expected": "get_job",
+          "got": "get_job",
+          "args": {
+            "job_id": "job-cb4411c3ac"
+          },
+          "tool_ok": true,
+          "args_ok": true,
+          "malformed": false,
+          "tokens": 2322
+        }
+      ]
+    }
+  }
+}

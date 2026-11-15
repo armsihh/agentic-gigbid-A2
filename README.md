@@ -42,12 +42,16 @@ Every number below is read from a file in [`evals/results/`](evals/results/). De
 Shipped: V5 locally / compose; V2 on the 512 MB public host ([ADR 0004](docs/adr/0004-production-rag-variant.md)).
 Negative results: decomposition alone and the outcome boost both *lowered* recall.
 
-**Proposals (B4/B5)** - real bid graph, `gpt-oss-120b` writer, 12-job fixed set; free-tier daily caps limited the
-completed sample ([proposal_eval_open_gptoss120b_partial.json](evals/results/proposal_eval_open_gptoss120b_partial.json))
+**Proposals (B4/B5, R&D B)** - real bid graph on the same 6 jobs per variant, tiered open models (gpt-oss-120b writer,
+Gemma 4 / Nemotron fallbacks) ([proposal_eval_open.json](evals/results/proposal_eval_open.json)):
 
 | Variant | Unsupported claims / proposal (before -> after verification) | Judge (1-5) | GigSim reply rate | p95 latency (s) | Cost / proposal (USD) |
 |---|---|---|---|---|---|
-| V0 | 0.2 -> 0.0 | 3.0 | 0.20 | 342 | 0.0043 |
+| V0 naive | 1.0 -> 0.0 | 3.0 | 0.00 | 203 | 0.0027 |
+| V5 shipped | 0.2 -> 0.0 | 3.2 | 0.00 | 639 | 0.0025 |
+
+Five proposals per arm: enough to see V5 cut fabricated claims in first drafts five-fold, far too few for reply
+rates. Judge calibrated against 30 hand labels: kappa 0.39, quadratic 0.72, within one point 0.87.
 
 **Decisions** - full splits, production retrieval V2 ([dev](evals/results/decision_dev_v2_hybrid.json),
 [holdout](evals/results/decision_holdout_v2_hybrid.json))
@@ -70,8 +74,9 @@ config value; pricing needed no change ([docs/CHANGE_REQUEST.md](docs/CHANGE_REQ
 Report: [docs/REPORT.pdf](docs/REPORT.pdf) · Write-up draft: [docs/WRITEUP.md](docs/WRITEUP.md) ·
 Portfolio MCP server (install with `uvx`): [mcp_servers/portfolio/README.md](mcp_servers/portfolio/README.md).
 
-**Tool granularity (R&D A)** - 24 tasks, `gpt-oss-20b` ([tool_design.json](evals/results/tool_design.json)):
-⟨final numbers from the overnight run⟩.
+**Tool granularity (R&D A)** - 24 tasks, `qwen3.8-27b` ([tool_design.json](evals/results/tool_design.json)): partial,
+the night before submission every free Groq model was at its daily cap. Our 13 task-level tools: right tool on 0.83
+of the tasks finished; an earlier unsaved run had the 2-tool coarse set at 0.25. Details and caveats: report section 3.
 
 ## Run it
 ```bash

@@ -106,19 +106,30 @@ def args_ok(expected: dict, got: dict, coarse_set: bool) -> bool:
     return True
 
 
-async def run(limit: int | None, node: str, sets: list[str]) -> dict:
+async def run(limit: int | None, node: str, sets: list[str], out_name: str = "tool_design.json") -> dict:
     from agent.llm import chat_model, spec_for
     tasks = json.loads((ROOT / "evals" / "datasets" / "tool_tasks.json").read_text(encoding="utf-8"))[:limit]
     model = chat_model(node).primary
-    path = RESULTS / "tool_design.json"
+    path = RESULTS / out_name
     out = json.loads(path.read_text()) if path.exists() else {"model": spec_for(node).model, "n_tasks": len(tasks), "sets": {}}
-    for name, tools in (("fine", fine()), ("coarse", coarse()), ("ours", ours())):
+    def save(name, tools, rows):   # after EVERY task: free-tier caps can stall a set for hours; restarts resume
+        n = len(rows)
+        out["sets"][name] = {"tools": len(tools), "tasks_done": n, "complete": n == len(tasks),
+                             "tool_selection_accuracy": round(sum(r["tool_ok"] for r in rows) / n, 3),
+                             "argument_accuracy": round(sum(r["args_ok"] for r in rows) / n, 3),
+                             "tokens_per_task": round(sum(r["tokens"] for r in rows) / n), "rows": rows}
+        path.write_text(json.dumps(out, indent=2), encoding="utf-8")
+
+    # cheapest prompts first (fewest tool schemas), so a partial run still covers the comparison that matters
+    for name, tools in (("ours", ours()), ("coarse", coarse()), ("fine", fine())):
         if name not in sets:
             continue
         bound = model.bind_tools(tools, tool_choice="required")
-        sel = arg = toks = 0
-        rows = []
+        rows = list((out["sets"].get(name) or {}).get("rows", []))
+        done = {r["q"] for r in rows}
         for t in tasks:
+            if t["q"] in done:
+                continue
             exp_tool, exp_args = t[name]
             msg, malformed = None, False
             for attempt in range(60):   # free tier: a daily (TPD) cap frees on a rolling window; wait it out
@@ -143,16 +154,15 @@ async def run(limit: int | None, node: str, sets: list[str]) -> dict:
                 ok_tool = ok_tool and exp_args["action"] in str(call.get("args", {}).get("action", ""))
             ok_args = ok_tool and args_ok(exp_args, call.get("args") or {}, name == "coarse")
             u = msg.usage_metadata or {}
-            sel, arg, toks = sel + ok_tool, arg + ok_args, toks + u.get("total_tokens", 0)
             rows.append({"q": t["q"], "expected": exp_tool, "got": call.get("name"), "args": call.get("args"),
                          "tool_ok": ok_tool, "args_ok": ok_args, "malformed": malformed, "tokens": u.get("total_tokens", 0)})
+            save(name, tools, rows)
+            print(f"  {name} {len(rows)}/{len(tasks)} tool_ok={ok_tool} args_ok={ok_args}", flush=True)
             await asyncio.sleep(1.2)  # stay under the free tier's tokens-per-minute cap
-        out["sets"][name] = {"tools": len(tools), "tool_selection_accuracy": round(sel / len(tasks), 3),
-                             "argument_accuracy": round(arg / len(tasks), 3),
-                             "tokens_per_task": round(toks / len(tasks)), "rows": rows}
-        path.write_text(json.dumps(out, indent=2), encoding="utf-8")  # save after every set
-        print(f"{name:7s} tools={len(tools):2d} selection={sel / len(tasks):.2f} args={arg / len(tasks):.2f} "
-              f"tokens/task={toks / len(tasks):.0f}", flush=True)
+        if rows:
+            st = out["sets"][name]
+            print(f"{name:7s} tools={len(tools):2d} selection={st['tool_selection_accuracy']:.2f} "
+                  f"args={st['argument_accuracy']:.2f} tokens/task={st['tokens_per_task']}", flush=True)
     return out
 
 
@@ -161,9 +171,10 @@ def main() -> None:
     ap.add_argument("--limit", type=int, default=None)
     ap.add_argument("--node", default="analyst", help="config node whose model is used (small tier)")
     ap.add_argument("--sets", nargs="*", default=["fine", "coarse", "ours"])
+    ap.add_argument("--out", default="tool_design.json", help="results file (to run two models side by side)")
     a = ap.parse_args()
-    asyncio.run(run(a.limit, a.node, a.sets))
-    print(f"wrote {RESULTS / 'tool_design.json'}")
+    asyncio.run(run(a.limit, a.node, a.sets, a.out))
+    print(f"wrote {RESULTS / a.out}")
 
 
 if __name__ == "__main__":
